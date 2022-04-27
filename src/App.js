@@ -1,14 +1,11 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
 
 import * as tf from "@tensorflow/tfjs";
 import * as facemesh from "@tensorflow-models/facemesh";
 import Webcam from "react-webcam";
-import { useRef, useEffect } from 'react';
-import { drawMesh } from './utilities';
+import { useRef, useEffect } from "react";
 
 import Scene from "./Scene.js";
-import { ifft } from '@tensorflow/tfjs';
 
 function App() {
   const webcamRef = useRef(null);
@@ -16,22 +13,16 @@ function App() {
 
   const scene = new Scene();
 
-  useEffect(() => {
-    if (!scene.created)
-      scene.setUp(appDivRef.current)
-  });
-
   const runFacemesh = async () => {
-    const net = await facemesh.load()
+    const net = await facemesh.load();
 
     setInterval(() => {
       detect(net);
-    }, 1)
-  }
+    }, 1);
+  };
 
   const detect = async (net) => {
-    if (typeof webcamRef.current == 'undefined'
-      || webcamRef.current == null) {
+    if (typeof webcamRef.current == "undefined" || webcamRef.current == null) {
       return;
     }
 
@@ -48,10 +39,13 @@ function App() {
 
     const face = await net.estimateFaces(video);
 
+    scene.setUpSize(videoWidth, videoHeight);
+
+    if (!scene.created) scene.setUp(appDivRef.current);
     if (scene.created && face.length > 0) {
-      scene.drawScene(face)
+      scene.drawScene(face);
     }
-  }
+  };
 
   runFacemesh();
 
