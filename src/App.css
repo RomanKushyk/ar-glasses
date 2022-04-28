@@ -10,14 +10,10 @@ canvas{
   z-index: 100 !important;
 }
 
-.canvas,
+canvas{
+  position: absolute;
+}
 .webcam {
   position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  left: 0;
-  right: 0;
-  text-align: center;
-  width: 640px;
-  height: 480px;
+  object-fit: cover;
 }
