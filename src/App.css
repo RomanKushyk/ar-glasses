@@ -6,14 +6,16 @@
   justify-content: center;
 }
 
-canvas{
+canvas {
   z-index: 100 !important;
 }
 
-canvas{
+canvas {
   position: absolute;
 }
 .webcam {
   position: absolute;
   object-fit: cover;
+  width: 100% !important;
+  height: 100% !important;
 }

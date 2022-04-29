@@ -1,11 +1,19 @@
 import "./App.css";
-
-import * as tf from "@tensorflow/tfjs";
-import * as facemesh from "@tensorflow-models/facemesh";
 import Webcam from "react-webcam";
 import { useRef, useEffect, useState } from "react";
-
+import * as faceMesh from "@mediapipe/face_mesh";
+import '@tensorflow-models/face-detection';
+import '@tensorflow/tfjs-backend-webgl';
+import * as tfjsWasm from '@tensorflow/tfjs-backend-wasm';
+import * as FaceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
 import Scene from "./Scene.js";
+
+tfjsWasm.setWasmPaths(
+    `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${
+        tfjsWasm.version_wasm}/dist/`);
+
+
+
 
 function App() {
   const webcamRef = useRef(null);
@@ -14,14 +22,25 @@ function App() {
   const scene = new Scene();
 
   const runFacemesh = async () => {
-    const net = await facemesh.load();
+    const model = FaceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
+
+    const detectorConfig = {
+      runtime: "tfjs", // or 'tfjs'
+      solutionPath: `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@${faceMesh.VERSION}`,
+    };
+
+    const detector = await FaceLandmarksDetection.createDetector(
+      model,
+      detectorConfig
+    );
+    // const net = await facemesh.load();
 
     setInterval(() => {
-      detect(net);
+      detect(detector);
     }, 1);
   };
 
-  const detect = async (net) => {
+  const detect = async (detector) => {
     if (typeof webcamRef.current == "undefined" || webcamRef.current == null) {
       return;
     }
@@ -34,10 +53,10 @@ function App() {
     const videoWidth = webcamRef.current.video.videoWidth;
     const videoHeight = webcamRef.current.video.videoHeight;
 
-    webcamRef.current.video.width = document.body.offsetWidth;
-    webcamRef.current.video.height = document.body.offsetHeight;
+    webcamRef.current.video.width = videoWidth;
+    webcamRef.current.video.height = videoHeight;
 
-    const face = await net.estimateFaces(video);
+    const face = await detector.estimateFaces(video);
 
     scene.setUpSize(
       document.body.offsetWidth,

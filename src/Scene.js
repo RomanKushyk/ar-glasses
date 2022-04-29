@@ -29,7 +29,7 @@ export default class Scene {
 
   setUp(parent) {
     this.camera = new THREE.PerspectiveCamera(
-      45,
+      1,
       this.width / this.height,
       0.01,
       500
@@ -53,7 +53,6 @@ export default class Scene {
     });
 
     this.created = true;
-    console.log("Started!");
   }
 
   async setUpGlass() {
@@ -63,14 +62,43 @@ export default class Scene {
       child.material.visible = false;
     });
 
-    this.scene.add(this.glass);
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshBasicMaterial({
+      color: 0x0000ff,
+      transparent: true,
+      opacity: 0,
+    });
+    this.glass_wrapper = new THREE.Mesh(geometry, material);
+
+    this.glass.position.y = 13;
+    this.glass.position.z = -4.5;
+    this.glass.position.x = -0.7;
+    this.glass.scale.set(0.8, 0.8, 0.8);
+    this.scene.add(this.glass_wrapper);
+    this.glass_wrapper.add(this.glass);
   }
 
   target_points = {
-    top: [],
-    left: [],
-    right: [],
-    bottom: [],
+    top: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
+    left: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
+    right: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
+    bottom: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
   };
 
   normalize = (num, in_min, in_max, out_min, out_max) => {
@@ -79,6 +107,7 @@ export default class Scene {
 
   normalize_vec(vec) {
     let scale;
+    let _vec = new THREE.Vector3(vec.x, vec.y, vec.z);
 
     if (this.videoWidth / this.videoHeight > this.width / this.height) {
       scale = this.height / this.videoHeight;
@@ -89,109 +118,97 @@ export default class Scene {
     let scaled_video_width = this.videoWidth * scale;
     let scaled_video_height = this.videoHeight * scale;
 
-    vec[0] *= scale;
-    vec[1] *= scale;
+    _vec.x *= scale;
+    _vec.y *= scale;
 
-    vec[0] += (this.width - scaled_video_width) / 2;
-    vec[1] += (this.height - scaled_video_height) / 2;
+    _vec.x += (this.width - scaled_video_width) / 2;
+    _vec.y += (this.height - scaled_video_height) / 2;
 
-    vec[0] = this.normalize(
-      (vec[0] / this.width) * 2 - 1,
+    _vec.x = this.normalize(
+      (_vec.x / this.width) * 2 - 1,
       -1,
       1,
       -this.viewSize.width / 2,
       this.viewSize.width / 2
     );
-    vec[1] = this.normalize(
-      -(vec[1] / this.height) * 2 + 1,
+    _vec.y = this.normalize(
+      -(_vec.y / this.height) * 2 + 1,
       -1,
       1,
       -this.viewSize.height / 2,
       this.viewSize.height / 2
     );
 
-    vec[2] = -vec[2] / (this.camera.position.z / 4);
+    _vec.z = -_vec.z / (this.camera.position.z / 4);
 
-    return vec;
+    return _vec;
   }
 
-  drawGlass(predictions) {
-    if (predictions.length > 0) {
-      predictions.forEach((prediction) => {
-        // console.log(prediction)
-        this.target_points.top = prediction.annotations.midwayBetweenEyes[0];
-        this.target_points.bottom = prediction.annotations.noseBottom[0];
-        this.target_points.left = this.normalize_vec(
-          prediction.annotations.leftEyeLower0[0]
-        );
-        this.target_points.right = this.normalize_vec(
-          prediction.annotations.rightEyeLower0[0]
-        );
+  axis = {
+    x: new Vector3(1, 0, 0),
+    y: new Vector3(0, 1, 0),
+    z: new Vector3(0, 0, 1),
+  };
 
-        this.target_points.center_x = this.normalize_vec(
-          prediction.annotations.noseTip[0]
-        );
+  drawGlass() {
+    let gide_line_x = new THREE.Vector3()
+      .copy(this.target_points.left)
+      .sub(this.target_points.right)
+      .normalize()
+      .multiplyScalar(10);
 
-        let gide_line_x = new THREE.Vector3(
-          this.target_points.right[0] - this.target_points.left[0],
-          this.target_points.left[1] - this.target_points.right[1],
-          this.target_points.left[2] - this.target_points.right[2]
-        )
-          .normalize()
-          .multiplyScalar(10);
+    let gide_line_y = new THREE.Vector3()
+      .copy(this.target_points.top)
+      .sub(this.target_points.bottom)
+      .normalize()
+      .multiplyScalar(100000);
 
-        let gide_line_y = new THREE.Vector3(
-          this.target_points.top[0] - this.target_points.bottom[0],
-          this.target_points.top[1] - this.target_points.bottom[1],
-          this.target_points.top[2] - this.target_points.bottom[2]
-        )
-          .normalize()
-          .multiplyScalar(100000);
+    let gide_line_z_x = new Vector3(gide_line_x.x, 0, gide_line_x.z);
+    let y_rotation = gide_line_z_x.angleTo(this.axis.z) - Math.PI / 1.9;
+    this.glass_wrapper.rotation.z = y_rotation;
+    
+    let gide_line_y_z = new Vector3(0, gide_line_y.y, gide_line_y.z);
+    let x_rotation =
+      -(this.target_points.top.z > this.target_points.bottom.z ? 1 : -1) *
+        -gide_line_y_z.angleTo(this.axis.y) +
+      Math.PI * 0.5;
+    this.glass_wrapper.rotation.x = x_rotation;
 
-        let axis_y = new Vector3(0, 1, 0);
-        let gide_line_y_z = new Vector3(0, gide_line_y.y, gide_line_y.z);
-        let x_rotation =
-          -(this.target_points.top[2] > this.target_points.bottom[2] ? 1 : -1) *
-            (Math.PI - gide_line_y_z.angleTo(axis_y)) +
-          Math.PI * 0.5;
-        this.glass.rotation.x += (x_rotation - this.glass.rotation.x) / 4;
+    let gide_line_x_y = new Vector3(gide_line_x.x, gide_line_x.y, 0);
+    let z_rotation =
+      (this.target_points.left.y > this.target_points.right.y ? 1 : -1) *
+        gide_line_x_y.angleTo(this.axis.x) +
+      Math.PI;
 
-        let axis_z = new Vector3(0, 0, 1);
-        let gide_line_z_x = new Vector3(gide_line_x.x, 0, gide_line_x.z);
-        let y_rotation = gide_line_z_x.angleTo(axis_z) - Math.PI / 1.9;
-        this.glass.rotation.z +=
-          (y_rotation + Math.PI - this.glass.rotation.z) / 4;
+    this.glass_wrapper.rotation.y = z_rotation;
 
-        let axis_x = new Vector3(1, 0, 0);
-        let gide_line_x_y = new Vector3(gide_line_x.x, gide_line_x.y, 0);
-        let z_rotation =
-          -(this.target_points.left[1] > this.target_points.right[1] ? -1 : 1) *
-          (Math.PI - gide_line_x_y.angleTo(axis_x)) + Math.PI;
+    let left_for_scale = this.normalize_vec(this.target_points.left);
+    let right_for_scale = this.normalize_vec(this.target_points.right);
+    left_for_scale.z = 0;
+    right_for_scale.z = 0;
+    let scale =
+      new THREE.Vector3().copy(left_for_scale).sub(right_for_scale).length() /
+      15;
 
-        this.glass.rotation.y += (z_rotation - this.glass.rotation.y) / 4;
-
-        let scale =
-          new THREE.Vector3()
-            .copy(new Vector3(...this.target_points.left))
-            .sub(new Vector3(...this.target_points.right))
-            .length() / 15;
-        let center = new THREE.Vector3()
-          .copy(new Vector3(...this.target_points.left))
-          .add(new Vector3(...this.target_points.right))
-          .multiplyScalar(0.5);
-        this.glass.position.copy(center);
-        this.glass.translateY(4 + 3 * (this.width / this.height));
-        this.glass.translateZ(-(2 + 0.5 * (this.width / this.height)));
-        this.glass.scale.set(scale, scale, scale);
-      });
-    }
+    let center = this.target_points.center_x;
+    this.glass_wrapper.position.copy(center);
+    this.glass_wrapper.scale.set(scale, scale, scale);
   }
 
   drawScene(predictions) {
-    if (!this.ready) {
+    if (!this.ready || !predictions.length) {
       return;
     }
-    this.drawGlass(predictions);
+
+    this.target_points.top = predictions[0].keypoints[168];
+    this.target_points.bottom = predictions[0].keypoints[164];
+    this.target_points.left = predictions[0].keypoints[130];
+    this.target_points.right = predictions[0].keypoints[359];
+
+    this.target_points.center_x = this.normalize_vec(
+      predictions[0].keypoints[168]
+    );
+    this.drawGlass();
   }
 
   get viewSize() {
