@@ -2,19 +2,13 @@ import "./App.css";
 import Webcam from "react-webcam";
 import { useRef, useEffect, useState } from "react";
 import * as faceMesh from "@mediapipe/face_mesh";
-import '@tensorflow-models/face-detection';
-import '@tensorflow/tfjs-backend-webgl';
-import * as tfjsWasm from '@tensorflow/tfjs-backend-wasm';
-import * as FaceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
+
+import "@tensorflow-models/face-detection";
 import Scene from "./Scene.js";
 
-tfjsWasm.setWasmPaths(
-    `https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm@${
-        tfjsWasm.version_wasm}/dist/`);
+import "@tensorflow/tfjs-backend-webgl";
 
-
-
-
+import * as FaceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
 function App() {
   const webcamRef = useRef(null);
   const appDivRef = useRef(null);
@@ -23,18 +17,26 @@ function App() {
 
   const runFacemesh = async () => {
     const model = FaceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
+    let detector;
 
     const detectorConfig = {
-      runtime: "tfjs", // or 'tfjs'
+      runtime: "tfjs",
+      refineLandmarks: false,
+      triangulateMesh: false,
+      maxFaces: 1,
       solutionPath: `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@${faceMesh.VERSION}`,
     };
 
-    const detector = await FaceLandmarksDetection.createDetector(
-      model,
-      detectorConfig
-    );
+    try {
+      detector = await FaceLandmarksDetection.createDetector(
+        model,
+        detectorConfig
+      );
+    } catch (e) {
+      alert(e);
+    }
     // const net = await facemesh.load();
-
+    if(detector)
     setInterval(() => {
       detect(detector);
     }, 1);
@@ -65,7 +67,9 @@ function App() {
       videoHeight
     );
 
-    if (!scene.created) scene.setUp(appDivRef.current);
+    if (!scene.created) {
+      scene.setUp(appDivRef.current, webcamRef.current.video);
+    }
     if (scene.created && face.length > 0) {
       scene.drawScene(face);
     }
