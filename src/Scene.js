@@ -52,7 +52,6 @@ export default class Scene {
 
     let initialInstallationOfModels = async () => {
       this.setUpHeadWrapper();
-      await this.updateGlasses();
       await this.setUpHead();
       
       this.ready = true;
@@ -76,11 +75,10 @@ export default class Scene {
     this.head_wrapper.add(this.glasses_wrapper)
   }
 
-  async updateGlasses() {
+  async updateGlasses(id) {
     this.glasses_wrapper.clear();
     
-    this.glasses_controller.active_glass =
-        this.glasses_controller.glasses_list[1].id;
+    this.glasses_controller.active_glass = id;
 
     await this.glasses_controller.glasses_loading_promise;
 
