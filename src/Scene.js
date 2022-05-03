@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { Vector3 } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GlassesController } from "./controllers/GlassesController";
 
 export default class Scene {
   created = false;
@@ -15,6 +16,8 @@ export default class Scene {
     this.videoWidth = videoWidth;
     this.videoHeight = videoHeight;
   }
+
+  glasses_controller = new GlassesController();
 
   async loadGlass() {
     const fbxLoader = new FBXLoader();
@@ -39,22 +42,27 @@ export default class Scene {
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.renderer.setSize(this.width, this.height);
-    
+
     this.canvas = this.renderer.domElement;
-    
+
     parent.appendChild(this.canvas);
-    
+
     this.setUpGlass().then(async () => {
       await this.setUpHead();
 
       this.ready = true;
     });
-    
+
     this.created = true;
   }
 
   async setUpGlass() {
-    this.glass = await this.loadGlass();
+    this.glasses_controller.active_glass =
+      this.glasses_controller.glasses_list[0].id;
+
+    await this.glasses_controller.glasses_loading_promise;
+
+    this.glass = this.glasses_controller.active_glass.model;
 
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshBasicMaterial({
