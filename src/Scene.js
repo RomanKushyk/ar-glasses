@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { Mesh } from "three";
 import { Vector3 } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -28,7 +29,7 @@ export default class Scene {
     return model;
   }
 
-  setUp(parent, video) {
+  setUpScene(parent, video) {
     this.video = video;
     this.camera = new THREE.PerspectiveCamera(
       1,
@@ -47,37 +48,48 @@ export default class Scene {
 
     parent.appendChild(this.canvas);
 
-    this.setUpGlass().then(async () => {
-      await this.setUpHead();
-
-      this.ready = true;
-    });
-
     this.created = true;
+
+    let initialInstallationOfModels = async () => {
+      this.setUpHeadWrapper();
+      await this.updateGlasses();
+      await this.setUpHead();
+      
+      this.ready = true;
+    };
+
+    initialInstallationOfModels();
   }
 
-  async setUpGlass() {
-    this.glasses_controller.active_glass =
-      this.glasses_controller.glasses_list[0].id;
-
-    await this.glasses_controller.glasses_loading_promise;
-
-    this.glass = this.glasses_controller.active_glass.model;
-
+  setUpHeadWrapper() {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshBasicMaterial({
       color: 0x0000ff,
       transparent: true,
       opacity: 0,
     });
-    this.glass_wrapper = new THREE.Mesh(geometry, material);
 
-    this.glass.position.y = 13;
-    this.glass.position.z = -4.5;
-    this.glass.position.x = -0.7;
-    this.glass.scale.set(0.8, 0.8, 0.8);
-    this.scene.add(this.glass_wrapper);
-    this.glass_wrapper.add(this.glass);
+    this.head_wrapper = new THREE.Mesh(geometry, material);
+    this.scene.add(this.head_wrapper);
+
+    this.glasses_wrapper = new THREE.Mesh();
+    this.head_wrapper.add(this.glasses_wrapper)
+  }
+
+  async updateGlasses() {
+    this.glasses_wrapper.clear();
+    
+    this.glasses_controller.active_glass =
+        this.glasses_controller.glasses_list[1].id;
+
+    await this.glasses_controller.glasses_loading_promise;
+
+    this.glasses_state = this.glasses_controller.active_glass;
+    this.glasses = this.glasses_controller.active_glass.model;
+
+    this.glasses.position.set(...this.glasses_state.options.position)
+    this.glasses.scale.set(...this.glasses_state.options.scale);
+    this.glasses_wrapper.add(this.glasses);
   }
 
   target_points = {
@@ -176,13 +188,13 @@ export default class Scene {
     this.gide_lines.z_x.x = this.gide_lines.x.x;
     this.gide_lines.z_x.y = 0;
     this.gide_lines.z_x.z = this.gide_lines.x.z;
-    this.glass_wrapper.rotation.z =
+    this.head_wrapper.rotation.z =
       this.gide_lines.z_x.angleTo(this.axis.z) - Math.PI / 1.9;
 
     this.gide_lines.y_z.x = 0;
     this.gide_lines.y_z.y = this.gide_lines.y.y;
     this.gide_lines.y_z.z = this.gide_lines.y.z;
-    this.glass_wrapper.rotation.x =
+    this.head_wrapper.rotation.x =
       -(this.target_points.top.z > this.target_points.bottom.z ? 1 : -1) *
         -this.gide_lines.y_z.angleTo(this.axis.y) +
       Math.PI * 0.5;
@@ -190,7 +202,7 @@ export default class Scene {
     this.gide_lines.x_y.x = this.gide_lines.x.x;
     this.gide_lines.x_y.y = this.gide_lines.x.y;
     this.gide_lines.x_y.z = 0;
-    this.glass_wrapper.rotation.y =
+    this.head_wrapper.rotation.y =
       (this.target_points.left.y > this.target_points.right.y ? 1 : -1) *
         this.gide_lines.x_y.angleTo(this.axis.x) +
       Math.PI;
@@ -202,10 +214,10 @@ export default class Scene {
     let scale =
       new THREE.Vector3().copy(left_for_scale).sub(right_for_scale).length() /
       15;
-    this.glass_wrapper.scale.set(scale, scale, scale);
+    this.head_wrapper.scale.set(scale, scale, scale);
 
     let center = this.target_points.center_x;
-    this.glass_wrapper.position.copy(center);
+    this.head_wrapper.position.copy(center);
   }
 
   async setUpHead() {
@@ -233,6 +245,7 @@ export default class Scene {
         uniform sampler2D txt;
         void main() {
           vec4 color = texture2D(txt, vUv);
+          vec4 helper = mix(vec4(1., 1., 1., 1.), color, 0.5);
           gl_FragColor = color;
         }
       `,
@@ -240,15 +253,14 @@ export default class Scene {
 
     this.head.material = material;
 
-    this.head.scale.set(2.1, 2, 2);
+    this.head.scale.set(2, 2, 2.2);
     this.head.rotateX(-Math.PI / 2 - Math.PI / 24);
     this.head.rotateY(Math.PI);
 
-    this.head.translateX(0.5);
-    this.head.translateZ(3.5);
+    this.head.translateZ(20);
     // this.head.translateY(-30);
 
-    this.glass.add(this.head);
+    this.head_wrapper.add(this.head);
   }
 
   drawScene(predictions) {

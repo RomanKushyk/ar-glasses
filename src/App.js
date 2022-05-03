@@ -68,7 +68,7 @@ function App() {
     );
 
     if (!scene.created) {
-      scene.setUp(appDivRef.current, webcamRef.current.video);
+      scene.setUpScene(appDivRef.current, webcamRef.current.video);
     }
     if (scene.created && face.length > 0) {
       scene.drawScene(face);
