@@ -38,7 +38,7 @@ const detect = async (detector, scene, appDivRef, webcamRef, cb) => {
   }
 };
 
-export default async (scene, appDivRef, webcamRef, cb) => {
+export default async (scene, refs) => {
   const model = FaceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
   let detector;
 
@@ -56,11 +56,12 @@ export default async (scene, appDivRef, webcamRef, cb) => {
       detectorConfig
     );
   } catch (e) {
-    alert(e);
+    console.error(e)
   }
 
   let draw = () => {
-    if (detector) detect(detector, scene, appDivRef, webcamRef, cb);
+    if (refs.appDivRef && refs.webcamRef && refs.cb && detector)
+      detect(detector, scene, refs.appDivRef, refs.webcamRef, refs.cb);
     requestAnimationFrame(draw);
   };
   draw();

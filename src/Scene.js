@@ -53,7 +53,7 @@ export default class Scene {
     let initialInstallationOfModels = async () => {
       this.setUpHeadWrapper();
       await this.setUpHead();
-      
+
       this.ready = true;
     };
 
@@ -71,23 +71,58 @@ export default class Scene {
     this.head_wrapper = new THREE.Mesh(geometry, material);
     this.scene.add(this.head_wrapper);
 
-    this.glasses_wrapper = new THREE.Mesh();
-    this.head_wrapper.add(this.glasses_wrapper)
+    this.glasses_wrapper = new THREE.Object3D();
+    this.head_wrapper.add(this.glasses_wrapper);
   }
 
   async updateGlasses(id) {
-    this.glasses_wrapper.clear();
-    
     this.glasses_controller.active_glass = id;
 
+    if(!this.glasses_controller.active_glass.loaded)
     await this.glasses_controller.glasses_loading_promise;
 
-    this.glasses_state = this.glasses_controller.active_glass;
-    this.glasses = this.glasses_controller.active_glass.model;
+    this.glasses_wrapper.children.forEach((glasses) => {
+      glasses.visible = false;
+    });
 
-    this.glasses.position.set(...this.glasses_state.options.position)
-    this.glasses.scale.set(...this.glasses_state.options.scale);
-    this.glasses_wrapper.add(this.glasses);
+    this.glasses_wrapper.traverse((element) => {
+      if (element.material) {
+        if (element.material.length) {
+          for (let i = 0; i < element.material.length; ++i) {
+            element.material[i].dispose();
+          }
+        } else {
+          element.material.dispose();
+        }
+      }
+      if (element.geometry) element.geometry.dispose();
+    });
+
+    this.renderer.renderLists.dispose()
+
+
+    this.glasses_state = this.glasses_controller.active_glass;
+
+    let compute_glasses_name = (id) => "glasses_" + id;
+    if (
+      !this.glasses_wrapper.getObjectByName(
+        compute_glasses_name(this.glasses_state.id)
+      )
+    ) {
+      this.glasses = this.glasses_state.model;
+
+      this.glasses.position.set(...this.glasses_state.options.position);
+      this.glasses.scale.set(...this.glasses_state.options.scale);
+      this.glasses.name = compute_glasses_name(this.glasses_state.id);
+      this.glasses_wrapper.add(this.glasses);
+    } else {
+      this.glasses = this.glasses_wrapper.getObjectByName(
+        compute_glasses_name(this.glasses_state.id)
+      );
+      this.glasses_wrapper.getObjectByName(
+        compute_glasses_name(this.glasses_state.id)
+      ).visible = true;
+    }
   }
 
   target_points = {

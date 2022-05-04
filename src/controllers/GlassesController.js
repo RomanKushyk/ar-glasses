@@ -12,22 +12,21 @@ export class GlassesController {
   set active_glass(id) {
     if (this._active_glass_id !== id) {
       this._active_glass_id = id;
-
       let glass = this.glasses_list.find((glass_state) => glass_state.id == id);
 
-      this.glasses_loading_promise = new Promise((resolve, reject) => {
-        fbxLoader
-          .loadAsync(glass.file_path)
-          .then((model) => {
-            glass.model = model;
-            glass.loaded = true;
+      this.glasses_loading_promise = new Promise(async (resolve, reject) => {
+        if (!glass.loaded) {
+          glass.model = await fbxLoader
+            .loadAsync(glass.file_path)
+            .catch((err) => {
+              glass.error = err;
+              reject(err);
+            });
 
-            resolve(glass);
-          })
-          .catch((err) => {
-            glass.error = err;
-            reject(err);
-          });
+          glass.loaded = true;
+        }
+
+        resolve();
       });
     }
   }
@@ -42,12 +41,10 @@ export class GlassesController {
     );
   }
 
-  _glasses_list = [
+  glasses_list = [
     {
       id: 0,
       file_path: "assets/Glasses/01/01%20-%20Model.fbx",
-      opacity: 0,
-      visibility: false,
       loaded: false,
       error: false,
       model: undefined,
@@ -59,8 +56,6 @@ export class GlassesController {
     {
       id: 1,
       file_path: "assets/Glasses/02/02%20-%20Model.fbx",
-      opacity: 0,
-      visibility: false,
       loaded: false,
       error: false,
       model: undefined,
@@ -70,8 +65,4 @@ export class GlassesController {
       },
     },
   ];
-
-  get glasses_list() {
-    return this._glasses_list;
-  }
 }
