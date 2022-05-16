@@ -1,33 +1,23 @@
 import "./App.css";
 import Webcam from "react-webcam";
 import { useRef, useEffect, useState } from "react";
-import { observer } from "mobx-react-lite";
 
-import Scene from "./scene/Scene.js";
 import runFacemesh from "./utils/tf_setup";
+import Scene from "./scene/Scene.js";
+import store, { StoreContext } from "./store/Store.ts";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
-import Store from "./store/Store.ts";
+import Preloader from "./components/Preloader/Preloader";
 
-const scene = new Scene();
-const store = new Store();
-
-let refs = {
+let TFSetupOptions = {
+  scene: store.scene,
   webcamRef: null,
   appDivRef: null,
   cb: null,
 };
 
-runFacemesh(scene, refs, () => {
+runFacemesh(TFSetupOptions, () => {
   store.updateReadyState(true);
-});
-
-const Preloader = observer(({ store }) => {
-  return (
-    <div
-      className={"preloader " + (!store.ready ? "preloader_active" : "")}
-    >Loading...</div>
-  );
 });
 
 function App() {
@@ -35,8 +25,8 @@ function App() {
   const appDivRef = useRef(null);
 
   useEffect(() => {
-    refs.appDivRef = appDivRef;
-    refs.webcamRef = webcamRef;
+    TFSetupOptions.appDivRef = appDivRef;
+    TFSetupOptions.webcamRef = webcamRef;
   });
 
   const [glasses_state, updateGlassesState] = useState({
@@ -44,32 +34,20 @@ function App() {
     list: [],
   });
 
-  let changeActiveGlasses = (id) => {
-    updateGlassesState({
-      active: id,
-      list: scene.glasses_controller.glasses_list,
-    });
-    scene.updateGlasses(id);
-  };
-
-  refs.cb = () => {
-    updateGlassesState({
-      active: scene.glasses_controller.glasses_list[0].id,
-      list: scene.glasses_controller.glasses_list,
-    });
-
-    scene.updateGlasses(scene.glasses_controller.glasses_list[0].id);
+  TFSetupOptions.cb = async () => {
+    store.updateGlassesList();
+    store.newActiveGlasses(store.glasses.list[0].id);
+    store.newReadyState(true);
   };
 
   return (
     <div className="App" ref={appDivRef}>
       <Preloader store={store} />
+
       <Webcam ref={webcamRef} className="webcam"></Webcam>
-      <ControlPanel
-        onGlassesClick={changeActiveGlasses}
-        glasses={glasses_state.list}
-        active_glasses={glasses_state.active}
-      />
+      <StoreContext.Provider value={store}>
+        <ControlPanel />
+      </StoreContext.Provider>
     </div>
   );
 }

@@ -28,7 +28,7 @@ export default class Scene {
     return model;
   }
 
-  setUpScene(parent, video, onReady) {
+  setUpScene(parent, video) {
     this.video = video;
     this.camera = new THREE.PerspectiveCamera(
       1,
@@ -55,7 +55,6 @@ export default class Scene {
       await this.setUpHead();
 
       this.ready = true;
-      onReady();
     };
 
     initialInstallationOfModels();
@@ -110,7 +109,6 @@ export default class Scene {
       )
     ) {
       this.glasses = this.glasses_state.model;
-      console.log(this.glasses_state);
       this.glasses
         .getObjectByName(this.glasses_state.glass_group.name)
         .traverse((obj) => {

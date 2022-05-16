@@ -1,19 +1,24 @@
 import { useRef, useEffect, useState } from "react";
 import "./control-panel.css";
+import { observer } from "mobx-react-lite";
+import { useContext, createContext } from "react";
 
-function App(props) {
+import {StoreContext} from "../../store/Store.ts";
+
+const ControlPanel = observer(() => {
+  const store = useContext(StoreContext);
   let glasses = [];
 
-  props.glasses.forEach((element) => {
+  store.glasses.list.forEach((element) => {
     glasses.push(
       <div
         key={element.id}
         onClick={() => {
-          props.onGlassesClick(element.id);
+          store.newActiveGlasses(element.id);
         }}
         className={
           "control-panel__button" +
-          (element.id == props.active_glasses
+          (element.id == store.glasses.active_glasses
             ? " control-panel__button_active"
             : "")
         }
@@ -31,6 +36,6 @@ function App(props) {
       </div>
     </div>
   );
-}
+});
 
-export default App;
+export default ControlPanel;
