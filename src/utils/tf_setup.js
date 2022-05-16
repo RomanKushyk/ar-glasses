@@ -3,7 +3,7 @@ import "@tensorflow-models/face-detection";
 import "@tensorflow/tfjs-backend-webgl";
 import * as FaceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
 
-const detect = async (detector, scene, appDivRef, webcamRef, cb) => {
+const detect = async (detector, scene, appDivRef, webcamRef, cb, onReady) => {
   if (typeof webcamRef.current == "undefined" || webcamRef.current == null) {
     return;
   }
@@ -29,7 +29,7 @@ const detect = async (detector, scene, appDivRef, webcamRef, cb) => {
   );
 
   if (!scene.created) {
-    scene.setUpScene(appDivRef.current, webcamRef.current.video);
+    scene.setUpScene(appDivRef.current, webcamRef.current.video, onReady);
     cb();
   }
 
@@ -38,7 +38,7 @@ const detect = async (detector, scene, appDivRef, webcamRef, cb) => {
   }
 };
 
-export default async (scene, refs) => {
+export default async (scene, refs, onReady) => {
   const model = FaceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
   let detector;
 
@@ -61,7 +61,7 @@ export default async (scene, refs) => {
 
   let draw = () => {
     if (refs.appDivRef && refs.webcamRef && refs.cb && detector)
-      detect(detector, scene, refs.appDivRef, refs.webcamRef, refs.cb);
+      detect(detector, scene, refs.appDivRef, refs.webcamRef, refs.cb, onReady);
     requestAnimationFrame(draw);
   };
   draw();

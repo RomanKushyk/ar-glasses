@@ -1,13 +1,16 @@
 import "./App.css";
 import Webcam from "react-webcam";
 import { useRef, useEffect, useState } from "react";
+import { observer } from "mobx-react-lite";
 
 import Scene from "./scene/Scene.js";
 import runFacemesh from "./utils/tf_setup";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
+import Store from "./store/Store.ts";
 
 const scene = new Scene();
+const store = new Store();
 
 let refs = {
   webcamRef: null,
@@ -15,7 +18,17 @@ let refs = {
   cb: null,
 };
 
-runFacemesh(scene, refs, refs.cb);
+runFacemesh(scene, refs, () => {
+  store.updateReadyState(true);
+});
+
+const Preloader = observer(({ store }) => {
+  return (
+    <div
+      className={"preloader " + (!store.ready ? "preloader_active" : "")}
+    >Loading...</div>
+  );
+});
 
 function App() {
   const webcamRef = useRef(null);
@@ -24,7 +37,7 @@ function App() {
   useEffect(() => {
     refs.appDivRef = appDivRef;
     refs.webcamRef = webcamRef;
-  })
+  });
 
   const [glasses_state, updateGlassesState] = useState({
     active: undefined,
@@ -50,6 +63,7 @@ function App() {
 
   return (
     <div className="App" ref={appDivRef}>
+      <Preloader store={store} />
       <Webcam ref={webcamRef} className="webcam"></Webcam>
       <ControlPanel
         onGlassesClick={changeActiveGlasses}

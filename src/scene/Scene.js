@@ -28,7 +28,7 @@ export default class Scene {
     return model;
   }
 
-  setUpScene(parent, video) {
+  setUpScene(parent, video, onReady) {
     this.video = video;
     this.camera = new THREE.PerspectiveCamera(
       1,
@@ -55,6 +55,7 @@ export default class Scene {
       await this.setUpHead();
 
       this.ready = true;
+      onReady();
     };
 
     initialInstallationOfModels();
