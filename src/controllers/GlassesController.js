@@ -52,6 +52,9 @@ export class GlassesController {
         position: [-0.7, 12, -4.5],
         scale: [0.8, 0.8, 0.8],
       },
+      glass_group: {
+        name: "Default"
+      }
     },
     {
       id: 1,
@@ -63,6 +66,9 @@ export class GlassesController {
         position: [-0, 7, 0],
         scale: [0.41, 0.41, 0.41],
       },
+      glass_group: {
+        name: 'Lights'
+      }
     },
   ];
 }

@@ -2,7 +2,7 @@ import "./App.css";
 import Webcam from "react-webcam";
 import { useRef, useEffect, useState } from "react";
 
-import Scene from "./Scene.js";
+import Scene from "./scene/Scene.js";
 import runFacemesh from "./utils/tf_setup";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";

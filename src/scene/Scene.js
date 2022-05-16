@@ -1,9 +1,8 @@
 import * as THREE from "three";
-import { Mesh } from "three";
 import { Vector3 } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { GlassesController } from "./controllers/GlassesController";
+import { GlassesController } from "../controllers/GlassesController";
 
 export default class Scene {
   created = false;
@@ -110,6 +109,12 @@ export default class Scene {
       )
     ) {
       this.glasses = this.glasses_state.model;
+      console.log(this.glasses_state)
+      this.glasses.getObjectByName(this.glasses_state.glass_group.name).traverse((obj) => {
+        if(obj.material){
+          obj.material.opacity = 0.5;
+        }
+      })
 
       this.glasses.position.set(...this.glasses_state.options.position);
       this.glasses.scale.set(...this.glasses_state.options.scale);
