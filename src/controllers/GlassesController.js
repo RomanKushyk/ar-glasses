@@ -63,7 +63,7 @@ export class GlassesController {
       error: false,
       model: undefined,
       options: {
-        position: [-0, 7, 0],
+        position: [-0.5, 7.5, -1],
         scale: [0.41, 0.41, 0.41],
       },
       glass_group: {
