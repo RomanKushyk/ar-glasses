@@ -50,6 +50,7 @@ export default class Scene {
     this.created = true;
 
     let initialInstallationOfModels = async () => {
+      this.setUpVideoMaterial();
       this.setUpHeadWrapper();
       await this.setUpHead();
 
@@ -77,8 +78,8 @@ export default class Scene {
   async updateGlasses(id) {
     this.glasses_controller.active_glass = id;
 
-    if(!this.glasses_controller.active_glass.loaded)
-    await this.glasses_controller.glasses_loading_promise;
+    if (!this.glasses_controller.active_glass.loaded)
+      await this.glasses_controller.glasses_loading_promise;
 
     this.glasses_wrapper.children.forEach((glasses) => {
       glasses.visible = false;
@@ -97,8 +98,7 @@ export default class Scene {
       if (element.geometry) element.geometry.dispose();
     });
 
-    this.renderer.renderLists.dispose()
-
+    this.renderer.renderLists.dispose();
 
     this.glasses_state = this.glasses_controller.active_glass;
 
@@ -109,12 +109,14 @@ export default class Scene {
       )
     ) {
       this.glasses = this.glasses_state.model;
-      console.log(this.glasses_state)
-      this.glasses.getObjectByName(this.glasses_state.glass_group.name).traverse((obj) => {
-        if(obj.material){
-          obj.material.opacity = 0.5;
-        }
-      })
+      console.log(this.glasses_state);
+      this.glasses
+        .getObjectByName(this.glasses_state.glass_group.name)
+        .traverse((obj) => {
+          if (obj.material) {
+            obj.material.opacity = 0.5;
+          }
+        });
 
       this.glasses.position.set(...this.glasses_state.options.position);
       this.glasses.scale.set(...this.glasses_state.options.scale);
@@ -258,16 +260,11 @@ export default class Scene {
     this.head_wrapper.position.copy(center);
   }
 
-  async setUpHead() {
-    const loader = new GLTFLoader();
-    const model = await loader.loadAsync("./assets/head.glb");
-
-    this.head = model.scene.children[0];
-
-    const texture = new THREE.VideoTexture(this.video);
-    const material = new THREE.ShaderMaterial({
+  setUpVideoMaterial() {
+    this.video_texture = new THREE.VideoTexture(this.video);
+    this.video_material = new THREE.ShaderMaterial({
       uniforms: {
-        txt: texture,
+        txt: this.video_texture,
       },
       vertexShader: `
         varying vec2 vUv;
@@ -288,15 +285,23 @@ export default class Scene {
         }
       `,
     });
+  }
 
-    this.head.material = material;
+  video_material = undefined;
+  video_texture = undefined;
+
+  async setUpHead() {
+    const model_geometry = new THREE.PlaneGeometry(50, 50);
+
+    this.head = new THREE.Mesh(model_geometry, this.video_material);
+
+    this.head.material = this.video_material;
 
     this.head.scale.set(2, 2, 2.2);
     this.head.rotateX(-Math.PI / 2 - Math.PI / 24);
     this.head.rotateY(Math.PI);
 
-    this.head.translateZ(20);
-    // this.head.translateY(-30);
+    this.head.translateZ(-5);
 
     this.head_wrapper.add(this.head);
   }
