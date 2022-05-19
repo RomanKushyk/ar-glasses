@@ -3,7 +3,8 @@ import "./control-panel.css";
 import { observer } from "mobx-react-lite";
 import { useContext, createContext } from "react";
 
-import {StoreContext} from "../../store/Store.ts";
+import { StoreContext } from "../../store/Store.ts";
+import { saveSnapshotFromCanvas } from "../../utils/saveSnapshotFromCanvas.ts";
 
 const ControlPanel = observer(() => {
   const store = useContext(StoreContext);
@@ -31,7 +32,12 @@ const ControlPanel = observer(() => {
   return (
     <div className="control-panel">
       <div className="control-panel__glasses">{glasses}</div>
-      <div className="control-panel__button control-panel__screenshot">
+      <div
+        className="control-panel__button control-panel__screenshot"
+        onClick={() => {
+          saveSnapshotFromCanvas(store.scene.canvas, store.scene.video);
+        }}
+      >
         <i className="fa-solid fa-camera-retro"></i>
       </div>
     </div>
