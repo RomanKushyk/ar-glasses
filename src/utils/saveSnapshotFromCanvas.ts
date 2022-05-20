@@ -1,3 +1,5 @@
+import {saveFromUrl} from './saveFromUrl';
+
 type SaveSnapshotFromCanvas = (canvas: HTMLCanvasElement, video: HTMLVideoElement) => void;
 
 export const saveSnapshotFromCanvas: SaveSnapshotFromCanvas = (canvas, video) => {
@@ -24,19 +26,5 @@ export const saveSnapshotFromCanvas: SaveSnapshotFromCanvas = (canvas, video) =>
   resultCanvasContext.drawImage(video, offsetX, correctedY, scaledVideoWidth, scaledVideoHeight);
   resultCanvasContext.drawImage(canvas, 0, 0, video.offsetWidth, video.offsetHeight);
 
-  saveFile(resulCanvas.toDataURL(strMime), 'snapshot.jpg');
-};
-
-type SaveFile = (strData: string, fileName: string) => void;
-
-const saveFile: SaveFile = (strData, fileName) => {
-  const link = document.createElement('a');
-
-  if (typeof link.download === 'string') {
-    document.body.appendChild(link);
-    link.download = fileName;
-    link.href = strData;
-    link.click();
-    document.body.removeChild(link);
-  }
+  saveFromUrl(resulCanvas.toDataURL(strMime), 'snapshot.jpg');
 };
