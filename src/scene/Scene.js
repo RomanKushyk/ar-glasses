@@ -40,7 +40,11 @@ export default class Scene {
 
     this.scene = new THREE.Scene();
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      preserveDrawingBuffer: true,
+    });
     this.renderer.setSize(this.width, this.height);
 
     this.canvas = this.renderer.domElement;
