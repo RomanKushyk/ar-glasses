@@ -1,10 +1,11 @@
-import {saveFromUrl} from './saveFromUrl';
+import { saveFromUrl } from './saveFromUrl.ts';
+import { WebGLRenderer } from 'three';
 
-type SaveSnapshotFromCanvas = (canvas: HTMLCanvasElement, video: HTMLVideoElement) => void;
+type SaveSnapshotFromCanvas = (canvas: WebGLRenderer.domElement, video: HTMLVideoElement) => void;
 
 export const saveSnapshotFromCanvas: SaveSnapshotFromCanvas = (canvas, video) => {
   let scale: number;
-  const strMime = 'image/png';
+  const strMime = 'image/jpeg';
 
   const resulCanvas = document.createElement('canvas');
   resulCanvas.width = canvas.offsetWidth;

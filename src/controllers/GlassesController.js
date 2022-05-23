@@ -1,10 +1,12 @@
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+import { glasses_list } from '../consts/glasses.ts';
 
 const fbxLoader = new FBXLoader();
 
 export class GlassesController {
   constructor() {}
 
+  glasses_list = glasses_list;
   glasses_loading_promise = undefined;
 
   _active_glass_id = undefined;
@@ -40,35 +42,4 @@ export class GlassesController {
       (glass_state) => glass_state.id == this._active_glass_id
     );
   }
-
-  glasses_list = [
-    {
-      id: 0,
-      file_path: "assets/Glasses/01/01%20-%20Model.fbx",
-      loaded: false,
-      error: false,
-      model: undefined,
-      options: {
-        position: [-0.7, 12, -4.5],
-        scale: [0.8, 0.8, 0.8],
-      },
-      glass_group: {
-        name: "Default"
-      }
-    },
-    {
-      id: 1,
-      file_path: "assets/Glasses/02/02%20-%20Model.fbx",
-      loaded: false,
-      error: false,
-      model: undefined,
-      options: {
-        position: [-0.5, 7.5, -1],
-        scale: [0.41, 0.41, 0.41],
-      },
-      glass_group: {
-        name: 'Lights'
-      }
-    },
-  ];
 }
