@@ -1,5 +1,5 @@
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import { glasses_list } from '../const/glasses.ts';
+import { glasses_list } from '../consts/glasses.ts';
 
 const fbxLoader = new FBXLoader();
 

@@ -1,9 +1,6 @@
 import * as THREE from 'three';
-import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
-import {glasses_list} from '../const/glasses';
-
-type Glasses = typeof glasses_list[1];
-
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { Glasses } from '../interfaces/consts/Glasses';
 
 export const getPngFromFbx = (glasses: Glasses) => {
   return new Promise(async (resolve: any, reject: any) => {
@@ -30,10 +27,8 @@ export const getPngFromFbx = (glasses: Glasses) => {
       preserveDrawingBuffer: true,
     });
     renderer.setSize(sizes.width, sizes.height);
-    // renderer.setClearColor(0x808080, 0.5);
     document.body.appendChild(renderer.domElement);
     const canvas = renderer.domElement;
-    document.body.append(renderer.domElement); // !!!
 
     const fbxLoader = new FBXLoader();
     let object = await fbxLoader.loadAsync(glasses.file_path);
@@ -47,7 +42,6 @@ export const getPngFromFbx = (glasses: Glasses) => {
             obj.visible = false;
           }
         });
-    console.log(object);
     scene.add(object);
 
     renderer.render(scene, camera);
