@@ -1,4 +1,4 @@
-import "./App.css";
+import "./App.scss";
 import Webcam from "react-webcam";
 import { useRef, useEffect, useState } from "react";
 

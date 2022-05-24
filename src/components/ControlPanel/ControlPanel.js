@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import "./control-panel.css";
+import "./control-panel.scss";
 import { observer } from "mobx-react-lite";
 import { useContext, createContext } from "react";
 
@@ -24,7 +24,11 @@ const ControlPanel = observer(() => {
             : "")
         }
       >
-        {element.id}
+        <img
+          alt={element.id.toString()}
+          src={element.preview_file_path}
+          className="control-panel__img-preview"
+        />
       </div>
     );
   });
