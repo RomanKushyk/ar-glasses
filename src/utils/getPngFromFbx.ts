@@ -27,8 +27,8 @@ export const getPngFromFbx = (glasses: Glasses) => {
       preserveDrawingBuffer: true,
     });
     renderer.setSize(sizes.width, sizes.height);
-    document.body.appendChild(renderer.domElement);
     const canvas = renderer.domElement;
+    document.body.appendChild(canvas); // !!!
 
     const fbxLoader = new FBXLoader();
     let object = await fbxLoader.loadAsync(glasses.file_path);
@@ -36,12 +36,15 @@ export const getPngFromFbx = (glasses: Glasses) => {
     object.position.set(...glasses.snapshot_options.position);
     object.scale.set(...glasses.snapshot_options.scale);
     object.rotation.set(...glasses.snapshot_options.rotation);
-    object.getObjectByName(glasses.snapshot_options.bracketsName)
-        .traverse((obj) => {
-          if (obj.visible) {
-            obj.visible = false;
-          }
-        });
+    glasses.snapshot_options.bracketsItemsNames.forEach(name => {
+      object.getObjectByName(name)
+          .traverse((obj) => {
+            if (obj.visible) {
+              obj.visible = false;
+            }
+          });
+    });
+    console.log(object); // !!!
     scene.add(object);
 
     renderer.render(scene, camera);

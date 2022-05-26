@@ -1,13 +1,14 @@
 import { action, makeObservable, observable } from "mobx";
 import Scene from "../scene/Scene";
 import { createContext } from "react";
+import {Glasses} from '../interfaces/consts/Glasses';
 
 class Store {
   ready: boolean = false;
   scene: Scene = new Scene();
   glasses: {
     active_glasses: undefined | number;
-    list: Array<any>;
+    list: Array<Glasses>;
   } = {
     active_glasses: undefined,
     list: [],

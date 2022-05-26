@@ -1,0 +1,36 @@
+.App {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+canvas {
+  z-index: 100 !important;
+  position: absolute;
+}
+
+.webcam {
+  position: absolute;
+  object-fit: cover;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100vw;
+  min-height: 100vh;
+}
+
+.preloader {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(0, 0, 0);
+  position: fixed;
+  top: -100vh;
+  left: 0;
+  z-index: 2000;
+  transition: 1.5s;
+
+  &_active{
+     top: 0;
+  }
+}
