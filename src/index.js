@@ -7,17 +7,20 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { NotFound } from "./components/NotFound/NotFound";
 import { AdminPage } from "./components/AdminPage/AdminPage";
+import store, { StoreContext } from "./store/Store.ts";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="admin" element={<AdminPage />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <StoreContext.Provider value={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<App/>} />
+          <Route path='admin' element={<AdminPage/>} />
+          <Route path='*' element={<NotFound/>} />
+        </Routes>
+      </BrowserRouter>
+    </StoreContext.Provider>
   </React.StrictMode>
 );
 

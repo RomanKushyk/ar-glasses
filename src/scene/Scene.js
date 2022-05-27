@@ -24,7 +24,7 @@ export default class Scene {
   async loadGlass() {
     const fbxLoader = new FBXLoader();
     const model = await fbxLoader.loadAsync(
-      "assets/Glasses/01/01%20-%20Model.fbx"
+      "assets/Glasses/01/01 - Model.fbx"
     );
 
     return model;
