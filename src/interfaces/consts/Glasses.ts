@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 export interface Glasses {
     id: number,
+    name: string,
     file_path: string,
     preview_file_path: string,
     loaded: boolean,

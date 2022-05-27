@@ -45,9 +45,8 @@ function App() {
       <Preloader store={store} />
 
       <Webcam ref={webcamRef} className="webcam"/>
-      <StoreContext.Provider value={store}>
-        <ControlPanel />
-      </StoreContext.Provider>
+
+      <ControlPanel />
     </div>
   );
 }
