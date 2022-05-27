@@ -1,12 +1,14 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
+    "jsx": "react",
     "baseUrl": "src/",
     "build": false,
     "composite": true,
     "lib": ["es5", "es6", "es2015.promise", "es2016.array.include", "DOM"],
     "allowJs": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "esModuleInterop": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
