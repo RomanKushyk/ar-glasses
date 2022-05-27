@@ -9,8 +9,8 @@ import {
   Routes,
   Route
 } from 'react-router-dom';
-import { AdminPage } from './pages/AdminPage';
-import { NotFound } from './components/NotFound';
+import { AdminPage } from './pages/AdminPage/AdminPage';
+import { NotFound } from './components/NotFound/NotFound';
 import {EditGlasses} from './components/EditGlasses/EditGlasses';
 import {Protected} from './routes/Protected';
 import {AddNewGlasses} from './components/AddNewGlasses/AddNewGlasses';
