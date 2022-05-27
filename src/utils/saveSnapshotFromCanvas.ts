@@ -1,3 +1,4 @@
+// @ts-ignore
 import { saveFromUrl } from './saveFromUrl.ts';
 import { WebGLRenderer } from 'three';
 
