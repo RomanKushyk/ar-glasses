@@ -16,7 +16,7 @@ let TFSetupOptions = {
 };
 
 runFacemesh(TFSetupOptions, () => {
-  store.updateReadyState(true);
+  store.newReadyState(true);
 });
 
 function App() {
