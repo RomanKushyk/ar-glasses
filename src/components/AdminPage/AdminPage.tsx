@@ -1,60 +1,50 @@
 import './admin-page.scss';
-import {useContext} from 'react';
-// @ts-ignore
-import {StoreContext} from '../../store/Store.ts';
+import { useState} from 'react';
+import {glasses_list} from '../../consts/glasses';
+import {FileUpload} from '../FileUpload';
+import store, {StoreContext} from '../../services/store/AdminPage/store';
+import {observer} from 'mobx-react-lite';
 
-export const AdminPage = () => {
-  const store = useContext(StoreContext);
-  let glasses = [];
+export const AdminPage = observer(() => {
+  let glasses: JSX.Element[] = [];
+  console.log(store.glasses.list)
 
   store.glasses.list.forEach((element) => {
     glasses.push(
       <div
         key={element.id}
         onClick={() => {
-          store.newActiveGlasses(element.id);
+          store.setSelected(element.id);
+          console.log(store.glasses.selected)
         }}
         className={
-          "control-panel__button" +
-          (element.id == store.glasses.active_glasses
-            ? " control-panel__button_active"
+          "admin-page__glasses-item" +
+          (element.id === store.glasses.selected
+            ? " admin-page__glasses-item_active"
             : "")
         }
       >
-        <img
-          alt={element.id.toString()}
-          src={element.preview_file_path}
-          className="control-panel__img-preview"
-        />
+        <div className="admin-page__glasses-item-preview-container">
+          <img
+            alt={element.id.toString()}
+            src={element.preview_file_path}
+            className="admin-page__glasses-item-preview-img"
+          />
+        </div>
+        {element.name}
       </div>
     );
   });
 
   return (
-    <div className="admin-page">
-      <div className="admin-page__upload-area">
-        Upload glass
-      </div>
+    <StoreContext.Provider value={store}>
+      <div className="admin-page">
+        <FileUpload/>
 
-      <div className="admin-page__glasses-list">
-        <div className="admin-page__glasses-item">
-          <div className="admin-page__glasses-item-preview-container">
-            <img
-              alt={'1'}
-              src="assets/Glasses/01/01 - preview.png"
-              className="admin-page__glasses-item-preview-img"
-            />
-          </div>
-          glass 1
-        </div>
-
-        <div className="admin-page__glasses-item">glass 1</div>
-        <div className="admin-page__glasses-item">glass 1</div>
-        <div className="admin-page__glasses-item">glass 1</div>
-        <div className="admin-page__glasses-item">glass 1</div>
-        <div className="admin-page__glasses-item">glass 1</div>
-        <div className="admin-page__glasses-item">glass 1</div>
+        <section className="admin-page__glasses-list">
+          {glasses}
+        </section>
       </div>
-    </div>
+    </StoreContext.Provider>
   );
-};
+});

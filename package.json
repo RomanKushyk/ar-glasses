@@ -16,11 +16,13 @@
     "@testing-library/user-event": "^13.5.0",
     "mobx": "^6.5.0",
     "mobx-react-lite": "^3.4.0",
-    "react": "^18.0.0",
+    "react": "^18.1.0",
     "react-dom": "^18.0.0",
+    "react-dropzone": "^14.2.1",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "react-webcam": "^7.0.1",
+    "reactdom": "^2.0.0",
     "sass": "^1.52.1",
     "three": "^0.139.2",
     "threejs-slice-geometry": "^0.2.2",
@@ -50,5 +52,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/three": "^0.140.0"
   }
 }

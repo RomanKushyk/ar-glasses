@@ -1,7 +1,7 @@
 import { action, makeObservable, observable } from "mobx";
-import Scene from "../scene/Scene";
+import Scene from "../../../scene/Scene";
 import { createContext } from "react";
-import {Glasses} from '../interfaces/consts/Glasses';
+import { Glasses } from '../../../interfaces/consts/Glasses';
 
 class Store {
   ready: boolean = false;

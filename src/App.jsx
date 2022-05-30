@@ -3,8 +3,7 @@ import Webcam from "react-webcam";
 import { useRef, useEffect, useState } from "react";
 
 import runFacemesh from "./utils/tf_setup";
-import Scene from "./scene/Scene.js";
-import store, { StoreContext } from "./store/Store.ts";
+import store, { StoreContext } from "./services/store/app/store";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import Preloader from "./components/Preloader/Preloader";
@@ -46,7 +45,9 @@ function App() {
 
       <Webcam ref={webcamRef} className="webcam"/>
 
-      <ControlPanel />
+      <StoreContext.Provider value={store}>
+        <ControlPanel />
+      </StoreContext.Provider>
     </div>
   );
 }

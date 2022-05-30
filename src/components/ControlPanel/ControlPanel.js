@@ -3,7 +3,7 @@ import "./control-panel.scss";
 import { observer } from "mobx-react-lite";
 import { useContext, createContext } from "react";
 
-import { StoreContext } from "../../store/Store.ts";
+import { StoreContext } from "../../services/store/app/store.ts";
 import { saveSnapshotFromCanvas } from "../../utils/saveSnapshotFromCanvas.ts";
 
 const ControlPanel = observer(() => {
