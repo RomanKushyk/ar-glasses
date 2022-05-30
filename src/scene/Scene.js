@@ -1,10 +1,7 @@
 import * as THREE from "three";
 import { Vector3 } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import FacetypeGetter from "../utils/FacetypeGetter/FacetypeGetter";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { GlassesController } from "../controllers/GlassesController.js";
-import { EFacetypes } from "enums/EFacetypes";
 
 export default class Scene {
   created = false;

@@ -1,4 +1,4 @@
-import { EFacetypes } from "enums/EFacetypes";
+import { EFacetypes } from "../enums/EFacetypes";
 
 export default interface IFacetype {
     type: EFacetypes;

@@ -38,11 +38,11 @@ export const getPngFromFbx = (glasses: Glasses) => {
     object.rotation.set(...glasses.snapshot_options.rotation);
     glasses.snapshot_options.bracketsItemsNames.forEach(name => {
       object.getObjectByName(name)
-          .traverse((obj) => {
-            if (obj.visible) {
-              obj.visible = false;
-            }
-          });
+        ?.traverse((obj => {
+          if (obj.visible) {
+            obj.visible = false;
+          }
+        }))
     });
     scene.add(object);
 

@@ -3,7 +3,6 @@ import "@tensorflow-models/face-detection";
 import "@tensorflow/tfjs-backend-webgl";
 import * as FaceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
 import FacetypeGetter from "./FacetypeGetter/FacetypeGetter";
-import { EFacetypes } from "enums/EFacetypes";
 
 const detect = async (detector, store, appDivRef, webcamRef, cb) => {
   if (typeof webcamRef.current == "undefined" || webcamRef.current == null) {
