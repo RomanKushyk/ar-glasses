@@ -10,6 +10,9 @@
     margin-bottom: 60px;
 
     @include box-element;
+    background: #fdfdfd;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+    border-radius: 14px;
 
     cursor: pointer;
   }

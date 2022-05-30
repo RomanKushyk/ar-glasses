@@ -45,7 +45,9 @@ function App() {
 
       <Webcam ref={webcamRef} className="webcam"/>
 
-      <ControlPanel />
+      <StoreContext.Provider value={store}>
+        <ControlPanel />
+      </StoreContext.Provider>
     </div>
   );
 }

@@ -30,12 +30,15 @@ export const addGlassesToList = async (data: Omit<Glasses, 'id'>) => {
   return id
 };
 
-export const editGlassesFromList = async (id: string, data: Partial<Glasses>) => {
+export const editGlassesFromList = async (id: string | number, data: Partial<Glasses>) => {
+  id = typeof id == "number" ? id.toString() : id;
+
   const glassesRef = doc(firebaseStore, PATH, id);
 
   await updateDoc(glassesRef, data);
 };
 
-export const deleteGlassesFromList = async (id: string) => {
+export const deleteGlassesFromList = async (id: string | number) => {
+  id = typeof id == "number" ? id.toString() : id;
   await deleteDoc(doc(firebaseStore, PATH, id));
 };

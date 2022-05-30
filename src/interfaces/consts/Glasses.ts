@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 export interface Glasses {
-    id: string,
+    id: string | number,
     name: string,
     file_path: string,
     preview_file_path: string,
