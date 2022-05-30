@@ -17,8 +17,8 @@ class Store {
   constructor () {
     makeObservable(this, {
       glasses: observable,
-      setSelected: action,
       updateList: action,
+      setSelected: action,
 
       uploadedFile: observable,
       uploadFile: action,
