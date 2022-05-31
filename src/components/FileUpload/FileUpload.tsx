@@ -1,16 +1,17 @@
 import './file-upload.scss';
 
-import {ChangeEvent, FC, useContext, useEffect, useState} from 'react';
-import Dropzone, {useDropzone} from 'react-dropzone';
-import {observer} from 'mobx-react-lite';
-import {StoreContext} from '../../services/store/AdminPage/store';
+import { FC, useContext, useEffect } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { observer } from 'mobx-react-lite';
+import { StoreContext } from '../../services/store/AdminPage/store';
 
 export const FileUpload: FC = observer(() => {
-  const {acceptedFiles, getRootProps, getInputProps} = useDropzone({multiple: false});
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({ multiple: false });
   const store = useContext(StoreContext);
 
   useEffect(() => {
     store.uploadFile(acceptedFiles[0]);
+    console.log(store.acceptedFile?.name);
   }, [acceptedFiles]);
 
   return (

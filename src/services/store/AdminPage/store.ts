@@ -12,7 +12,7 @@ class Store {
     list: [],
   };
 
-  uploadedFile: File | null = null;
+  acceptedFile: File | null = null;
 
   constructor () {
     makeObservable(this, {
@@ -20,7 +20,7 @@ class Store {
       updateList: action,
       setSelected: action,
 
-      uploadedFile: observable,
+      acceptedFile: observable,
       uploadFile: action,
     })
   }
@@ -34,7 +34,7 @@ class Store {
   }
 
   uploadFile (file: File) {
-    this.uploadedFile = file;
+    this.acceptedFile = file;
   }
 }
 
