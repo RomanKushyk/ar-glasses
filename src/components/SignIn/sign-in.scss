@@ -22,13 +22,8 @@
   &__input {
     margin-bottom: $form-element-mb;
 
-    border: none;
-    border-bottom: 1px solid #4d457b;
-    font-family: inherit;
-    font-size: 0.9rem;
-    padding: 10px 5px;
-    color: #4d457b;
-    outline: none;
+    @include input;
+
     &_error {
       border-bottom-color: red;
     }
@@ -36,8 +31,8 @@
 
   &__button {
     margin-bottom: $form-element-mb;
-    height: 35px;
 
+    @include button;
     @include box-element;
     &_submit {
 

@@ -1,0 +1,11 @@
+@import "../../styles/main";
+
+.sign-out {
+  display: flex;
+  justify-content: end;
+
+  &__button {
+    @include button;
+    @include box-element;
+  }
+}
