@@ -8,7 +8,8 @@ export const GlassesList: FC = observer(() => {
   const store = useContext(StoreContext);
 
   useEffect(() => {
-    store.updateList();
+    store.loadGlassesList();
+    console.log(store.glasses.list)
   }, [])
 
   return (

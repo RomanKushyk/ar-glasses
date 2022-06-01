@@ -2,7 +2,7 @@ import { Glasses } from '../interfaces/consts/Glasses';
 
 export const glasses_list: Glasses[] = [
     {
-        id: 0,
+        id: '0',
         name: '1',
         file_path: "assets/Glasses/01/01 - Model.fbx",
         preview_file_path: "assets/Glasses/01/01 - preview.png",
@@ -24,7 +24,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 1,
+        id: '1',
         name: '2',
         file_path: "assets/Glasses/02/02 - Model.fbx",
         preview_file_path: "assets/Glasses/02/02 - preview.png",
@@ -46,7 +46,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 2,
+        id: '2',
         name: '3',
         file_path: "assets/Glasses/03/03 - Model.fbx",
         preview_file_path: "assets/Glasses/03/03 - preview.png",
@@ -68,7 +68,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 3,
+        id: '3',
         name: '4',
         file_path: "assets/Glasses/04/04 - Model.fbx",
         preview_file_path: "assets/Glasses/04/04 - preview.png",
@@ -90,7 +90,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 4,
+        id: '4',
         name: '5',
         file_path: "assets/Glasses/05/05 - Model.fbx",
         preview_file_path: "assets/Glasses/05/05 - preview.png",
@@ -112,7 +112,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 5,
+        id: '5',
         name: '6',
         file_path: "assets/Glasses/06/06 - Model.fbx",
         preview_file_path: "assets/Glasses/06/06 - preview.png",
@@ -134,7 +134,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 6,
+        id: '6',
         name: '7',
         file_path: "assets/Glasses/07/07 - Model.fbx",
         preview_file_path: "assets/Glasses/07/07 - preview.png",
@@ -156,7 +156,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 7,
+        id: '7',
         name: '8',
         file_path: "assets/Glasses/08/08 - Model.fbx",
         preview_file_path: "assets/Glasses/08/08 - preview.png",
@@ -178,7 +178,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 8,
+        id: '8',
         name: '9',
         file_path: "assets/Glasses/09/09 - Model.fbx",
         preview_file_path: "assets/Glasses/09/09 - preview.png",
@@ -200,7 +200,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 9,
+        id: '9',
         name: '10',
         file_path: "assets/Glasses/10/10 - Model.fbx",
         preview_file_path: "assets/Glasses/10/10 - preview.png",
@@ -222,7 +222,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 10,
+        id: '10',
         name: '11',
         file_path: "assets/Glasses/11/11 - Model.fbx",
         preview_file_path: "assets/Glasses/11/11 - preview.png",
@@ -244,7 +244,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 11,
+        id: '11',
         name: '12',
         file_path: "assets/Glasses/12/12 - Model.fbx",
         preview_file_path: "assets/Glasses/12/12 - preview.png",
@@ -266,7 +266,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 12,
+        id: '12',
         name: '13',
         file_path: "assets/Glasses/13/13 - Model.fbx",
         preview_file_path: "assets/Glasses/13/13 - preview.png",
@@ -288,7 +288,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 13,
+        id: '13',
         name: '14',
         file_path: "assets/Glasses/14/14 - Model.fbx",
         preview_file_path: "assets/Glasses/14/14 - preview.png",
@@ -310,7 +310,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 14,
+        id: '14',
         name: '15',
         file_path: "assets/Glasses/15/15 - Model.fbx",
         preview_file_path: "assets/Glasses/15/15 - preview.png",
@@ -332,7 +332,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 15,
+        id: '15',
         name: '16',
         file_path: "assets/Glasses/16/16 - Model.fbx",
         preview_file_path: "assets/Glasses/16/16 - preview.png",
@@ -354,7 +354,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 16,
+        id: '16',
         name: '17',
         file_path: "assets/Glasses/17/17 - Model.fbx",
         preview_file_path: "assets/Glasses/17/17 - preview.png",
@@ -376,7 +376,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 17,
+        id: '17',
         name: '18',
         file_path: "assets/Glasses/18/18 - Model.fbx",
         preview_file_path: "assets/Glasses/18/18 - preview.png",
@@ -398,7 +398,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 18,
+        id: '18',
         name: '19',
         file_path: "assets/Glasses/19/19 - Model.fbx",
         preview_file_path: "assets/Glasses/19/19 - preview.png",
@@ -420,7 +420,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 19,
+        id: '19',
         name: '20',
         file_path: "assets/Glasses/20/20 - Model.fbx",
         preview_file_path: "assets/Glasses/20/20 - preview.png",
@@ -442,7 +442,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 20,
+        id: '20',
         name: '21',
         file_path: "assets/Glasses/21/21 - Model.fbx",
         preview_file_path: "assets/Glasses/21/21 - preview.png",
@@ -464,7 +464,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 21,
+        id: '21',
         name: '22',
         file_path: "assets/Glasses/22/22 - Model.fbx",
         preview_file_path: "assets/Glasses/22/22 - preview.png",
@@ -486,7 +486,7 @@ export const glasses_list: Glasses[] = [
         },
     },
     {
-        id: 22,
+        id: '22',
         name: '23',
         file_path: "assets/Glasses/23/23 - Model.fbx",
         preview_file_path: "assets/Glasses/23/23 - preview.png",
