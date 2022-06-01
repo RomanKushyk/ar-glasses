@@ -11,6 +11,7 @@ import {SignOut} from '../SignOut';
 
 export const AdminPage: FC = () => {
   const [user] = useAuthState(firebaseAuth);
+
   return (
     <StoreContext.Provider value={store}>
       <div className="admin-page">
