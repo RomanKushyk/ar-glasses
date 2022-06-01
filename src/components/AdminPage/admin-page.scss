@@ -4,4 +4,8 @@
   height: 100vh;
   background-color: #e8e8e8;
   overflow: auto auto;
+
+  &__sign-out {
+    margin-bottom: 10px;
+  }
 }
