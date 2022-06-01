@@ -1,7 +1,7 @@
 import {Glasses} from '../../../interfaces/consts/Glasses';
 import {action, makeObservable, observable} from 'mobx';
-import {glasses_list} from '../../../consts/glasses';
 import {createContext} from 'react';
+import {addGlasses, deleteGlasses, editGlasses, getGlassesList} from '../../../api/glasses';
 
 class Store {
   glasses: {
@@ -17,7 +17,7 @@ class Store {
   constructor () {
     makeObservable(this, {
       glasses: observable,
-      updateList: action,
+      loadGlassesList: action,
       setSelected: action,
 
       acceptedFile: observable,
@@ -25,12 +25,21 @@ class Store {
     })
   }
 
-  updateList () {
-    this.glasses.list = glasses_list;
+  async loadGlassesList () {
+    const querySnapshot = await getGlassesList();
+
+    this.glasses.list = [];
+    querySnapshot.forEach(doc => {
+      this.glasses.list.push({
+        id: doc.id,
+        ...doc.data(),
+      } as Glasses);
+    })
   }
 
   setSelected (id: number | string) {
     this.glasses.selected = id;
+    this.loadGlassesList();
   }
 
   uploadFile (file: File) {
