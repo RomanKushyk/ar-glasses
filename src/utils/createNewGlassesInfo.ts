@@ -1,22 +1,15 @@
 import {Glasses} from '../interfaces/consts/Glasses';
 import store from '../services/store/AdminPage/store';
 
-type CreateNewGlassesInfo = (file: File, name: string) => Glasses;
+type CreateNewGlassesInfo = (file: File) => Omit<Glasses, 'id'>;
 
-export const createNewGlassesInfo: CreateNewGlassesInfo = (file, name = '') => {
-  const id = store.glasses.list[store.glasses.list.length - 1].id + 1;
-  let newName = name;
-  const extension = file.name.slice(file.name.indexOf('.'));
-  const path = '';
-
-  if (!newName.length) {
-    newName = getFileNameWithoutExt(file);
-  }
+export const createNewGlassesInfo: CreateNewGlassesInfo = (file) => {
+  const name = getFileNameWithoutExt(file);
+  // const extension = file.name.slice(file.name.indexOf('.'));
 
   return {
-    id,
-    name: newName,
-    file_path: `${path}${newName}${extension}`,
+    name,
+    file_path: ``,
     preview_file_path: ``,
     loaded: false,
     error: false,

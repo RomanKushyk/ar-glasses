@@ -4,8 +4,9 @@ import {getAuth, signInWithPopup} from 'firebase/auth';
 import firebase from 'firebase/compat';
 import {GoogleAuthProvider, signInWithEmailAndPassword} from 'firebase/auth';
 import {firebaseAuth} from '../../utils/firebase';
-import {ChangeEvent, FormEvent, useState} from 'react';
+import {ChangeEvent, FormEvent, useEffect, useState} from 'react';
 import cn from 'classnames';
+import {useNavigate} from 'react-router-dom';
 
 export const SignIn = () => {
   const [email, setEmail] = useState<string>('');

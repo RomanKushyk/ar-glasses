@@ -1,14 +1,20 @@
 import {Glasses} from '../../../interfaces/consts/Glasses';
 import {action, makeObservable, observable} from 'mobx';
 import {createContext} from 'react';
-import {addGlasses, deleteGlasses, editGlasses, getGlassesList} from '../../../api/glasses';
+import {addGlassesToList, deleteGlassesFromList, editGlassesFromList, getGlassesList} from '../../../api/firebase/store/glasses';
+import { User } from '@firebase/auth';
+import {firebaseAuth} from '../../../utils/firebase';
+
+interface StoreGlasses {
+  selected: undefined | string,
+  temporary: Omit<Glasses, 'id'> | null
+  list: Glasses[],
+}
 
 class Store {
-  glasses: {
-    selected: undefined | string,
-    list: Glasses[],
-  } = {
+  glasses: StoreGlasses = {
     selected: undefined,
+    temporary: null,
     list: [],
   };
 
@@ -38,15 +44,15 @@ class Store {
   }
 
   async addToGlassesList (data: Omit<Glasses, 'id'>) {
-    await addGlasses(data);
+    await addGlassesToList(data);
   }
 
   async editInGlassesList (id: string, data: Partial<Glasses>) {
-    await editGlasses(id, data);
+    await editGlassesFromList(id, data);
   }
 
   async deleteFromGlassesList (id: string) {
-    await deleteGlasses(id);
+    await deleteGlassesFromList(id);
   }
 
   setSelected (id: string) {
