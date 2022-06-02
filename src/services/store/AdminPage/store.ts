@@ -1,14 +1,24 @@
 import {Glasses} from '../../../interfaces/consts/Glasses';
 import {action, makeObservable, observable} from 'mobx';
 import {createContext} from 'react';
-import {addGlasses, deleteGlasses, editGlasses, getGlassesList} from '../../../api/glasses';
+import {addGlassesToList, deleteGlassesFromList, editGlassesFromList, getGlassesList} from '../../../api/firebase/store/glasses';
+import { User } from '@firebase/auth';
+import {firebaseAuth} from '../../../utils/firebase';
+
+interface StoreGlasses {
+  selected: undefined | string,
+  temporary: Omit<Glasses, 'id'> | null
+  list: Glasses[],
+}
 
 class Store {
   glasses: {
     selected: string | number | undefined,
+    temporary: null,
     list: Glasses[],
   } = {
     selected: undefined,
+    temporary: null,
     list: [],
   };
 
