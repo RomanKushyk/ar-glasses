@@ -3,13 +3,14 @@ import './glasses-list.scss';
 import {FC, useContext, useEffect} from 'react';
 import {observer} from 'mobx-react-lite';
 import {StoreContext} from '../../services/store/AdminPage/store';
+import cn from 'classnames';
 
 export const GlassesList: FC = observer(() => {
   const store = useContext(StoreContext);
 
   useEffect(() => {
     store.loadGlassesList();
-    console.log(store.glasses.list)
+    console.log('glasses list', store.glasses.list)
   }, [])
 
   return (
@@ -20,16 +21,14 @@ export const GlassesList: FC = observer(() => {
           onClick={() => {
             store.setSelected(element.id);
           }}
-          className={
-            "glasses-list__item" +
-            (element.id === store.glasses.selected
-              ? " glasses-list__item_active"
-              : "")
-          }
+          className={cn(
+              "glasses-list__item",
+              {'glasses-list__item_active': element.id === store.glasses.selected}
+          )}
         >
           <div className="glasses-list__preview-container">
             <img
-              alt={element.id.toString()}
+              alt="glasses"
               src={element.preview_file_path}
               className="glasses-list__preview-img"
             />
