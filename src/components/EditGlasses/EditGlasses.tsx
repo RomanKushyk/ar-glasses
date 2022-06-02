@@ -7,7 +7,19 @@ import { downloadGlassesFromStorage } from '../../api/firebase/storage/glasses';
 export const EditGlasses: FC = () => {
   const uploadGlassesToFirebase = () => {
     downloadGlassesFromStorage('assets/glasses/1.fbx')
-      .then(data => console.log(data));
+      .then((url) => {
+        const xhr = new XMLHttpRequest();
+        xhr.responseType = 'blob';
+        xhr.onload = (event) => {
+          const blob = xhr.response;
+          console.log(blob);
+        };
+        xhr.open('GET', url);
+        xhr.send();
+      })
+      .catch((error) => {
+        // Handle any errors
+      });
   };
 
   return (
