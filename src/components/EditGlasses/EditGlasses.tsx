@@ -1,25 +1,16 @@
 import './edit-glasses.scss';
 
-import { FC } from 'react';
+import {FC, useContext} from 'react';
 import App from '../../App';
 import { downloadGlassesFromStorage } from '../../api/firebase/storage/glasses';
+import {StoreContext} from '../../services/store/AdminPage/store';
 
 export const EditGlasses: FC = () => {
+  const store = useContext(StoreContext);
   const uploadGlassesToFirebase = () => {
-    downloadGlassesFromStorage('assets/glasses/1.fbx')
-      .then((url) => {
-        const xhr = new XMLHttpRequest();
-        xhr.responseType = 'blob';
-        xhr.onload = (event) => {
-          const blob = xhr.response;
-          console.log(blob);
-        };
-        xhr.open('GET', url);
-        xhr.send();
-      })
-      .catch((error) => {
-        // Handle any errors
-      });
+    downloadGlassesFromStorage('assets/glasses/1.fbx', '1.fbx')
+      .then(data => store.glasses.modelFiles[data.name] = data);
+    console.log(store.glasses.modelFiles);
   };
 
   return (
@@ -37,7 +28,7 @@ export const EditGlasses: FC = () => {
         <button
           className="edit-glasses__button"
           onClick={() => {
-            uploadGlassesToFirebase();
+            uploadGlassesToFirebase()
           }}
         >01</button>
       </div>

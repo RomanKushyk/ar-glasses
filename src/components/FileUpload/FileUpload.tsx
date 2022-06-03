@@ -21,6 +21,7 @@ export const FileUpload: FC = observer(() => {
     }
     console.log('new file name', store.acceptedFile?.name);
     console.log('new file info', store.glasses.temporary);
+    console.log('new file', store.acceptedFile);
   }, [acceptedFiles]);
 
   return (

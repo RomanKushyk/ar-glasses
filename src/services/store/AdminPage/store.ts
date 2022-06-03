@@ -9,6 +9,12 @@ interface StoreGlasses {
   selected: undefined | string,
   temporary: Omit<Glasses, 'id'> | null
   list: Glasses[],
+  modelFiles: {
+    [name: string]: File,
+  },
+  previewFiles: {
+    [name: string]: File,
+  },
 }
 
 class Store {
@@ -16,6 +22,8 @@ class Store {
     selected: undefined,
     temporary: null,
     list: [],
+    modelFiles: {},
+    previewFiles: {},
   };
 
   acceptedFile: File | null = null;
