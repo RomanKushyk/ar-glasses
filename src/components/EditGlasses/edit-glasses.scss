@@ -23,6 +23,14 @@
     @include top-control-box;
   }
 
+  &__input {
+    @include top-control-box;
+  }
+
+  &__button {
+    @include top-control-box;
+  }
+
   &__scene {
     height: 50vh;
     margin-bottom: 30px;
