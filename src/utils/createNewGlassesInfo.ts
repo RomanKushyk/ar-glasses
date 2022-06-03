@@ -13,7 +13,7 @@ export const createNewGlassesInfo: CreateNewGlassesInfo = (file) => {
     preview_file_path: ``,
     loaded: false,
     error: false,
-    model: undefined,
+    model: null,
     options: {
       position: [0, 0, 0],
       scale: [0, 0, 0],
@@ -31,7 +31,7 @@ export const createNewGlassesInfo: CreateNewGlassesInfo = (file) => {
 };
 
 const getFileNameWithoutExt = (file: File) => {
-  const fullNameWithExt = file.name;
+  const fullNameWithExt = file.name.toString();
 
   return fullNameWithExt
     .replaceAll(' ', '_')

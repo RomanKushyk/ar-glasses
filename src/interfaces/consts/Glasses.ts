@@ -7,7 +7,7 @@ export interface Glasses {
     preview_file_path: string,
     loaded: boolean,
     error: boolean,
-    model: undefined | THREE.Object3D,
+    model: null | THREE.Object3D,
     options: {
         position: [x: number, y: number, z: number],
         scale: [x: number, y: number, z: number],
