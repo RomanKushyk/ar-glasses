@@ -1,12 +1,12 @@
-import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
+import { ref, uploadBytes, getBlob} from 'firebase/storage';
 import {firebaseStorage} from '../../../utils/firebase';
 
 const BASE_PATH = 'assets/glasses/';
 
-export const downloadGlassesFromStorage = (glassesPath: string) => {
+export const downloadGlassesFromStorage = async (glassesPath: string, nameWithExt: string) => {
   const storageRef = ref(firebaseStorage, glassesPath);
-
-  return getDownloadURL(storageRef);
+  const blob = await getBlob(storageRef);
+  return new File([blob], nameWithExt, { type: "application/octet-stream" })
 };
 
 export const uploadGlassesToStorage = async (file: File, path: string) => {
