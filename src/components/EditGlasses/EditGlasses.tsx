@@ -58,7 +58,7 @@ export const EditGlasses: FC = () => {
           onClick={() => {
             uploadGlassesToFirebase()
           }}
-        >01</button>
+        >Save</button>
       </div>
 
       <div className="edit-glasses__scene">

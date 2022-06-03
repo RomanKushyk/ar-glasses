@@ -19,6 +19,14 @@
     padding: 8px 10px;
   }
 
+  &__input {
+    @include top-control-box;
+  }
+
+  &__button {
+    @include top-control-box;
+  }
+
   &__scene {
     height: 50vh;
     @include box-element;
