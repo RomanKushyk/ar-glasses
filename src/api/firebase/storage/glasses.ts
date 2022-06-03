@@ -6,7 +6,6 @@ const BASE_PATH = 'assets/glasses/';
 export const downloadGlassesFromStorage = async (glassesPath: string, nameWithExt: string) => {
   const storageRef = ref(firebaseStorage, glassesPath);
   const blob = await getBlob(storageRef);
-
   return new File([blob], nameWithExt, { type: "application/octet-stream" })
 };
 

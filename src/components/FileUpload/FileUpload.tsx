@@ -18,7 +18,6 @@ export const FileUpload: FC = observer(() => {
       store.glasses.temporary = createNewGlassesInfo(store.acceptedFile);
       store.uploadTemporaryToFirebase();
     }
-
   }, [acceptedFiles]);
 
   return (
