@@ -412,6 +412,12 @@ export const EditGlasses: FC = observer(() => {
     }
   };
 
+  // вивантаження файла з хмари
+
+  // downloadGlassesFromStorage('assets/glasses/1.fbx', '1.fbx')
+  //   .then(data => store.glasses.modelFiles[data.name] = data);
+  // console.log(store.glasses.modelFiles);
+
   return (
     <section className="edit-glasses">
       <div className="edit-glasses__views-container">
