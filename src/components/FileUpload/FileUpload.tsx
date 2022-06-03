@@ -6,6 +6,8 @@ import { observer } from 'mobx-react-lite';
 import { StoreContext } from '../../services/store/AdminPage/store';
 import {createNewGlassesInfo} from '../../utils/createNewGlassesInfo';
 import {useNavigate} from 'react-router-dom';
+import {uploadGlassesToStorage} from '../../api/firebase/storage/glasses';
+import {addGlassesToList, editGlassesFromList} from '../../api/firebase/store/glasses';
 
 export const FileUpload: FC = observer(() => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({ multiple: false });
@@ -17,7 +19,7 @@ export const FileUpload: FC = observer(() => {
 
     if (store.acceptedFile) {
       store.glasses.temporary = createNewGlassesInfo(store.acceptedFile);
-      // navigate();
+      navigate('../new');
     }
     console.log('new file name', store.acceptedFile?.name);
     console.log('new file info', store.glasses.temporary);

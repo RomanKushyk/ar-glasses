@@ -8,7 +8,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/01/01 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [-0.7, 12, -4.5],
             scale: [0.8, 0.8, 0.8],
@@ -30,7 +30,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/02/02 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [-0.5, 7.5, -1],
             scale: [0.41, 0.41, 0.41],
@@ -52,7 +52,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/03/03 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -74,7 +74,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/04/04 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -96,7 +96,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/05/05 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -118,7 +118,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/06/06 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -140,7 +140,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/07/07 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -162,7 +162,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/08/08 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -184,7 +184,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/09/09 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -206,7 +206,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/10/10 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -228,7 +228,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/11/11 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -250,7 +250,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/12/12 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -272,7 +272,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/13/13 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -294,7 +294,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/14/14 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -316,7 +316,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/15/15 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -338,7 +338,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/16/16 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -360,7 +360,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/17/17 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -382,7 +382,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/18/18 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -404,7 +404,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/19/19 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -426,7 +426,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/20/20 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -448,7 +448,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/21/21 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -470,7 +470,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/22/22 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],
@@ -492,7 +492,7 @@ export const glasses_list: Glasses[] = [
         preview_file_path: "assets/Glasses/23/23 - preview.png",
         loaded: false,
         error: false,
-        model: undefined,
+        model: null,
         options: {
             position: [0, 0, 0],
             scale: [0, 0, 0],

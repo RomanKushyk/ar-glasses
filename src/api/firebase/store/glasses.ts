@@ -17,13 +17,17 @@ export const getGlassesList = async () => (
 );
 
 export const addGlassesToList = async (data: Omit<Glasses, 'id'>) => {
+  let id = undefined;
+
   try {
     const docRef = await addDoc(collection(firebaseStore, PATH), data);
-
+    id = docRef.id
     console.log("Document written with ID: ", docRef.id);
   } catch (e) {
     console.error("Error adding document: ", e);
   }
+
+  return id
 };
 
 export const editGlassesFromList = async (id: string, data: Partial<Glasses>) => {
