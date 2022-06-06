@@ -13,6 +13,7 @@ import { AdminPage } from './components/AdminPage';
 import { NotFound } from './components/NotFound';
 import {SignIn} from './components/SignIn';
 import {EditGlasses} from './components/EditGlasses/EditGlasses';
+import {Protected} from './routes/Protected';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
@@ -21,11 +22,17 @@ root.render(
       <Routes>
         <Route path="/" element={<App/>} />
 
-        <Route path="admin" element={<AdminPage/>}>
+        <Route path="sign-in" element={<SignIn/>}/>
+
+        <Route path="admin" element={
+          <Protected>
+            <AdminPage />
+          </Protected>
+        }>
         </Route>
 
         <Route path="new" element={<EditGlasses/>} />
-        <Route path=":glassesId" element={<EditGlasses/>} />f
+        <Route path=":glassesId" element={<EditGlasses/>} />
 
         <Route path="*" element={<NotFound/>} />
       </Routes>

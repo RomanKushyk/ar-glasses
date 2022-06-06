@@ -6,13 +6,19 @@ import {GoogleAuthProvider, signInWithEmailAndPassword} from 'firebase/auth';
 import {firebaseAuth} from '../../utils/firebase';
 import {ChangeEvent, FormEvent, useEffect, useState} from 'react';
 import cn from 'classnames';
-import {useNavigate} from 'react-router-dom';
+import {Navigate, useNavigate} from 'react-router-dom';
+import {useAuthState} from 'react-firebase-hooks/auth';
 
 export const SignIn = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [hasEmailError, setHasEmailError] = useState<boolean>(false);
   const [hasPasswordError, setHasPasswordError] = useState<boolean>(false);
+  const [user] = useAuthState(firebaseAuth);
+
+  if (user) {
+    return <Navigate to="/admin" replace />;
+  }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target;
