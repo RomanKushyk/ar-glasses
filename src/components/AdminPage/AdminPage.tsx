@@ -11,22 +11,14 @@ import {onAuthStateChanged} from 'firebase/auth';
 import {Outlet} from 'react-router-dom';
 
 export const AdminPage: FC = () => {
-  const [user] = useAuthState(firebaseAuth);
-
   return (
     <StoreContext.Provider value={store}>
       <div className="admin-page">
-        {
-          !user
-            ? <SignIn/>
-            : <>
-              <SignOut/>
+        <SignOut/>
 
-              <FileUpload/>
+        <FileUpload/>
 
-              <GlassesList/>
-            </>
-        }
+        <GlassesList/>
 
         <Outlet/>
       </div>
