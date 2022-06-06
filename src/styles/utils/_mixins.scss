@@ -1,13 +1,17 @@
 @mixin box-element {
-  background: #fdfdfd;
+  background-color: #fdfdfd;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
   border-radius: 14px;
 }
 
-@mixin button {
-  height: 35px;
+@mixin noBorder {
   border: none;
   outline: none;
+}
+
+@mixin square ($dim) {
+  width: $dim;
+  height: $dim;
 }
 
 @mixin input {

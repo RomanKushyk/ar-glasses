@@ -17,9 +17,8 @@
 
   &__preview-container {
     margin-right: 13px;
-    width: 46px;
-    height: 46px;
 
+    @include square(46px);
     @include box-element;
 
   }

@@ -5,7 +5,9 @@
   justify-content: end;
 
   &__button {
-    @include button;
+    height: 35px;
+
+    @extend %noBorder;
     @include box-element;
   }
 }

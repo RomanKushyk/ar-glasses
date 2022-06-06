@@ -31,11 +31,12 @@
 
   &__button {
     margin-bottom: $form-element-mb;
+    height: 35px;
 
-    @include button;
+    @extend %noBorder;
     @include box-element;
-    &_submit {
 
+    &_submit {
     }
   }
 }
