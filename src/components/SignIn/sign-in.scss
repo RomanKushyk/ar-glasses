@@ -31,6 +31,7 @@
 
   &__button {
     margin-bottom: $form-element-mb;
+    height: 35px;
 
     @extend %noBorder;
     @include box-element;
