@@ -29,6 +29,59 @@
 
   &__scene {
     height: 50vh;
+    margin-bottom: 30px;
+
     @include box-element;
+  }
+
+  &__params-container {
+
+  }
+}
+
+.params-container {
+
+  &__params-list {
+    margin-bottom: 6px;
+    @include box-element;
+  }
+
+  &__navigation-panel {
+    padding: 8px 11px;
+
+    background: #D9D9D9;
+    border-radius: 13px;
+  }
+
+  &__button {
+    position: relative;
+    margin-right: 10px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    @extend %noBorder;
+    @include square(46px);
+    @include box-element;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &_scale {
+      background-image: url("../../images/admin/edit/scale.png");
+    }
+
+    &_position {
+      background-image: url("../../images/admin/edit/position.png");
+    }
+
+    &_rotate {
+      background-image: url("../../images/admin/edit/rotate.png");
+    }
+
+    &_three {
+      background-image: url("../../images/admin/edit/three.png");
+    }
   }
 }

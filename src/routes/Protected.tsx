@@ -1,18 +1,15 @@
-import {Navigate} from 'react-router-dom';
+import {Navigate, useLocation, Outlet} from 'react-router-dom';
 import {FC} from 'react';
 import {firebaseAuth} from '../utils/firebase';
 import {useAuthState} from 'react-firebase-hooks/auth';
 
-interface Props {
-  children: JSX.Element,
-}
-
-export const Protected: FC<Props> = ({children}) => {
+export const Protected: FC = () => {
   const [user] = useAuthState(firebaseAuth);
+  const location = useLocation();
 
-  if (user) {
-    return children;
-  }
-
-  return <Navigate to="/sign-in" replace={true} />;
+  return !!user ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/sign-in" replace state={{ from: location.state }} />
+  );
 };

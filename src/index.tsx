@@ -24,15 +24,14 @@ root.render(
 
         <Route path="sign-in" element={<SignIn/>}/>
 
-        <Route path="admin" element={
-          <Protected>
-            <AdminPage />
-          </Protected>
-        }>
+        <Route element={<Protected/>}>
+          <Route path="admin" element={<AdminPage/>}>
+            <Route path="edit" element={<EditGlasses/>}>
+              <Route path=":glassesId" element={<EditGlasses/>}/>
+              <Route path="new" element={<EditGlasses/>}/>
+            </Route>
+          </Route>
         </Route>
-
-        <Route path="new" element={<EditGlasses/>} />
-        <Route path=":glassesId" element={<EditGlasses/>} />
 
         <Route path="*" element={<NotFound/>} />
       </Routes>
