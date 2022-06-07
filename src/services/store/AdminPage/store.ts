@@ -43,7 +43,7 @@ class Store {
     const querySnapshot = await getGlassesList();
 
     this.glasses.list = [];
-    querySnapshot.forEach(doc => {
+    querySnapshot.forEach((doc: any) => {
       this.glasses.list.push({
         id: doc.id,
         ...doc.data(),

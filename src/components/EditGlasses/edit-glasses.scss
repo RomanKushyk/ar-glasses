@@ -4,14 +4,14 @@
   --v-padding: 8px;
   --h-padding: 10px;
   position: relative;
-  padding: var(--v-padding) var(--h-padding);
+  //padding: var(--v-padding) var(--h-padding);
   width: 100vw;
   height: 100vh;
   background-color: #e8e8e8;
   overflow: auto auto;
 
   &__top-panel {
-    position: fixed;
+    position: absolute;
     display: flex;
     justify-content: space-between;
     align-items: center;
