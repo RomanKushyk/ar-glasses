@@ -34,26 +34,54 @@ export class PreviewScene {
     this.renderer.setSize(this.sizes.width, this.sizes.height);
 
     this.fbxLoader = new FBXLoader();
-    const url = await getDownloadURL(ref(firebaseStorage, glasses.file_path));
-    this.object = await this.fbxLoader.loadAsync(url);
+
+    switch (glasses.local) {
+      case true:
+        this.object = await this.fbxLoader.loadAsync(document.location.origin + glasses.file_path);
+        break;
+
+      default:
+        const url = await getDownloadURL(ref(firebaseStorage, glasses.file_path));
+        this.object = await this.fbxLoader.loadAsync(url);
+        break;
+    }
+
     this.scene.add(this.object);
   }
 
-  updatePosition (glasses) {
+  async updatePosition (glasses) {
     if (!this.object) return
 
     this.object.position.set(...glasses.snapshot_options.position);
     this.object.scale.set(...glasses.snapshot_options.scale);
     this.object.rotation.set(...glasses.snapshot_options.rotation);
-    glasses.snapshot_options.bracketsItemsNames.forEach((name) => {
-      this.object.getObjectByName(name)
-        ?.traverse((obj => {
-          if (obj.visible) {
-            obj.visible = false;
-          }
-        }))
-    });
+
+    if (glasses.snapshot_options.partsVisibility) {
+      const parts = Object.entries(glasses.snapshot_options.partsVisibility);
+
+      parts.forEach(([name, value]) => {
+        const item = this.object.getObjectByName(name);
+
+        if (item) {
+          item.traverse(element => {
+            element.visible = value;
+          })
+        }
+      });
+    }
 
     this.renderer.render(this.scene, this.camera);
+  }
+
+  getChildrenList () {
+    const children = {};
+
+    this.object.traverse(obj => {
+      if (obj.isMesh) {
+        children[obj.name] = obj.visible;
+      }
+    })
+
+    return children;
   }
 }
