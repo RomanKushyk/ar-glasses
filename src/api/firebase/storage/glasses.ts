@@ -1,5 +1,5 @@
-import { ref, uploadBytes, getBlob, getDownloadURL } from 'firebase/storage';
-import {firebaseStorage} from '../../../utils/firebase';
+import { ref, uploadBytes, getBlob } from 'firebase/storage';
+import { firebaseStorage } from '../../../utils/firebase';
 
 const BASE_PATH = 'assets/glasses/';
 

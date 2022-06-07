@@ -15,7 +15,7 @@ export const FileUpload: FC = observer(() => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    store.uploadFile(acceptedFiles[0]);
+    store.getFileFromUser(acceptedFiles[0]);
 
     if (store.acceptedFile) {
       store.glasses.temporary = createNewGlassesInfo(store.acceptedFile);
