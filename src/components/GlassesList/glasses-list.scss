@@ -3,9 +3,10 @@
 .glasses-list {
   &__item {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    margin-bottom: 11px;
-    padding: 8px 11px;
+    margin-bottom: $primary-v-padding;
+    padding: $primary-v-padding $primary-h-padding;
     height: 63px;
 
     @include box-element;
@@ -15,12 +16,16 @@
     }
   }
 
+  &__description-container {
+    display: flex;
+    align-items: center;
+  }
+
   &__preview-container {
     margin-right: 13px;
 
     @include square(46px);
     @include box-element;
-
   }
 
   &__preview-img {
@@ -31,5 +36,30 @@
 
     text-align: center;
     font-size: 12px;
+  }
+
+  &__option-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__option-button {
+    @include normalize-background;
+    @include square(24px);
+    @include noBorder;
+    @include gap-margins(0, 24px);
+    transition: transform 0.3s;
+
+    &:active {
+      transform: scale(0.9);
+    }
+
+    &_edit {
+      background-image: url("../../images/admin/add-new-glasses/edit.png");
+    }
+
+    &_delete {
+      background-image: url("../../images/admin/add-new-glasses/delete.png");
+    }
   }
 }
