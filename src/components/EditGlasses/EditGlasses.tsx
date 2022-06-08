@@ -24,11 +24,11 @@ enum Input {
 }
 
 enum Option {
-  position = 'position',
-  scale = 'scale',
-  prevPosition = 'prevPosition',
-  prevRotate = 'prevRotate',
-  prevScale = 'prevScale',
+  position = 'Position',
+  scale = 'Scale',
+  prevPosition = 'Preview position',
+  prevRotate = 'Preview rotate',
+  prevScale = 'Preview scale',
 }
 
 export const EditGlasses: FC = () => {
@@ -185,7 +185,10 @@ export const EditGlasses: FC = () => {
     callback: (event: ChangeEvent<HTMLInputElement>) => void,
   ) => {
     return (
-      <div className="params-container__param-item">
+      <div
+        className="params-container__param-item"
+        key={name}
+      >
             <span className="params-container__param-title">
             {name.slice(-1) + ':'}
           </span>
@@ -280,7 +283,11 @@ export const EditGlasses: FC = () => {
 
       <div className="edit-glasses__params-container params-container">
         <div className="params-container__params-list">
-          {createOptionBlock(optionBlockName)};
+          <span className="params-container__title">
+            {optionBlockName + ':'}
+          </span>
+
+          {createOptionBlock(optionBlockName)}
         </div>
 
         <div className="params-container__navigation-panel">
