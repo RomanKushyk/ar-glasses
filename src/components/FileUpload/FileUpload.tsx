@@ -4,26 +4,22 @@ import { FC, useContext, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { observer } from 'mobx-react-lite';
 import { StoreContext } from '../../services/store/AdminPage/store';
-import {createNewGlassesInfo} from '../../utils/createNewGlassesInfo';
-import {useNavigate} from 'react-router-dom';
-import {uploadGlassesToStorage} from '../../api/firebase/storage/glasses';
-import {addGlassesToList, editGlassesFromList} from '../../api/firebase/store/glasses';
+import { createNewGlassesInfo } from '../../utils/createNewGlassesInfo';
+import { useNavigate } from 'react-router-dom';
 
 export const FileUpload: FC = observer(() => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({ multiple: false });
   const store = useContext(StoreContext);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     store.getFileFromUser(acceptedFiles[0]);
 
     if (store.acceptedFile) {
       store.glasses.temporary = createNewGlassesInfo(store.acceptedFile);
-      navigate('../new');
+      store.uploadTemporaryToFirebase();
     }
-    console.log('new file name', store.acceptedFile?.name);
-    console.log('new file info', store.glasses.temporary);
-    console.log('new file', store.acceptedFile);
+
   }, [acceptedFiles]);
 
   return (

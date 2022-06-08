@@ -1,5 +1,7 @@
+@import "../../styles/main";
+
 .admin-page {
-  padding: 8px 10px;
+  padding: $primary-v-padding $primary-h-padding;
   width: 100vw;
   height: 100vh;
   background-color: #e8e8e8;

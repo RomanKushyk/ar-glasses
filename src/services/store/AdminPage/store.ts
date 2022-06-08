@@ -7,19 +7,23 @@ import {
   editGlassesFromList,
   getGlassesList
 } from '../../../api/firebase/store/glasses';
-import {createNewGlassesInfo} from '../../../utils/createNewGlassesInfo';
-import {downloadGlassesFromStorage, uploadGlassesToStorage} from '../../../api/firebase/storage/glasses';
-import {getNameFromPath} from '../../../utils/getNameFromPath';
+import { createNewGlassesInfo } from '../../../utils/createNewGlassesInfo';
+import {
+  deleteGlassesFromStorage,
+  downloadGlassesFromStorage,
+  uploadGlassesToStorage
+} from '../../../api/firebase/storage/glasses';
+import { getNameFromPath } from '../../../utils/getNameFromPath';
 
 interface StoreGlasses {
   selected: undefined | string,
   temporary: Omit<Glasses, 'id'> | null
   list: Glasses[],
   modelFiles: {
-    [name: string]: File,
+    [id: string]: File,
   },
   previewFiles: {
-    [name: string]: File,
+    [id: string]: File,
   },
 }
 
@@ -39,7 +43,7 @@ class Store {
       glasses: observable,
       loadGlassesList: action,
       setSelected: action,
-      loadGlassesFiles: action,
+      loadAllGlassesFiles: action,
       clearTemporary: action,
 
       addToGlassesList: action,
@@ -49,7 +53,8 @@ class Store {
       acceptedFile: observable,
       getFileFromUser: action,
 
-      uploadGlassesToFirebase: action,
+      uploadTemporaryToFirebase: action,
+      deleteGlassesFromFirebase: action,
     })
   }
 
@@ -70,19 +75,19 @@ class Store {
     this.loadGlassesList();
   }
 
-  loadGlassesFiles () {
+  loadAllGlassesFiles () {
     this.glasses.list.forEach(item => {
       downloadGlassesFromStorage(
         item.file_path,
         getNameFromPath(item.file_path),
       )
-        .then(data => this.glasses.modelFiles[data.name] = data);
+        .then(data => this.glasses.modelFiles[item.id] = data);
 
       downloadGlassesFromStorage(
         item.preview_file_path,
         `${getNameFromPath(item.preview_file_path)}`,
       )
-        .then(data => this.glasses.previewFiles[data.name] = data);
+        .then(data => this.glasses.previewFiles[item.id] = data);
     });
   }
 
@@ -106,14 +111,14 @@ class Store {
     this.acceptedFile = file;
   }
 
-  uploadGlassesToFirebase () {
+  async uploadTemporaryToFirebase () {
     let glassesId: string | undefined;
     console.log('start');
     console.log(store.acceptedFile);
 
     if (this.acceptedFile) {
       this.glasses.temporary = createNewGlassesInfo(this.acceptedFile);
-      addGlassesToList(this.glasses.temporary)
+      await addGlassesToList(this.glasses.temporary)
         .then(id => glassesId = id);
       console.log('added to list')
 
@@ -132,7 +137,21 @@ class Store {
           this.loadGlassesList();
         })
     }
-  };
+  }
+
+  async deleteGlassesFromFirebase (item: Glasses) {
+    console.log('delete start');
+    await deleteGlassesFromStorage(item.file_path);
+    console.log('delete file')
+    await deleteGlassesFromStorage(item.preview_file_path);
+    console.log('delete preview')
+    await deleteGlassesFromList(item.id);
+    console.log('delete from list', item.id);
+
+    await this.loadGlassesList();
+    await this.loadAllGlassesFiles();
+    console.log('files scope', this.glasses.modelFiles);
+  }
 }
 
 const store = new Store();

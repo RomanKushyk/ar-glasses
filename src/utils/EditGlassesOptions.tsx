@@ -1,6 +1,6 @@
 import { Glasses } from '../interfaces/consts/Glasses';
 
-export class EditGlassesOption {
+export class EditGlassesOptions {
   changePosition (glasses: Glasses, x: number, y: number, z: number) {
     glasses.options.position = [x, y, z];
   }

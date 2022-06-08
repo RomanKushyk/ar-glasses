@@ -1,4 +1,4 @@
-import { ref, uploadBytes, getBlob } from 'firebase/storage';
+import { ref, uploadBytes, getBlob, deleteObject } from 'firebase/storage';
 import { firebaseStorage } from '../../../utils/firebase';
 
 const BASE_PATH = 'assets/glasses/';
@@ -14,4 +14,10 @@ export const uploadGlassesToStorage = async (file: File, path: string) => {
   const storageRef = ref(firebaseStorage, BASE_PATH + path);
   const uploadTask = await uploadBytes(storageRef, file);
   return uploadTask.ref.fullPath;
+};
+
+export const deleteGlassesFromStorage = async (path: string) => {
+  const storageRef = ref(firebaseStorage, BASE_PATH + path);
+
+  deleteObject(storageRef);
 };
