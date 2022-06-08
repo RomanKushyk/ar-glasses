@@ -4,16 +4,19 @@ import cn from 'classnames';
 import React, {ChangeEvent, FC, useContext, useEffect, useState} from 'react';
 import { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
 import { useParams } from 'react-router-dom';
-import {EditGlassesOptions} from '../../utils/EditGlassesOptions';
-import {observer} from 'mobx-react-lite';
-import {editGlassesFromList} from '../../api/firebase/store/glasses';
-import {PreviewScene, previewSceneCanvas } from '../../scenes/AdminPage/PreviewScene/PreviewScene';
+import { EditGlassesOptions } from '../../utils/EditGlassesOptions';
+import { observer } from 'mobx-react-lite';
+import { previewSceneCanvas } from '../../scenes/AdminPage/PreviewScene/PreviewScene';
+import { createInputsBlock } from '../../utils/createInputsBlock';
 
 enum Input {
   name = 'Glasses name',
   positionX = 'positionX',
   positionY = 'positionY',
   positionZ = 'positionZ',
+  rotationX = 'rotationX',
+  rotationY = 'rotationY',
+  rotationZ = 'rotationZ',
   scaleX = 'scaleX',
   scaleY = 'scaleY',
   scaleZ = 'scaleZ',
@@ -26,16 +29,19 @@ enum Input {
   prevScaleX = 'previewScaleX',
   prevScaleY = 'previewScaleY',
   prevScaleZ = 'previewScaleZ',
+  prevThree = 'previewThree',
 }
 
 enum Option {
   position = 'Position',
+  rotation = 'Rotation',
   scale = 'Scale',
   three = 'three',
   prevPosition = 'Preview position',
   prevRotate = 'Preview rotate',
   prevScale = 'Preview scale',
   prevThree = 'Preview three',
+  prevSave = 'Sava preview image',
 }
 
 enum View {
@@ -54,6 +60,7 @@ export const EditGlasses: FC = observer(() => {
   useEffect(() => {
     if (!params.glassesId) return;
 
+    store.clearIndicators();
     store.setSelected(params.glassesId);
     store.createScenes();
   }, [params]);
@@ -61,10 +68,14 @@ export const EditGlasses: FC = observer(() => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!store.glasses.selected) return;
 
-    const { name } = event.target;
+    const { name, id } = event.target;
     const value = event.target.value as unknown as number;
 
     switch (name) {
+      case Input.name:
+        editor.changeName(store.glasses.selected, event.target.value);
+        break;
+
       case Input.positionX:
         editor.changePositionX(store.glasses.selected, value);
         break;
@@ -75,6 +86,18 @@ export const EditGlasses: FC = observer(() => {
 
       case Input.positionZ:
         editor.changePositionZ(store.glasses.selected, value);
+        break;
+
+      case Input.rotationX:
+        editor.changeRotationX(store.glasses.selected, value);
+        break;
+
+      case Input.rotationY:
+        editor.changeRotationY(store.glasses.selected, value);
+        break;
+
+      case Input.rotationZ:
+        editor.changeRotationZ(store.glasses.selected, value);
         break;
 
       case Input.scaleX:
@@ -125,6 +148,10 @@ export const EditGlasses: FC = observer(() => {
         editor.changePreviewScaleZ(store.glasses.selected, value);
         break;
 
+      case Input.prevThree:
+        editor.changePartVisibilityForPreview(store.glasses.selected, id);
+        break;
+
       default:
         break;
     }
@@ -141,12 +168,12 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_scale",
-                {"params-container__button": optionsBlockName === Option.scale}
+                {"params-container__button_selected": optionsBlockName === Option.scale}
               )}
               type="button"
               title={Option.scale}
               onClick={() => {
-                setOptionsBlockName(Option.scale)
+                setOptionsBlockName(Option.scale);
               }}
             />
 
@@ -154,12 +181,25 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_position",
-                {"params-container__button": optionsBlockName === Option.position}
+                {"params-container__button_selected": optionsBlockName === Option.position}
               )}
               type="button"
               title={Option.position}
               onClick={() => {
-                setOptionsBlockName(Option.position)
+                setOptionsBlockName(Option.position);
+              }}
+            />
+
+            <button
+              className={cn(
+                "params-container__button",
+                "params-container__button_rotation",
+                {"params-container__button_selected": optionsBlockName === Option.rotation}
+              )}
+              type="button"
+              title={Option.rotation}
+              onClick={() => {
+                setOptionsBlockName(Option.rotation);
               }}
             />
 
@@ -167,12 +207,13 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_three",
-                {"params-container__button": optionsBlockName === Option.three}
+                {"params-container__button_selected": optionsBlockName === Option.three}
               )}
               type="button"
               title={Option.three}
+              hidden={true} // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
               onClick={() => {
-                setOptionsBlockName(Option.three)
+                setOptionsBlockName(Option.three);
               }}
             />
           </>
@@ -185,7 +226,7 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_scale",
-                {"params-container__button": optionsBlockName === Option.prevScale}
+                {"params-container__button_selected": optionsBlockName === Option.prevScale}
               )}
               type="button"
               title={Option.prevScale}
@@ -198,25 +239,25 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_position",
-                {"params-container__button": optionsBlockName === Option.prevPosition}
+                {"params-container__button_selected": optionsBlockName === Option.prevPosition}
               )}
               type="button"
               title={Option.prevPosition}
               onClick={() => {
-                setOptionsBlockName(Option.prevPosition)
+                setOptionsBlockName(Option.prevPosition);
               }}
             />
 
             <button
               className={cn(
                 "params-container__button",
-                "params-container__button_rotate",
-                {"params-container__button": optionsBlockName === Option.prevRotate}
+                "params-container__button_rotation",
+                {"params-container__button_selected": optionsBlockName === Option.prevRotate}
               )}
               type="button"
               title={Option.prevRotate}
               onClick={() => {
-                setOptionsBlockName(Option.prevRotate)
+                setOptionsBlockName(Option.prevRotate);
               }}
             />
 
@@ -224,68 +265,40 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_three",
-                {"params-container__button": optionsBlockName === Option.prevThree}
+                {"params-container__button_selected": optionsBlockName === Option.prevThree}
               )}
               type="button"
               title={Option.prevThree}
               onClick={() => {
-                setOptionsBlockName(Option.prevThree)
+                setOptionsBlockName(Option.prevThree);
+
+              }}
+            />
+
+            <button
+              className={cn(
+                "params-container__button",
+                "params-container__button_save-preview",
+                {"params-container__button_completed": store.glasses.pngSaved},
+                {"params-container__button_aborted": store.glasses.savePngAborted},
+              )}
+              type="button"
+              title={Option.prevSave}
+              onClick={async () => {
+                await store.makePreviewPngAndUpload();
               }}
             />
           </>
         );
     }
-  }
-
-  const createInputBlock = (
-    name: string,
-    value: number,
-    callback: (event: ChangeEvent<HTMLInputElement>) => void,
-    min: number,
-    max: number,
-    step: number,
-  ) => {
-    return (
-      <div
-        className="params-container__param-item"
-        key={name}
-      >
-            <span className="params-container__param-title">
-            {name.slice(-1) + ':'}
-          </span>
-
-        <div className="params-container__inputs-container">
-          <input
-            className="params-container__range-input"
-            type="range"
-            name={name}
-            min={min}
-            max={max}
-            step={step}
-            value={value}
-            onChange={callback}
-          />
-
-          <input
-            className="params-container__additional-input"
-            type="number"
-            min={min}
-            max={max}
-            step={step}
-            name={name}
-            value={value}
-            onChange={callback}
-          />
-        </div>
-      </div>
-    );
   };
+
 
   const createOptionBlock = (blockName: Option) => {
     if (!store.glasses.selected) return;
 
     const positionParams: [min: number, max: number, step: number] = [-50, 50, 0.01];
-    const rotateParams: [min: number, max: number, step: number] = [0, 6.3, 0.01];
+    const rotationParams: [min: number, max: number, step: number] = [0, 6.3, 0.01];
     const scaleParams: [min: number, max: number, step: number] = [0, 10, 0.01];
     const options = store.glasses.selected.options;
     const prevOptions = store.glasses.selected.snapshot_options;
@@ -293,18 +306,19 @@ export const EditGlasses: FC = observer(() => {
     switch (blockName) {
       case Option.position:
         return [
-          createInputBlock(
+          createInputsBlock(
             Input.positionX,
             options.position[0],
             handleChange,
             ...positionParams
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.positionY,
             options.position[1],
             handleChange,
-            ...positionParams),
-          createInputBlock(
+            ...positionParams
+          ),
+          createInputsBlock(
             Input.positionZ,
             options.position[2],
             handleChange,
@@ -312,21 +326,43 @@ export const EditGlasses: FC = observer(() => {
           ),
         ];
 
+      case Option.rotation:
+        return [
+          createInputsBlock(
+            Input.rotationX,
+            options.rotation[0],
+            handleChange,
+            ...rotationParams
+          ),
+          createInputsBlock(
+            Input.rotationY,
+            options.rotation[1],
+            handleChange,
+            ...rotationParams
+          ),
+          createInputsBlock(
+            Input.rotationZ,
+            options.rotation[2],
+            handleChange,
+            ...rotationParams
+          ),
+        ];
+
       case Option.scale:
         return [
-          createInputBlock(
+          createInputsBlock(
             Input.scaleX,
             options.scale[0],
             handleChange,
             ...scaleParams
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.scaleY,
             options.scale[1],
             handleChange,
             ...scaleParams
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.scaleZ,
             options.scale[2],
             handleChange,
@@ -336,19 +372,19 @@ export const EditGlasses: FC = observer(() => {
 
       case Option.prevPosition:
         return [
-          createInputBlock(
+          createInputsBlock(
             Input.prevPositionX,
             prevOptions.position[0],
             handleChange,
             ...positionParams
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.prevPositionY,
             prevOptions.position[1],
             handleChange,
             ...positionParams
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.prevPositionZ,
             prevOptions.position[2],
             handleChange,
@@ -358,40 +394,40 @@ export const EditGlasses: FC = observer(() => {
 
       case Option.prevRotate:
         return [
-          createInputBlock(
+          createInputsBlock(
             Input.prevRotateX,
             prevOptions.rotation[0],
             handleChange,
-            ...rotateParams
+            ...rotationParams
           ),
-          createInputBlock(Input.prevRotateY,
+          createInputsBlock(Input.prevRotateY,
             prevOptions.rotation[1],
             handleChange,
-            ...rotateParams,
+            ...rotationParams,
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.prevRotateZ,
             prevOptions.rotation[2],
             handleChange,
-            ...rotateParams,
+            ...rotationParams,
           ),
         ];
 
       case Option.prevScale:
         return [
-          createInputBlock(
+          createInputsBlock(
             Input.prevScaleX,
             prevOptions.scale[0],
             handleChange,
             ...scaleParams,
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.prevScaleY,
             prevOptions.scale[1],
             handleChange,
             ...scaleParams,
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.prevScaleZ,
             prevOptions.scale[2],
             handleChange,
@@ -399,24 +435,45 @@ export const EditGlasses: FC = observer(() => {
           ),
         ];
 
+      case Option.prevThree:
+        if (!store.glasses.selected.snapshot_options.partsVisibility) return;
+
+        const list = Object.entries(store.glasses.selected.snapshot_options.partsVisibility);
+
+        return (
+          <div
+            className="params-container__param-item"
+          >
+            <div className="params-container__checkbox-container">
+              {list.map(([name, value]) => (
+                <label
+                  key={name}
+                  className="params-container__checkbox-label"
+                >
+                  <input
+                    className="params-container__checkbox-input"
+                    type="checkbox"
+                    name={Input.prevThree}
+                    id={name}
+                    checked={value}
+                    onChange={handleChange}
+                  />
+
+                  {name}
+                </label>
+              ))}
+            </div>
+          </div>
+        )
+
       default:
         break;
     }
   };
 
   const handleSave = async () => {
-    if (store.glasses.selected) {
-      const { id, ...data } = store.glasses.selected;
-
-      await editGlassesFromList(id, data);
-    }
+    await store.saveChangesInTheSelectedToFirebase();
   };
-
-  // вивантаження файла з хмари
-
-  // downloadGlassesFromStorage('assets/glasses/1.fbx', '1.fbx')
-  //   .then(data => store.glasses.modelFiles[data.name] = data);
-  // console.log(store.glasses.modelFiles);
 
   return (
     <section className="edit-glasses">
@@ -425,19 +482,19 @@ export const EditGlasses: FC = observer(() => {
           <input
             className="edit-glasses__input"
             type="text"
-            name="glasses-name"
+            name={Input.name}
             placeholder={Input.name}
             title={Input.name}
             value={store.glasses.selected?.name}
-            onChange={event => {
-              if (store.glasses.selected) {
-                editor.changeName(store.glasses.selected, event.target.value);
-              }
-            }}
+            onChange={handleChange}
           />
 
           <button
-            className="edit-glasses__button"
+            className={cn(
+              "edit-glasses__button",
+              {"edit-glasses__button_completed": store.glasses.saved},
+              {"edit-glasses__button_aborted": store.glasses.saveAborted},
+            )}
             onClick={() => {
               handleSave();
             }}
@@ -478,49 +535,13 @@ export const EditGlasses: FC = observer(() => {
             {optionsBlockName + ':'}
           </span>
 
-          {createOptionBlock(optionsBlockName)}
+          <div className="params-container__params-group">
+            {createOptionBlock(optionsBlockName)}
+          </div>
         </div>
 
         <div className="params-container__navigation-panel">
           {createNavigationPanel(currentView)}
-        </div>
-      </div>
-
-      <div className="edit-glasses__params-container params-container">
-        <div className="params-container__params-list">
-          list
-        </div>
-
-        <div className="params-container__navigation-panel">
-          <button
-            className="params-container__button params-container__button_scale"
-            type="button"
-            title="Scale"
-            // onClick={}
-          />
-
-          <button
-            className="params-container__button params-container__button_position"
-            type="button"
-            title="Position"
-            // onClick={}
-          />
-
-          <button
-            className="params-container__button params-container__button_rotate"
-            type="button"
-            title="Rotate"
-            // onClick={}
-          />
-
-          <button
-            className="params-container__button params-container__button_three"
-            type="button"
-            title="Three"
-            // onClick={}
-          />
-
-          <div className="params-container__indicator"/>
         </div>
       </div>
     </section>
