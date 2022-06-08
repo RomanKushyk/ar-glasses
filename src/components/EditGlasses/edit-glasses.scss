@@ -45,6 +45,14 @@
 }
 
 .params-container {
+  &__title {
+    margin-bottom: 10px;
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 19px;
+  }
 
   &__params-list {
     display: flex;
