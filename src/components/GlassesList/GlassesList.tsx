@@ -3,8 +3,6 @@ import './glasses-list.scss';
 import { FC, useContext, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { StoreContext } from '../../services/store/AdminPage/store';
-import cn from 'classnames';
-import { Glasses } from '../../interfaces/consts/Glasses';
 import { useNavigate } from 'react-router-dom';
 
 export const GlassesList: FC = observer(() => {
@@ -13,7 +11,6 @@ export const GlassesList: FC = observer(() => {
 
   useEffect(() => {
     store.loadGlassesList();
-    console.log('glasses list', store.glasses.list)
   }, []);
 
   return (
@@ -21,13 +18,7 @@ export const GlassesList: FC = observer(() => {
       {store.glasses.list.map(element => (
         <div
           key={element.id}
-          onClick={() => {
-            store.setSelected(element.id);
-          }}
-          className={cn(
-              "glasses-list__item",
-              {'glasses-list__item_active': element.id === store.glasses.selected}
-          )}
+          className={"glasses-list__item"}
         >
           <div className="glasses-list__description-container">
             <div className="glasses-list__preview-container">

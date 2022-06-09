@@ -16,7 +16,7 @@ import {
 import { getNameFromPath } from '../../../utils/getNameFromPath';
 
 interface StoreGlasses {
-  selected: undefined | string,
+  selected: undefined | Glasses,
   temporary: Omit<Glasses, 'id'> | null
   list: Glasses[],
   modelFiles: {
@@ -71,8 +71,8 @@ class Store {
   }
 
   setSelected (id: string) {
-    this.glasses.selected = id;
-    this.loadGlassesList();
+    this.glasses.selected = this.glasses.list
+      .find(item => id === item.id);
   }
 
   loadAllGlassesFiles () {
@@ -124,7 +124,7 @@ class Store {
 
       uploadGlassesToStorage(
         this.acceptedFile,
-        `${this.glasses.temporary.name}/${getNameFromPath(this.glasses.temporary.file_path)}`,
+        `${glassesId}/${glassesId}_model.fbx`,
       )
         .then((url) => {
           console.log('uploaded')
@@ -135,22 +135,22 @@ class Store {
 
           this.clearTemporary();
           this.loadGlassesList();
+          console.log('lost reloaded', this.glasses.list);
         })
     }
   }
 
   async deleteGlassesFromFirebase (item: Glasses) {
-    console.log('delete start');
     await deleteGlassesFromStorage(item.file_path);
-    console.log('delete file')
-    await deleteGlassesFromStorage(item.preview_file_path);
-    console.log('delete preview')
+
+    if (item.preview_file_path.length) {
+      await deleteGlassesFromStorage(item.preview_file_path);
+    }
+
     await deleteGlassesFromList(item.id);
-    console.log('delete from list', item.id);
 
     await this.loadGlassesList();
     await this.loadAllGlassesFiles();
-    console.log('files scope', this.glasses.modelFiles);
   }
 }
 

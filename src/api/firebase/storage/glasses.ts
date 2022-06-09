@@ -17,7 +17,7 @@ export const uploadGlassesToStorage = async (file: File, path: string) => {
 };
 
 export const deleteGlassesFromStorage = async (path: string) => {
-  const storageRef = ref(firebaseStorage, BASE_PATH + path);
+  const storageRef = ref(firebaseStorage, path);
 
   deleteObject(storageRef);
 };
