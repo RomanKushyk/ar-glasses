@@ -1,5 +1,4 @@
 import {Glasses} from '../interfaces/consts/Glasses';
-import store from '../services/store/AdminPage/store';
 
 type CreateNewGlassesInfo = (file: File) => Omit<Glasses, 'id'>;
 

@@ -1,9 +1,12 @@
 import './edit-glasses.scss';
 
+import cn from 'classnames';
 import {ChangeEvent, FC, useContext, useEffect, useState} from 'react';
 import { StoreContext } from '../../services/store/AdminPage/store';
-import {useParams} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import {EditGlassesOptions} from '../../utils/EditGlassesOptions';
+import {observer} from 'mobx-react-lite';
+import {editGlassesFromList} from '../../api/firebase/store/glasses';
 
 enum Input {
   positionX = 'positionX',
@@ -12,178 +15,205 @@ enum Input {
   scaleX = 'scaleX',
   scaleY = 'scaleY',
   scaleZ = 'scaleZ',
-  prevPositionX = 'positionX',
-  prevPositionY = 'positionY',
-  prevPositionZ = 'positionZ',
-  prevRotateX = 'rotateX',
-  prevRotateY = 'rotateY',
-  prevRotateZ = 'rotateZ',
-  prevScaleX = 'scaleX',
-  prevScaleY = 'scaleY',
-  prevScaleZ = 'scaleZ',
+  prevPositionX = 'previewPositionX',
+  prevPositionY = 'previewPositionY',
+  prevPositionZ = 'previewPositionZ',
+  prevRotateX = 'previewRotateX',
+  prevRotateY = 'previewRotateY',
+  prevRotateZ = 'previewRotateZ',
+  prevScaleX = 'previewScaleX',
+  prevScaleY = 'previewScaleY',
+  prevScaleZ = 'previewScaleZ',
 }
 
 enum Option {
   position = 'Position',
   scale = 'Scale',
+  three = 'three',
   prevPosition = 'Preview position',
   prevRotate = 'Preview rotate',
   prevScale = 'Preview scale',
+  prevThree = 'Preview three',
 }
 
-export const EditGlasses: FC = () => {
-  const [positionX, setPositionX] = useState<number>(0);
-  const [positionY, setPositionY] = useState<number>(0);
-  const [positionZ, setPositionZ] = useState<number>(0);
-  const [scaleX, setScaleX] = useState<number>(0);
-  const [scaleY, setScaleY] = useState<number>(0);
-  const [scaleZ, setScaleZ] = useState<number>(0);
-  const [prevPositionX, setPrevPositionX] = useState<number>(0);
-  const [prevPositionY, setPrevPositionY] = useState<number>(0);
-  const [prevPositionZ, setPrevPositionZ] = useState<number>(0);
-  const [prevRotateX, setPrevRotateX] = useState<number>(0);
-  const [prevRotateY, setPrevRotateY] = useState<number>(0);
-  const [prevRotateZ, setPrevRotateZ] = useState<number>(0);
-  const [prevScaleX, setPrevScaleX] = useState<number>(0);
-  const [prevScaleY, setPrevScaleY] = useState<number>(0);
-  const [prevScaleZ, setPrevScaleZ] = useState<number>(0);
+enum View {
+  main = 'Main',
+  preview = 'Preview',
+}
 
-  const [optionBlockName, setOptionBlockName] = useState<Option>(Option.position);
-
+export const EditGlasses: FC = observer(() => {
   const store = useContext(StoreContext);
   const params = useParams();
-  const glassesEditor = new EditGlassesOptions(); //!!!!! чому я його не використав
-  const currentGlasses = store.glasses.list
-    .find(item => params.glassesId === item.id);
+  const navigate = useNavigate();
+
+  const [optionsBlockName, setOptionsBlockName] = useState<Option>(Option.prevPosition);
+  const [currentView, setCurrentView] = useState<View>(View.preview);
+  const editor = new EditGlassesOptions();
 
   useEffect(() => {
-    if (currentGlasses) {
-      setPositionX(currentGlasses.options.position[0]);
-      setPositionY(currentGlasses.options.position[1]);
-      setPositionZ(currentGlasses.options.position[2]);
-
-      setScaleX(currentGlasses.options.scale[0]);
-      setScaleY(currentGlasses.options.scale[1]);
-      setScaleZ(currentGlasses.options.scale[2]);
-
-      setPrevPositionX(currentGlasses.snapshot_options.position[0]);
-      setPrevPositionY(currentGlasses.snapshot_options.position[1]);
-      setPrevPositionZ(currentGlasses.snapshot_options.position[2]);
-
-      setPrevRotateX(currentGlasses.snapshot_options.rotation[0]);
-      setPrevRotateY(currentGlasses.snapshot_options.rotation[1]);
-      setPrevRotateZ(currentGlasses.snapshot_options.rotation[2]);
-
-      setPrevScaleX(currentGlasses.snapshot_options.scale[0]);
-      setPrevScaleY(currentGlasses.snapshot_options.scale[1]);
-      setPrevScaleZ(currentGlasses.snapshot_options.scale[2]);
-
-      // glassesEditor.changePosition(currentGlasses, positionX, positionY, positionZ);
+    if (params.glassesId) {
+      store.setSelected(params.glassesId)
     }
-  }, [currentGlasses]);
+  }, []);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    const numValue = +value;
+    const { name } = event.target;
+    const value = event.target.value as unknown as number;
 
-    switch (name) {
-      case Input.positionX:
-        if (!isNaN(numValue) || value.slice(1) === '.') {
-          setPositionX(numValue);
-        }
-        break;
+    if (store.glasses.selected) {
+      switch (name) {
+        case Input.positionX:
+          editor.changePositionX(store.glasses.selected, value);
+          break;
 
-      case Input.positionY:
-        if (!isNaN(numValue)) {
-          setPositionY(numValue);
-        }
-        break;
+        case Input.positionY:
+          editor.changePositionY(store.glasses.selected, value);
+          break;
 
-      case Input.positionZ:
-        if (!isNaN(numValue)) {
-          setPositionZ(numValue);
-        }
-        break;
+        case Input.positionZ:
+          editor.changePositionZ(store.glasses.selected, value);
+          break;
 
-      case Input.scaleX:
-        if (!isNaN(numValue)) {
-          setScaleX(numValue);
-        }
-        break;
+        case Input.scaleX:
+          editor.changeScaleX(store.glasses.selected, value);
+          break;
 
-      case Input.scaleY:
-        if (!isNaN(numValue)) {
-          setScaleY(numValue);
-        }
-        break;
+        case Input.scaleY:
+          editor.changeScaleY(store.glasses.selected, value);
+          break;
 
-      case Input.scaleZ:
-        if (!isNaN(numValue)) {
-          setScaleZ(numValue);
-        }
-        break;
+        case Input.scaleZ:
+          editor.changeScaleZ(store.glasses.selected, value);
+          break;
 
-      case Input.prevPositionX:
-        if (!isNaN(numValue)) {
-          setPrevPositionX(numValue);
-        }
-        break;
+        case Input.prevPositionX:
+          editor.changePreviewPositionX(store.glasses.selected, value);
+          break;
 
-      case Input.prevPositionY:
-        if (!isNaN(numValue)) {
-          setPrevPositionY(numValue);
-        }
-        break;
+        case Input.prevPositionY:
+          editor.changePreviewPositionY(store.glasses.selected, value);
+          break;
 
-      case Input.prevPositionZ:
-        if (!isNaN(numValue)) {
-          setPrevPositionZ(numValue);
-        }
-        break;
+        case Input.prevPositionZ:
+          editor.changePreviewPositionZ(store.glasses.selected, value);
+          break;
 
-      case Input.prevRotateX:
-        if (!isNaN(numValue)) {
-          setPrevRotateX(numValue);
-        }
-        break;
+        case Input.prevRotateX:
+          editor.changePreviewRotationX(store.glasses.selected, value);
+          break;
 
-      case Input.prevRotateY:
-        if (!isNaN(numValue)) {
-          setPrevRotateY(numValue);
-        }
-        break;
+        case Input.prevRotateY:
+          editor.changePreviewRotationY(store.glasses.selected, value);
+          break;
 
-      case Input.prevRotateZ:
-        if (!isNaN(numValue)) {
-          setPrevRotateZ(numValue);
-        }
-        break;
+        case Input.prevRotateZ:
+          editor.changeRotationPreviewZ(store.glasses.selected, value);
+          break;
 
-      case Input.prevScaleX:
-        if (!isNaN(numValue)) {
-          setPrevScaleX(numValue);
-        }
-        break;
+        case Input.prevScaleX:
+          editor.changePreviewScaleX(store.glasses.selected, value);
+          break;
 
-      case Input.prevScaleY:
-        if (!isNaN(numValue)) {
-          setPrevScaleY(numValue);
-        }
-        break;
+        case Input.prevScaleY:
+          editor.changePreviewScaleY(store.glasses.selected, value);
+          break;
 
-      case Input.prevScaleZ:
-        if (!isNaN(numValue)) {
-          setPrevScaleZ(numValue);
-        }
-        break;
+        case Input.prevScaleZ:
+          editor.changePreviewScaleZ(store.glasses.selected, value);
+          break;
+
+        default:
+          break;
+      }
     }
   };
+
+  const createNavigationPanel = (view: View) => {
+    switch (view) {
+      case View.main:
+        return (
+          <>
+            <button
+              className="params-container__button params-container__button_scale"
+              type="button"
+              title="Scale"
+              onClick={() => {
+                setOptionsBlockName(Option.scale)
+              }}
+            />
+
+            <button
+              className="params-container__button params-container__button_position"
+              type="button"
+              title="Position"
+              onClick={() => {
+                setOptionsBlockName(Option.position)
+              }}
+            />
+
+            <button
+              className="params-container__button params-container__button_three"
+              type="button"
+              title="Three"
+              onClick={() => {
+                setOptionsBlockName(Option.three)
+              }}
+            />
+          </>
+        );
+
+      case View.preview:
+        return (
+          <>
+            <button
+              className="params-container__button params-container__button_scale"
+              type="button"
+              title="Scale"
+              onClick={() => {
+                setOptionsBlockName(Option.prevScale)
+              }}
+            />
+
+            <button
+              className="params-container__button params-container__button_position"
+              type="button"
+              title="Position"
+              onClick={() => {
+                setOptionsBlockName(Option.prevPosition)
+              }}
+            />
+
+            <button
+              className="params-container__button params-container__button_rotate"
+              type="button"
+              title="Rotate"
+              onClick={() => {
+                setOptionsBlockName(Option.prevRotate)
+              }}
+            />
+
+            <button
+              className="params-container__button params-container__button_three"
+              type="button"
+              title="Three"
+              onClick={() => {
+                setOptionsBlockName(Option.prevThree)
+              }}
+            />
+          </>
+        );
+    }
+  }
 
   const createInputBlock = (
     name: string,
     value: number,
     callback: (event: ChangeEvent<HTMLInputElement>) => void,
   ) => {
+    const inputMin = -50;
+    const inputMax = 50;
+    const inputStep = 0.01;
+
     return (
       <div
         className="params-container__param-item"
@@ -198,15 +228,19 @@ export const EditGlasses: FC = () => {
             className="params-container__range-input"
             type="range"
             name={name}
-            min={0}
-            max={100}
+            min={inputMin}
+            max={inputMax}
+            step={inputStep}
             value={value}
             onChange={callback}
           />
 
           <input
             className="params-container__additional-input"
-            type="text"
+            type="number"
+            min={inputMin}
+            max={inputMax}
+            step={inputStep}
             name={name}
             value={value}
             onChange={callback}
@@ -217,41 +251,58 @@ export const EditGlasses: FC = () => {
   };
 
   const createOptionBlock = (blockName: Option) => {
-    switch (blockName) {
-      case Option.position:
-        return [
-        createInputBlock(Input.positionX, positionX, handleChange),
-        createInputBlock(Input.positionY, positionY, handleChange),
-        createInputBlock(Input.positionZ, positionZ, handleChange),
+    if (store.glasses.selected) {
+      const options = store.glasses.selected.options;
+      const prevOptions = store.glasses.selected.snapshot_options;
+
+      switch (blockName) {
+        case Option.position:
+          return [
+            createInputBlock(Input.positionX, options.position[0], handleChange),
+            createInputBlock(Input.positionY, options.position[1], handleChange),
+            createInputBlock(Input.positionZ, options.position[2], handleChange),
           ];
 
-      case Option.scale:
-        return [
-          createInputBlock(Input.scaleX, scaleX, handleChange),
-          createInputBlock(Input.scaleY, scaleY, handleChange),
-          createInputBlock(Input.scaleZ, scaleZ, handleChange),
-        ];
+        case Option.scale:
+          return [
+            createInputBlock(Input.scaleX, options.scale[0], handleChange),
+            createInputBlock(Input.scaleY, options.scale[1], handleChange),
+            createInputBlock(Input.scaleZ, options.scale[2], handleChange),
+          ];
 
-      case Option.prevPosition:
-        return [
-          createInputBlock(Input.prevPositionX, prevPositionX, handleChange),
-          createInputBlock(Input.prevPositionY, prevPositionY, handleChange),
-          createInputBlock(Input.prevPositionZ, prevPositionZ, handleChange),
-        ];
+        case Option.prevPosition:
+          return [
+            createInputBlock(Input.prevPositionX, prevOptions.position[0], handleChange),
+            createInputBlock(Input.prevPositionY, prevOptions.position[1], handleChange),
+            createInputBlock(Input.prevPositionZ, prevOptions.position[2], handleChange),
+          ];
 
-      case Option.prevRotate:
-        return [
-          createInputBlock(Input.prevRotateX, prevRotateX, handleChange),
-          createInputBlock(Input.prevRotateY, prevRotateY, handleChange),
-          createInputBlock(Input.prevRotateZ, prevRotateZ, handleChange),
-        ];
+        case Option.prevRotate:
+          return [
+            createInputBlock(Input.prevRotateX, prevOptions.rotation[0], handleChange),
+            createInputBlock(Input.prevRotateY, prevOptions.rotation[1], handleChange),
+            createInputBlock(Input.prevRotateZ, prevOptions.rotation[2], handleChange),
+          ];
 
-      case Option.prevScale:
-        return [
-          createInputBlock(Input.prevScaleX, prevScaleX, handleChange),
-          createInputBlock(Input.prevScaleY, prevScaleY, handleChange),
-          createInputBlock(Input.prevScaleZ, prevScaleZ, handleChange),
-        ];
+        case Option.prevScale:
+          return [
+            createInputBlock(Input.prevScaleX, prevOptions.scale[0], handleChange),
+            createInputBlock(Input.prevScaleY, prevOptions.scale[1], handleChange),
+            createInputBlock(Input.prevScaleZ, prevOptions.scale[2], handleChange),
+          ];
+
+        default:
+          break;
+      }
+    }
+  };
+
+  const handleSave = async () => {
+    if (store.glasses.selected) {
+      const { id, ...data } = store.glasses.selected;
+
+      await editGlassesFromList(id, data);
+      navigate('../new');
     }
   };
 
@@ -264,68 +315,58 @@ export const EditGlasses: FC = () => {
             type="text"
             name="glasses-name"
             placeholder="Glasses name"
-            // value={}
-            // onChange={}
+            value={store.glasses.selected?.name}
+            onChange={event => {
+              if (store.glasses.selected) {
+                editor.changeName(store.glasses.selected, event.target.value);
+              }
+            }}
           />
 
           <button
             className="edit-glasses__button"
-            // onClick={() => {}}
+            onClick={() => {
+              handleSave();
+            }}
           >Save</button>
         </div>
 
-        <div className="edit-glasses__scene">
+        <div
+          className={cn(
+            "edit-glasses__scene",
+            {"edit-glasses__scene_selected": currentView === View.main},
+          )}
+          onClick={() => {
+            setCurrentView(View.main);
+          }}
+        >
         </div>
 
-        <div className="edit-glasses__preview-scene">
+        <div
+          className={cn(
+            "edit-glasses__preview-scene",
+            {"edit-glasses__preview-scene_selected": currentView === View.preview},
+          )}
+          onClick={() => {
+            setCurrentView(View.preview);
+          }}
+        >
         </div>
       </div>
 
       <div className="edit-glasses__params-container params-container">
         <div className="params-container__params-list">
           <span className="params-container__title">
-            {optionBlockName + ':'}
+            {optionsBlockName + ':'}
           </span>
 
-          {createOptionBlock(optionBlockName)}
+          {createOptionBlock(optionsBlockName)}
         </div>
 
         <div className="params-container__navigation-panel">
-          <button
-            className="params-container__button params-container__button_scale"
-            type="button"
-            title="Scale"
-            onClick={() => {
-              setOptionBlockName(Option.scale)
-            }}
-          />
-
-          <button
-            className="params-container__button params-container__button_position"
-            type="button"
-            title="Position"
-            onClick={() => {
-              setOptionBlockName(Option.position)
-            }}
-          />
-
-          <button
-            className="params-container__button params-container__button_rotate"
-            type="button"
-            title="Rotate"
-            onClick={() => {
-              //setOptionBlockName(Option.rotate) //додати обертання в єнами і в головний тип
-            }}
-          />
-
-          <button
-            className="params-container__button params-container__button_three"
-            type="button"
-            title="Three"
-            // onClick={}
-          />
+          {createNavigationPanel(currentView)}
         </div>
       </div>
     </section>
   );
-};
+});

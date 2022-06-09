@@ -1,24 +1,68 @@
 import { Glasses } from '../interfaces/consts/Glasses';
 
 export class EditGlassesOptions {
-  changePosition (glasses: Glasses, x: number, y: number, z: number) {
-    glasses.options.position = [x, y, z];
+  changeName (glasses: Glasses, name: string) {
+    glasses.name = name;
   }
 
-  changeScale (glasses: Glasses, x: number, y: number, z: number) {
-    glasses.options.scale = [x, y, z];
+  changePositionX (glasses: Glasses, x: number) {
+    glasses.options.position[0] = x;
   }
 
-  changePositionForPreview(glasses: Glasses, x: number, y: number, z: number) {
-    glasses.snapshot_options.position = [x, y, z];
+  changePositionY (glasses: Glasses, y: number) {
+    glasses.options.position[1] = y;
   }
 
-  changeScaleForPreview (glasses: Glasses, x: number, y: number, z: number) {
-    glasses.snapshot_options.scale = [x, y, z];
+  changePositionZ (glasses: Glasses, z: number) {
+    glasses.options.position[2] = z;
   }
 
-  changeRotationForPreview (glasses: Glasses, x: number, y: number, z: number) {
-    glasses.snapshot_options.rotation = [x, y, z];
+  changeScaleX (glasses: Glasses, x: number) {
+    glasses.options.scale[0] = x;
+  }
+
+  changeScaleY (glasses: Glasses, y: number) {
+    glasses.options.scale[1] = y;
+  }
+
+  changeScaleZ (glasses: Glasses, z: number) {
+    glasses.options.scale[2] = z;
+  }
+
+  changePreviewPositionX (glasses: Glasses, x: number) {
+    glasses.snapshot_options.position[0] = x;
+  }
+
+  changePreviewPositionY (glasses: Glasses, y: number) {
+    glasses.snapshot_options.position[1] = y;
+  }
+
+  changePreviewPositionZ (glasses: Glasses, z: number) {
+    glasses.snapshot_options.position[2] = z;
+  }
+
+  changePreviewScaleX (glasses: Glasses, x: number) {
+    glasses.snapshot_options.scale[0] = x;
+  }
+
+  changePreviewScaleY (glasses: Glasses, y: number) {
+    glasses.snapshot_options.scale[1] = y;
+  }
+
+  changePreviewScaleZ (glasses: Glasses, z: number) {
+    glasses.snapshot_options.scale[2] = z;
+  }
+
+  changePreviewRotationX (glasses: Glasses, x: number) {
+    glasses.snapshot_options.rotation[0] = x;
+  }
+
+  changePreviewRotationY (glasses: Glasses, y: number) {
+    glasses.snapshot_options.rotation[1] = y;
+  }
+
+  changeRotationPreviewZ (glasses: Glasses, z: number) {
+    glasses.snapshot_options.rotation[2] = z;
   }
 
   changePartVisibilityForPreview (glasses: Glasses, parts: { [name: string]: boolean }) {
