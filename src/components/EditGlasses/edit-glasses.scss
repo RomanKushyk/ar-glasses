@@ -36,10 +36,6 @@
     margin-bottom: 30px;
 
     @include box-element;
-
-    &_selected {
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-    }
   }
 
   &__preview-scene {
@@ -49,10 +45,6 @@
 
     @include square(10vh);
     @include box-element;
-
-    &_selected {
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-    }
   }
 
   &__params-container {

@@ -475,6 +475,28 @@ export const EditGlasses: FC = observer(() => {
     await store.saveChangesInTheSelectedToFirebase();
   };
 
+  // useEffect(() => {
+  //   const jgjh = async () => {
+  //     const fbxLoader = new FBXLoader();
+  //
+  //     let object = await fbxLoader.loadAsync(store.glasses.selected?.file_path);
+  //
+  //     object.position.set(...store.glasses.selected?.snapshot_options.position);
+  //     object.scale.set(...store.glasses.selected?.snapshot_options.scale);
+  //     object.rotation.set(...store.glasses.selected?.snapshot_options.rotation);
+  //     store.glasses.selected?.snapshot_options.bracketsItemsNames.forEach(name => {
+  //       object.getObjectByName(name)
+  //         ?.traverse((obj => {
+  //           if (obj.visible) {
+  //             obj.visible = false;
+  //           }
+  //         }))
+  //     });
+  //   }
+  //
+  //   jgjh();
+  // }, [])
+
   return (
     <section className="edit-glasses">
       <div className="edit-glasses__views-container">
