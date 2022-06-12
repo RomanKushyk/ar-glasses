@@ -1,6 +1,6 @@
 import './admin-page.scss';
 import {FC, useEffect} from 'react';
-import store, { StoreContext } from '../../services/store/AdminPage/store';
+import storeAdmin, { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
 import { SignOut } from '../../components/SignOut';
 import {Outlet, useLocation, useNavigate} from 'react-router-dom';
 
@@ -15,12 +15,12 @@ export const AdminPage: FC = () => {
   }, [location.pathname]);
 
   return (
-    <StoreContext.Provider value={store}>
+    <StoreContextAdmin.Provider value={storeAdmin}>
       <div className="admin-page">
         <SignOut/>
 
         <Outlet/>
       </div>
-    </StoreContext.Provider>
+    </StoreContextAdmin.Provider>
   );
 };

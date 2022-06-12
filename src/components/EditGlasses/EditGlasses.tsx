@@ -1,13 +1,13 @@
 import './edit-glasses.scss';
 
 import cn from 'classnames';
-import {ChangeEvent, FC, useContext, useEffect, useState} from 'react';
-import { StoreContext } from '../../services/store/AdminPage/store';
-import {useNavigate, useParams} from 'react-router-dom';
+import React, {ChangeEvent, FC, useContext, useEffect, useState} from 'react';
+import { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
+import { useParams } from 'react-router-dom';
 import {EditGlassesOptions} from '../../utils/EditGlassesOptions';
 import {observer} from 'mobx-react-lite';
 import {editGlassesFromList} from '../../api/firebase/store/glasses';
-import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
+import {PreviewScene, previewSceneCanvas } from '../PreviewScene/PreviewScene';
 
 enum Input {
   name = 'Glasses name',
@@ -44,16 +44,17 @@ enum View {
 }
 
 export const EditGlasses: FC = observer(() => {
-  const store = useContext(StoreContext);
+  const store = useContext(StoreContextAdmin);
   const params = useParams();
 
-  const [optionsBlockName, setOptionsBlockName] = useState<Option>(Option.scale);
+  const [optionsBlockName, setOptionsBlockName] = useState<Option>(Option.prevScale);
   const [currentView, setCurrentView] = useState<View>(View.preview);
   const editor = new EditGlassesOptions();
 
   useEffect(() => {
     if (params.glassesId) {
-      store.setSelected(params.glassesId)
+      store.setSelected(params.glassesId);
+      store.createScenes();
     }
   }, [params]);
 
@@ -126,6 +127,8 @@ export const EditGlasses: FC = observer(() => {
         default:
           break;
       }
+
+      store.updateScenes();
     }
   };
 
@@ -238,11 +241,10 @@ export const EditGlasses: FC = observer(() => {
     name: string,
     value: number,
     callback: (event: ChangeEvent<HTMLInputElement>) => void,
+    min: number,
+    max: number,
+    step: number,
   ) => {
-    const inputMin = -50;
-    const inputMax = 50;
-    const inputStep = 0.01;
-
     return (
       <div
         className="params-container__param-item"
@@ -257,9 +259,9 @@ export const EditGlasses: FC = observer(() => {
             className="params-container__range-input"
             type="range"
             name={name}
-            min={inputMin}
-            max={inputMax}
-            step={inputStep}
+            min={min}
+            max={max}
+            step={step}
             value={value}
             onChange={callback}
           />
@@ -267,9 +269,9 @@ export const EditGlasses: FC = observer(() => {
           <input
             className="params-container__additional-input"
             type="number"
-            min={inputMin}
-            max={inputMax}
-            step={inputStep}
+            min={min}
+            max={max}
+            step={step}
             name={name}
             value={value}
             onChange={callback}
@@ -281,43 +283,119 @@ export const EditGlasses: FC = observer(() => {
 
   const createOptionBlock = (blockName: Option) => {
     if (store.glasses.selected) {
+      const positionParams: [min: number, max: number, step: number] = [-50, 50, 0.01];
+      const rotateParams: [min: number, max: number, step: number] = [0, 6.3, 0.01];
+      const scaleParams: [min: number, max: number, step: number] = [0, 10, 0.01];
       const options = store.glasses.selected.options;
       const prevOptions = store.glasses.selected.snapshot_options;
 
       switch (blockName) {
         case Option.position:
           return [
-            createInputBlock(Input.positionX, options.position[0], handleChange),
-            createInputBlock(Input.positionY, options.position[1], handleChange),
-            createInputBlock(Input.positionZ, options.position[2], handleChange),
+            createInputBlock(
+              Input.positionX,
+              options.position[0],
+              handleChange,
+              ...positionParams
+            ),
+            createInputBlock(
+              Input.positionY,
+              options.position[1],
+              handleChange,
+              ...positionParams),
+            createInputBlock(
+              Input.positionZ,
+              options.position[2],
+              handleChange,
+              ...positionParams
+            ),
           ];
 
         case Option.scale:
           return [
-            createInputBlock(Input.scaleX, options.scale[0], handleChange),
-            createInputBlock(Input.scaleY, options.scale[1], handleChange),
-            createInputBlock(Input.scaleZ, options.scale[2], handleChange),
+            createInputBlock(
+              Input.scaleX,
+              options.scale[0],
+              handleChange,
+              ...scaleParams
+            ),
+            createInputBlock(
+              Input.scaleY,
+              options.scale[1],
+              handleChange,
+              ...scaleParams
+            ),
+            createInputBlock(
+              Input.scaleZ,
+              options.scale[2],
+              handleChange,
+              ...scaleParams
+            ),
           ];
 
         case Option.prevPosition:
           return [
-            createInputBlock(Input.prevPositionX, prevOptions.position[0], handleChange),
-            createInputBlock(Input.prevPositionY, prevOptions.position[1], handleChange),
-            createInputBlock(Input.prevPositionZ, prevOptions.position[2], handleChange),
+            createInputBlock(
+              Input.prevPositionX,
+              prevOptions.position[0],
+              handleChange,
+              ...positionParams
+            ),
+            createInputBlock(
+              Input.prevPositionY,
+              prevOptions.position[1],
+              handleChange,
+              ...positionParams
+            ),
+            createInputBlock(
+              Input.prevPositionZ,
+              prevOptions.position[2],
+              handleChange,
+              ...positionParams
+            ),
           ];
 
         case Option.prevRotate:
           return [
-            createInputBlock(Input.prevRotateX, prevOptions.rotation[0], handleChange),
-            createInputBlock(Input.prevRotateY, prevOptions.rotation[1], handleChange),
-            createInputBlock(Input.prevRotateZ, prevOptions.rotation[2], handleChange),
+            createInputBlock(
+              Input.prevRotateX,
+              prevOptions.rotation[0],
+              handleChange,
+              ...rotateParams
+            ),
+            createInputBlock(Input.prevRotateY,
+              prevOptions.rotation[1],
+              handleChange,
+              ...rotateParams,
+            ),
+            createInputBlock(
+              Input.prevRotateZ,
+              prevOptions.rotation[2],
+              handleChange,
+              ...rotateParams,
+            ),
           ];
 
         case Option.prevScale:
           return [
-            createInputBlock(Input.prevScaleX, prevOptions.scale[0], handleChange),
-            createInputBlock(Input.prevScaleY, prevOptions.scale[1], handleChange),
-            createInputBlock(Input.prevScaleZ, prevOptions.scale[2], handleChange),
+            createInputBlock(
+              Input.prevScaleX,
+              prevOptions.scale[0],
+              handleChange,
+              ...scaleParams,
+            ),
+            createInputBlock(
+              Input.prevScaleY,
+              prevOptions.scale[1],
+              handleChange,
+              ...scaleParams,
+            ),
+            createInputBlock(
+              Input.prevScaleZ,
+              prevOptions.scale[2],
+              handleChange,
+              ...scaleParams,
+            ),
           ];
 
         default:
@@ -390,21 +468,24 @@ export const EditGlasses: FC = observer(() => {
           title={View.main}
           onClick={() => {
             setCurrentView(View.main);
+            setOptionsBlockName(Option.position);
           }}
         >
         </div>
 
-        <div
+        <canvas
           className={cn(
             "edit-glasses__preview-scene",
             {"edit-glasses__preview-scene_selected": currentView === View.preview},
           )}
+          ref={previewSceneCanvas}
           title={View.preview}
           onClick={() => {
             setCurrentView(View.preview);
+            setOptionsBlockName(Option.prevPosition);
           }}
         >
-        </div>
+        </canvas>
       </div>
 
       <div className="edit-glasses__params-container params-container">

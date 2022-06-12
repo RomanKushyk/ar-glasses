@@ -3,13 +3,12 @@ import './file-upload.scss';
 import { FC, useContext, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { observer } from 'mobx-react-lite';
-import { StoreContext } from '../../services/store/AdminPage/store';
+import { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
 import { createNewGlassesInfo } from '../../utils/createNewGlassesInfo';
-import { useNavigate } from 'react-router-dom';
 
 export const FileUpload: FC = observer(() => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({ multiple: false });
-  const store = useContext(StoreContext);
+  const store = useContext(StoreContextAdmin);
   // const navigate = useNavigate();
 
   useEffect(() => {

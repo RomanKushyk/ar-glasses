@@ -2,11 +2,11 @@ import './glasses-list.scss';
 
 import { FC, useContext, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
-import { StoreContext } from '../../services/store/AdminPage/store';
+import { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
 import { useNavigate } from 'react-router-dom';
 
 export const GlassesList: FC = observer(() => {
-  const store = useContext(StoreContext);
+  const store = useContext(StoreContextAdmin);
   const navigate = useNavigate();
 
   useEffect(() => {
