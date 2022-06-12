@@ -14,20 +14,21 @@ import {
   uploadGlassesToStorage
 } from '../../../api/firebase/storage/glasses';
 import { getNameFromPath } from '../../../utils/getNameFromPath';
+import {PreviewScene} from '../../../components/PreviewScene/PreviewScene';
 
 interface StoreGlasses {
   selected: undefined | Glasses,
   temporary: Omit<Glasses, 'id'> | null
   list: Glasses[],
   modelFiles: {
-    [id: string]: File,
+    [id: string]: File,      //файли підгружаються з мережі
   },
   previewFiles: {
     [id: string]: File,
   },
 }
 
-class Store {
+class StoreAdmin {
   glasses: StoreGlasses = {
     selected: undefined,
     temporary: null,
@@ -37,6 +38,7 @@ class Store {
   };
 
   acceptedFile: File | null = null;
+  previewScene: null | PreviewScene = null;
 
   constructor () {
     makeObservable(this, {
@@ -46,12 +48,14 @@ class Store {
       loadAllGlassesFiles: action,
       clearTemporary: action,
 
-      addToGlassesList: action,
-      editInGlassesList: action,
-      deleteFromGlassesList: action,
+      // addToGlassesList: action,
+      // editInGlassesList: action,
+      // deleteFromGlassesList: action,
 
       acceptedFile: observable,
       getFileFromUser: action,
+
+      previewScene: observable,
 
       uploadTemporaryToFirebase: action,
       deleteGlassesFromFirebase: action,
@@ -67,7 +71,7 @@ class Store {
         id: doc.id,
         ...doc.data(),
       } as Glasses);
-    })
+    });
   }
 
   setSelected (id: string) {
@@ -95,26 +99,39 @@ class Store {
     this.glasses.temporary = null;
   }
 
-  async addToGlassesList (data: Omit<Glasses, 'id'>) {
-    await addGlassesToList(data);
-  }
-
-  async editInGlassesList (id: string, data: Partial<Glasses>) {
-    await editGlassesFromList(id, data);
-  }
-
-  async deleteFromGlassesList (id: string) {
-    await deleteGlassesFromList(id);
-  }
+  // async addToGlassesList (data: Omit<Glasses, 'id'>) {
+  //   await addGlassesToList(data);
+  // }
+  //
+  // async editInGlassesList (id: string, data: Partial<Glasses>) {
+  //   await editGlassesFromList(id, data);
+  // }
+  //
+  // async deleteFromGlassesList (id: string) {
+  //   await deleteGlassesFromList(id);
+  // }
 
   getFileFromUser (file: File) {
     this.acceptedFile = file;
   }
 
+  async createScenes () {
+    if (this.glasses.selected) {
+      this.previewScene = new PreviewScene();
+      await this.previewScene.createScene(this.glasses.selected);
+    }
+  }
+
+  updateScenes () {
+    if (this.previewScene) {
+      this.previewScene.refreshPosition(this.glasses.selected);
+    }
+  }
+
   async uploadTemporaryToFirebase () {
     let glassesId: string | undefined;
     console.log('start');
-    console.log(store.acceptedFile);
+    console.log(this.acceptedFile);
 
     if (this.acceptedFile) {
       this.glasses.temporary = createNewGlassesInfo(this.acceptedFile);
@@ -154,7 +171,7 @@ class Store {
   }
 }
 
-const store = new Store();
-export const StoreContext = createContext(store);
+const storeAdmin = new StoreAdmin();
+export const StoreContextAdmin = createContext(storeAdmin);
 
-export default store;
+export default storeAdmin;
