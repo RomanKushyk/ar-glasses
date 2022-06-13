@@ -13,6 +13,19 @@
   z-index: 1000;
   border-radius: 24px;
 
+  &__tip {
+    position: absolute;
+    top: -40px;
+    height: 30px;
+    padding: 0 10px;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    line-height: 30px;
+    text-align: center;
+  }
+
   &__glasses {
     width: calc(100% - 80px);
     display: flex;
@@ -46,7 +59,7 @@
         margin-right: 0;
       }
 
-      &_active{
+      &_active {
         background-color: rgba(255, 255, 255, 0.5);
         color: black;
       }

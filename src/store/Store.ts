@@ -1,11 +1,18 @@
 import { action, makeObservable, observable } from "mobx";
 import Scene from "../scene/Scene";
 import { createContext } from "react";
-import {Glasses} from '../interfaces/consts/Glasses';
+import { Glasses } from "../interfaces/consts/Glasses";
+import { EFacetypes } from "enums/EFacetypes";
+import IFacetype from "interfaces/Facetype";
 
 class Store {
   ready: boolean = false;
   scene: Scene = new Scene();
+  facetype: IFacetype = {
+    type: NaN,
+    current_detections: 0,
+    detections: 1,
+  };
   glasses: {
     active_glasses: undefined | number;
     list: Array<Glasses>;
@@ -19,10 +26,19 @@ class Store {
       ready: observable,
       newReadyState: action,
 
+      facetype: observable,
+      updateFacetype: action,
+
       glasses: observable,
       updateGlassesList: action,
       newActiveGlasses: action,
     });
+  }
+
+  updateFacetype(facetype: IFacetype) {
+    this.facetype.type = facetype.type;
+    this.facetype.current_detections = facetype.current_detections;
+    this.facetype.detections = facetype.detections;
   }
 
   newReadyState(ready: boolean) {

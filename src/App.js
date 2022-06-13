@@ -10,7 +10,7 @@ import ControlPanel from "./components/ControlPanel/ControlPanel";
 import Preloader from "./components/Preloader/Preloader";
 
 let TFSetupOptions = {
-  scene: store.scene,
+  store: store,
   webcamRef: null,
   appDivRef: null,
   cb: null,

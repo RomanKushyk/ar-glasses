@@ -2,8 +2,10 @@ import * as faceMesh from "@mediapipe/face_mesh";
 import "@tensorflow-models/face-detection";
 import "@tensorflow/tfjs-backend-webgl";
 import * as FaceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
+import FacetypeGetter from "./FacetypeGetter/FacetypeGetter";
+import { EFacetypes } from "enums/EFacetypes";
 
-const detect = async (detector, scene, appDivRef, webcamRef, cb) => {
+const detect = async (detector, store, appDivRef, webcamRef, cb) => {
   if (typeof webcamRef.current == "undefined" || webcamRef.current == null) {
     return;
   }
@@ -21,20 +23,25 @@ const detect = async (detector, scene, appDivRef, webcamRef, cb) => {
 
   const face = await detector.estimateFaces(video);
 
-  scene.setUpSize(
+  store.scene.setUpSize(
     document.body.offsetWidth,
     document.body.offsetHeight,
     videoWidth,
     videoHeight
   );
 
-  if (!scene.created) {
-    scene.setUpScene(appDivRef.current, webcamRef.current.video);
+  if (!store.scene.created) {
+    store.scene.setUpScene(appDivRef.current, webcamRef.current.video);
     cb();
   }
 
-  if (scene.created && face.length > 0) {
-    scene.drawScene(face);
+  if (store.scene.created && face.length > 0) {
+    store.scene.drawScene(face);
+
+    if (Number.isNaN(store.facetype.type)) {
+      let result = FacetypeGetter(face[0].keypoints);
+      store.updateFacetype(result);
+    }
   }
 };
 
@@ -61,7 +68,7 @@ export default async (refs) => {
 
   let draw = () => {
     if (refs.appDivRef && refs.webcamRef && refs.cb && detector)
-      detect(detector, refs.scene, refs.appDivRef, refs.webcamRef, refs.cb);
+      detect(detector, refs.store, refs.appDivRef, refs.webcamRef, refs.cb);
     requestAnimationFrame(draw);
   };
   draw();
