@@ -2,7 +2,8 @@ import * as THREE from "three";
 import { Vector3 } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { GlassesController } from "../controllers/GlassesController";
+import { GlassesController } from "../controllers/GlassesController.js";
+import FacetypeGetter from "../utils/FacetypeGetter/FacetypeGetter";
 
 export default class Scene {
   created = false;
@@ -315,14 +316,68 @@ export default class Scene {
     }
     this.renderer.render(this.scene, this.camera);
 
-    this.target_points.top = predictions[0].keypoints[168];
-    this.target_points.bottom = predictions[0].keypoints[164];
-    this.target_points.left = predictions[0].keypoints[130];
-    this.target_points.right = predictions[0].keypoints[359];
+    let keypoints = predictions[0].keypoints;
 
-    this.target_points.center_x = this.normalize_vec(
-      predictions[0].keypoints[168]
-    );
+    this.target_points.top = keypoints[168];
+    this.target_points.bottom = keypoints[164];
+    this.target_points.left = keypoints[130];
+    this.target_points.right = keypoints[359];
+
+    this.target_points.center_x = this.normalize_vec(keypoints[168]);
+
+    let facelines = {
+      h1: new Vector3(),
+      h2: new Vector3(),
+      h3: new Vector3(),
+      h4: new Vector3(),
+      v1: new Vector3(),
+    };
+
+    facelines.h1 = facelines.h1
+      .copy(keypoints[70])
+      .sub(keypoints[300])
+      .length();
+    facelines.h2 = facelines.h2
+      .copy(keypoints[123])
+      .sub(keypoints[352])
+      .length();
+
+    facelines.h3 = facelines.h3
+      .copy(keypoints[194])
+      .sub(keypoints[418])
+      .length();
+
+    facelines.a4 = new Vector3()
+      .copy(keypoints[200])
+      .sub(keypoints[418])
+      .normalize()
+      .angleTo(
+        new Vector3().copy(keypoints[418]).sub(keypoints[352]).normalize()
+      );
+
+    facelines.a3 = new Vector3()
+      .copy(keypoints[418])
+      .sub(keypoints[352])
+      .normalize()
+      .angleTo(
+        new Vector3().copy(keypoints[352]).sub(keypoints[300]).normalize()
+      );
+
+    facelines.a2 = new Vector3()
+      .copy(keypoints[352])
+      .sub(keypoints[300])
+      .normalize()
+      .angleTo(
+        new Vector3().copy(keypoints[352]).sub(keypoints[151]).normalize()
+      );
+
+    facelines.v1 = facelines.v1
+      .copy(keypoints[200])
+      .sub(keypoints[151])
+      .length();
+
+    FacetypeGetter(facelines);
+
     this.drawGlass();
   }
 

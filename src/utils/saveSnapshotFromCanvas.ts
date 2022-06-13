@@ -1,4 +1,4 @@
-import { saveFromUrl } from './saveFromUrl.ts';
+import { saveFromUrl } from '../utils/saveFromUrl';
 import { WebGLRenderer } from 'three';
 
 type SaveSnapshotFromCanvas = (canvas: WebGLRenderer.domElement, video: HTMLVideoElement) => void;

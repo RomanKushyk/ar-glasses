@@ -44,7 +44,6 @@ export const getPngFromFbx = (glasses: Glasses) => {
             }
           });
     });
-    console.log(object); // !!!
     scene.add(object);
 
     renderer.render(scene, camera);
