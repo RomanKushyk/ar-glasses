@@ -18,7 +18,7 @@ import {PreviewScene} from '../../../scenes/AdminPage/PreviewScene/PreviewScene'
 
 interface StoreGlasses {
   selected: undefined | Glasses,
-  temporary: Omit<Glasses, 'id'> | null
+  temporary: Omit<Glasses, 'id'> | null,
   list: Glasses[],
   modelFiles: {
     [id: string]: File,      //файли підгружаються з мережі
@@ -116,46 +116,43 @@ class StoreAdmin {
   }
 
   async createScenes () {
-    if (this.glasses.selected) {
-      this.previewScene = new PreviewScene();
-      await this.previewScene.createScene(this.glasses.selected);
-      this.previewScene.updatePosition(this.glasses.selected);
-    }
+    if (!this.glasses.selected) return;
+
+    this.previewScene = new PreviewScene();
+    await this.previewScene.createScene(this.glasses.selected);
+    this.previewScene.updatePosition(this.glasses.selected);
   }
 
   updateScenes () {
-    if (this.previewScene) {
-      this.previewScene.updatePosition(this.glasses.selected);
-    }
+    if (!this.previewScene) return;
+
+    this.previewScene.updatePosition(this.glasses.selected);
   }
 
   async uploadTemporaryToFirebase () {
+    if (!this.acceptedFile) return;
+
     let glassesId: string | undefined;
-    console.log('start');
-    console.log(this.acceptedFile);
 
-    if (this.acceptedFile) {
-      this.glasses.temporary = createNewGlassesInfo(this.acceptedFile);
-      await addGlassesToList(this.glasses.temporary)
-        .then(id => glassesId = id);
-      console.log('added to list')
+    this.glasses.temporary = createNewGlassesInfo(this.acceptedFile);
+    await addGlassesToList(this.glasses.temporary)
+      .then(id => glassesId = id);
 
-      uploadGlassesToStorage(
-        this.acceptedFile,
-        `${glassesId}/${glassesId}_model.fbx`,
-      )
-        .then((url) => {
-          console.log('uploaded')
-          if (glassesId) {
-            editGlassesFromList(glassesId, { loaded: true, file_path: url });
-            console.log('edited')
-          }
+    uploadGlassesToStorage(
+      this.acceptedFile,
+      `${glassesId}/${glassesId}_model.fbx`,
+    )
+      .then((url) => {
+        console.log('uploaded')
+        if (glassesId) {
+          editGlassesFromList(glassesId, { loaded: true, file_path: url });
+          console.log('edited')
+        }
 
-          this.clearTemporary();
-          this.loadGlassesList();
-          console.log('lost reloaded', this.glasses.list);
-        })
-    }
+        this.clearTemporary();
+        this.loadGlassesList();
+        console.log('lost reloaded', this.glasses.list);
+      })
   }
 
   async deleteGlassesFromFirebase (item: Glasses) {
