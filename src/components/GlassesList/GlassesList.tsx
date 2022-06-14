@@ -4,6 +4,8 @@ import { FC, useContext, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
 import { useNavigate } from 'react-router-dom';
+import {getDownloadURL, ref} from 'firebase/storage';
+import {firebaseStorage} from '../../utils/firebase';
 
 export const GlassesList: FC = observer(() => {
   const store = useContext(StoreContextAdmin);
@@ -24,7 +26,7 @@ export const GlassesList: FC = observer(() => {
             <div className="glasses-list__preview-container">
               <img
                 alt="glasses"
-                // src={store.glasses.previewFiles[element.id]}
+                src={element.preview_file_path}
                 className="glasses-list__preview-img"
               />
             </div>

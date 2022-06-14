@@ -103,6 +103,7 @@
   }
 
   &__navigation-panel {
+    display: flex;
     padding: $primary-v-padding $primary-h-padding;
 
     background: #D9D9D9;
@@ -118,6 +119,34 @@
 
     position: relative;
     background-size: 32px, 32px;
+    transition: after 0.5s;
+
+    &::after {
+      content: "";
+      @include box-element;
+      @include square(20px);
+      @include normalize-background;
+
+      position: absolute;
+      margin-top: -20px;
+      right: 0;
+      bottom: 0;
+      background-color: #14d114;
+      background-image: url("../../images/admin/edit/completed.png");
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    &_selected {
+      background-color: rgba(255, 255, 255, 0.5);
+      color: black;
+    }
+
+    &_completed {
+      &::after {
+        opacity: 0.7;
+      }
+    }
 
     &_scale {
       background-image: url("../../images/admin/edit/scale.png");
@@ -133,6 +162,10 @@
 
     &_three {
       background-image: url("../../images/admin/edit/three.png");
+    }
+
+    &_save-preview {
+      background-image: url("../../images/admin/edit/save-preview.png");
     }
   }
 }

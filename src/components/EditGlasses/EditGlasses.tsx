@@ -50,6 +50,7 @@ enum View {
 }
 
 export const EditGlasses: FC = observer(() => {
+  const [previewSaved, setPreviewSaved] = useState(false);
   const store = useContext(StoreContextAdmin);
   const params = useParams();
 
