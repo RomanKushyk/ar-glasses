@@ -24,7 +24,7 @@ export const GlassesList: FC = observer(() => {
             <div className="glasses-list__preview-container">
               <img
                 alt="glasses"
-                src={element.preview_file_path}
+                // src={store.glasses.previewFiles[element.id]}
                 className="glasses-list__preview-img"
               />
             </div>
