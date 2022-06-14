@@ -1,5 +1,5 @@
 import { action, makeObservable, observable } from "mobx";
-import Scene from "../../../scene/Scene";
+import Scene from "../../../scenes/Scene";
 import { createContext } from "react";
 import { Glasses } from '../../../interfaces/consts/Glasses';
 
