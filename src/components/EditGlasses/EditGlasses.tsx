@@ -6,8 +6,7 @@ import { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
 import { useParams } from 'react-router-dom';
 import {EditGlassesOptions} from '../../utils/EditGlassesOptions';
 import {observer} from 'mobx-react-lite';
-import {editGlassesFromList} from '../../api/firebase/store/glasses';
-import {PreviewScene, previewSceneCanvas } from '../../scenes/AdminPage/PreviewScene/PreviewScene';
+import { previewSceneCanvas } from '../../scenes/AdminPage/PreviewScene/PreviewScene';
 
 enum Input {
   name = 'Glasses name',
@@ -36,6 +35,7 @@ enum Option {
   prevRotate = 'Preview rotate',
   prevScale = 'Preview scale',
   prevThree = 'Preview three',
+  prevSave = 'Sava preview image'
 }
 
 enum View {
@@ -44,6 +44,7 @@ enum View {
 }
 
 export const EditGlasses: FC = observer(() => {
+  const [previewSaved, setPreviewSaved] = useState(false);
   const store = useContext(StoreContextAdmin);
   const params = useParams();
 
@@ -141,12 +142,12 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_scale",
-                {"params-container__button": optionsBlockName === Option.scale}
+                {"params-container__button_selected": optionsBlockName === Option.scale}
               )}
               type="button"
               title={Option.scale}
               onClick={() => {
-                setOptionsBlockName(Option.scale)
+                setOptionsBlockName(Option.scale);
               }}
             />
 
@@ -154,12 +155,12 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_position",
-                {"params-container__button": optionsBlockName === Option.position}
+                {"params-container__button_selected": optionsBlockName === Option.position}
               )}
               type="button"
               title={Option.position}
               onClick={() => {
-                setOptionsBlockName(Option.position)
+                setOptionsBlockName(Option.position);
               }}
             />
 
@@ -167,12 +168,12 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_three",
-                {"params-container__button": optionsBlockName === Option.three}
+                {"params-container__button_selected": optionsBlockName === Option.three}
               )}
               type="button"
               title={Option.three}
               onClick={() => {
-                setOptionsBlockName(Option.three)
+                setOptionsBlockName(Option.three);
               }}
             />
           </>
@@ -185,7 +186,7 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_scale",
-                {"params-container__button": optionsBlockName === Option.prevScale}
+                {"params-container__button_selected": optionsBlockName === Option.prevScale}
               )}
               type="button"
               title={Option.prevScale}
@@ -198,12 +199,12 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_position",
-                {"params-container__button": optionsBlockName === Option.prevPosition}
+                {"params-container__button_selected": optionsBlockName === Option.prevPosition}
               )}
               type="button"
               title={Option.prevPosition}
               onClick={() => {
-                setOptionsBlockName(Option.prevPosition)
+                setOptionsBlockName(Option.prevPosition);
               }}
             />
 
@@ -211,12 +212,12 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_rotate",
-                {"params-container__button": optionsBlockName === Option.prevRotate}
+                {"params-container__button_selected": optionsBlockName === Option.prevRotate}
               )}
               type="button"
               title={Option.prevRotate}
               onClick={() => {
-                setOptionsBlockName(Option.prevRotate)
+                setOptionsBlockName(Option.prevRotate);
               }}
             />
 
@@ -224,12 +225,28 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_three",
-                {"params-container__button": optionsBlockName === Option.prevThree}
+                {"params-container__button_selected": optionsBlockName === Option.prevThree}
               )}
               type="button"
               title={Option.prevThree}
               onClick={() => {
-                setOptionsBlockName(Option.prevThree)
+                setOptionsBlockName(Option.prevThree);
+
+              }}
+            />
+
+            <button
+              className={cn(
+                "params-container__button",
+                "params-container__button_save-preview",
+                { "params-container__button_completed": previewSaved }
+              )}
+              type="button"
+              title={Option.prevSave}
+              onClick={async () => {
+                setPreviewSaved(false);
+                await store.makePreviewPngAndUpload();
+                setPreviewSaved(true);
               }}
             />
           </>
@@ -405,11 +422,7 @@ export const EditGlasses: FC = observer(() => {
   };
 
   const handleSave = async () => {
-    if (store.glasses.selected) {
-      const { id, ...data } = store.glasses.selected;
-
-      await editGlassesFromList(id, data);
-    }
+    store.saveChangesInTheSelectedToFirebase();
   };
 
   return (

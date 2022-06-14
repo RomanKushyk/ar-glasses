@@ -7,9 +7,13 @@ import { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
 import { createNewGlassesInfo } from '../../utils/createNewGlassesInfo';
 
 export const FileUpload: FC = observer(() => {
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({ multiple: false });
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    multiple: false,
+    accept: {
+      'application/octet-stream' : ['.fbx'],
+    }
+  });
   const store = useContext(StoreContextAdmin);
-  // const navigate = useNavigate();
 
   useEffect(() => {
     store.getFileFromUser(acceptedFiles[0]);

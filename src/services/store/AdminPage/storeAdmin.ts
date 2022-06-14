@@ -15,6 +15,9 @@ import {
 } from '../../../api/firebase/storage/glasses';
 import { getNameFromPath } from '../../../utils/getNameFromPath';
 import {PreviewScene} from '../../../scenes/AdminPage/PreviewScene/PreviewScene';
+import {getPngFromFbx} from '../../../utils/getPngFromFbx';
+import {getDownloadURL, ref} from 'firebase/storage';
+import {firebaseStorage} from '../../../utils/firebase';
 
 interface StoreGlasses {
   selected: undefined | Glasses,
@@ -45,6 +48,7 @@ class StoreAdmin {
       glasses: observable,
       loadGlassesList: action,
       setSelected: action,
+      saveChangesInTheSelectedToFirebase: action,
       loadAllGlassesFiles: action,
       clearTemporary: action,
 
@@ -56,6 +60,9 @@ class StoreAdmin {
       getFileFromUser: action,
 
       previewScene: observable,
+      createScenes: action,
+      updateScenes: action,
+      makePreviewPngAndUpload: action,
 
       uploadTemporaryToFirebase: action,
       deleteGlassesFromFirebase: action,
@@ -77,6 +84,14 @@ class StoreAdmin {
   setSelected (id: string) {
     this.glasses.selected = this.glasses.list
       .find(item => id === item.id);
+  }
+
+  async saveChangesInTheSelectedToFirebase () {
+    if (!this.glasses.selected) return;
+
+    const { id, ...data } = this.glasses.selected;
+
+    await editGlassesFromList(id, data);
   }
 
   loadAllGlassesFiles () {
@@ -129,6 +144,25 @@ class StoreAdmin {
     this.previewScene.updatePosition(this.glasses.selected);
   }
 
+  async makePreviewPngAndUpload () {
+    if (!this.glasses.selected) return;
+
+    await this.saveChangesInTheSelectedToFirebase();
+
+    const modelUrl = await getDownloadURL(ref(firebaseStorage, this.glasses.selected.file_path));
+    const data = await getPngFromFbx(this.glasses.selected, modelUrl) as string;
+    const res = await fetch(data);
+    const blob = await res.blob();
+    const file = new File([blob], "File name",{ type: "image/png" })
+    const previewPath = await uploadGlassesToStorage(
+      file,
+      `${this.glasses.selected.id}/${this.glasses.selected.id}_preview.png`,
+    );
+    const previewUrl = await getDownloadURL(ref(firebaseStorage, previewPath));
+
+    await editGlassesFromList(this.glasses.selected.id, { preview_file_path: previewUrl });
+  }
+
   async uploadTemporaryToFirebase () {
     if (!this.acceptedFile) return;
 
@@ -138,21 +172,19 @@ class StoreAdmin {
     await addGlassesToList(this.glasses.temporary)
       .then(id => glassesId = id);
 
-    uploadGlassesToStorage(
+    const url = await uploadGlassesToStorage(
       this.acceptedFile,
       `${glassesId}/${glassesId}_model.fbx`,
-    )
-      .then((url) => {
-        console.log('uploaded')
-        if (glassesId) {
-          editGlassesFromList(glassesId, { loaded: true, file_path: url });
-          console.log('edited')
-        }
+    );
 
-        this.clearTemporary();
-        this.loadGlassesList();
-        console.log('lost reloaded', this.glasses.list);
-      })
+    if (glassesId) {
+      await editGlassesFromList(glassesId, { loaded: true, file_path: url });
+      console.log('edited')
+    }
+
+    this.clearTemporary();
+    await this.loadGlassesList();
+    console.log('last reloaded', this.glasses.list);
   }
 
   async deleteGlassesFromFirebase (item: Glasses) {
