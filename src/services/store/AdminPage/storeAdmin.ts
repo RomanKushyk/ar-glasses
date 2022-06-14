@@ -66,7 +66,7 @@ class StoreAdmin {
     const querySnapshot = await getGlassesList();
 
     this.glasses.list = [];
-    querySnapshot.forEach((doc: any) => {
+    querySnapshot.forEach(doc => {
       this.glasses.list.push({
         id: doc.id,
         ...doc.data(),
