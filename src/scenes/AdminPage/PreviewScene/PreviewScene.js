@@ -24,6 +24,7 @@ export class PreviewScene {
     );
     this.camera.position.set(0, 14, 40);
     this.scene.add(this.camera);
+
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
