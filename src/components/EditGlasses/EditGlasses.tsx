@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 import {EditGlassesOptions} from '../../utils/EditGlassesOptions';
 import {observer} from 'mobx-react-lite';
 import {editGlassesFromList} from '../../api/firebase/store/glasses';
-import {PreviewScene, previewSceneCanvas } from '../PreviewScene/PreviewScene';
+import {PreviewScene, previewSceneCanvas } from '../../scenes/AdminPage/PreviewScene/PreviewScene';
 
 enum Input {
   name = 'Glasses name',
@@ -475,7 +475,7 @@ export const EditGlasses: FC = observer(() => {
 
         <canvas
           className={cn(
-            "edit-glasses__preview-scene",
+            "edit-glasses__preview-scenes",
             {"edit-glasses__preview-scene_selected": currentView === View.preview},
           )}
           ref={previewSceneCanvas}

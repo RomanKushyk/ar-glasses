@@ -14,7 +14,7 @@ import {
   uploadGlassesToStorage
 } from '../../../api/firebase/storage/glasses';
 import { getNameFromPath } from '../../../utils/getNameFromPath';
-import {PreviewScene} from '../../../components/PreviewScene/PreviewScene';
+import {PreviewScene} from '../../../scenes/AdminPage/PreviewScene/PreviewScene';
 
 interface StoreGlasses {
   selected: undefined | Glasses,
@@ -119,12 +119,13 @@ class StoreAdmin {
     if (this.glasses.selected) {
       this.previewScene = new PreviewScene();
       await this.previewScene.createScene(this.glasses.selected);
+      this.previewScene.updatePosition(this.glasses.selected);
     }
   }
 
   updateScenes () {
     if (this.previewScene) {
-      this.previewScene.refreshPosition(this.glasses.selected);
+      this.previewScene.updatePosition(this.glasses.selected);
     }
   }
 
