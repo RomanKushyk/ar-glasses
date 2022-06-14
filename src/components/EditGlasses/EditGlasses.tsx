@@ -538,7 +538,7 @@ export const EditGlasses: FC = observer(() => {
 
         <canvas
           className={cn(
-            "edit-glasses__preview-scene",
+            "edit-glasses__preview-scenes",
             {"edit-glasses__preview-scene_selected": currentView === View.preview},
           )}
           ref={previewSceneCanvas}
