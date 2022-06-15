@@ -70,6 +70,29 @@ export class PreviewScene {
       });
     }
 
+    if (glasses.snapshot_options.partsVisibility) {
+      const parts = Object.entries(glasses.snapshot_options.partsVisibility);
+
+      parts.forEach(([name, value]) => {
+        const item = this.object.getObjectByName(name);
+
+        if (item) {
+          item.traverse(element => {
+            element.visible = value;
+          })
+        }
+      });
+    }
+    // glasses.snapshot_options.bracketsItemsNames.forEach((name) => {
+    //   this.object.getObjectByName(name)
+    //     ?.traverse((obj => {
+    //       if (obj.visible) {
+    //         obj.visible = false;
+    //       }
+    //     }))
+    // });
+
+    console.log('this obj', this.object);
     this.renderer.render(this.scene, this.camera);
   }
 

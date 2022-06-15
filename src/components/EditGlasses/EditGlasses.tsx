@@ -50,7 +50,8 @@ enum View {
 }
 
 export const EditGlasses: FC = observer(() => {
-  const [previewSaved, setPreviewSaved] = useState(false);
+  const [previewIsSaved, setPreviewIsSaved] = useState(false);
+  const [allChangesSaved, setAllChangesSaved] = useState(false);
   const store = useContext(StoreContextAdmin);
   const params = useParams();
 
@@ -71,6 +72,12 @@ export const EditGlasses: FC = observer(() => {
 
     const { name, id } = event.target;
     const value = event.target.value as unknown as number;
+
+    if (name.startsWith('preview')) {
+      setPreviewIsSaved(false);
+    }
+
+    setAllChangesSaved(false);
 
     switch (name) {
       case Input.name:

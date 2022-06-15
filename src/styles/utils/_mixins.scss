@@ -8,6 +8,35 @@
   }
 }
 
+@mixin selectedScene {
+  &_selected {
+    border: rgba(0, 0, 0, 0.40) 2px solid;
+  }
+}
+
+@mixin completed ($size, $right, $bottom) {
+  &::after {
+    content: "";
+    @include box-element;
+    @include square($size);
+    @include normalize-background;
+
+    position: absolute;
+    right: $right;
+    bottom: $bottom;
+    background-color: #14d114;
+    background-image: url("../../images/admin/edit/completed.png");
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  &_completed {
+    &::after {
+      opacity: 0.7;
+    }
+  }
+}
+
 @mixin noBorder {
   border: none;
   outline: none;

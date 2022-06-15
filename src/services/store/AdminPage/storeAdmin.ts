@@ -1,6 +1,6 @@
-import { Glasses } from '../../../interfaces/consts/Glasses';
-import { action, makeObservable, observable } from 'mobx';
-import { createContext } from 'react';
+import {Glasses} from '../../../interfaces/consts/Glasses';
+import {action, makeObservable, observable} from 'mobx';
+import {createContext} from 'react';
 import {
   addGlassesToList,
   deleteGlassesFromList,
