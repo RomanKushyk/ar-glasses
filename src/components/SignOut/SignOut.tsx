@@ -5,15 +5,13 @@ import {FC} from 'react';
 
 export const SignOut: FC = () => {
   return firebaseAuth.currentUser && (
-    <div className="sign-out admin-page__sign-out">
-      <button
-        className="sign-out__button"
-        onClick={() => {
-          firebaseAuth.signOut();
-        }}
-      >
-        Sign out
-      </button>
-    </div>
+    <button
+      className="sign-out-button top-navigation-bar__sign-out-button"
+      onClick={() => {
+        firebaseAuth.signOut();
+      }}
+    >
+      Sign out
+    </button>
   );
 };

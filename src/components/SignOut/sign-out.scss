@@ -1,13 +1,8 @@
 @import "../../styles/main";
 
-.sign-out {
-  display: flex;
-  justify-content: end;
+.sign-out-button {
+  height: 35px;
 
-  &__button {
-    height: 35px;
-
-    @extend %noBorder;
-    @include box-element;
-  }
+  @extend %noBorder;
+  @include box-element;
 }
