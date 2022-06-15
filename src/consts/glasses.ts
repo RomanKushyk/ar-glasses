@@ -17,7 +17,7 @@ export const glasses_list: Glasses[] = [
             name: "Default"
         },
         snapshot_options: {
-            bracketsItemsNames: ['User_Layer_01'],
+            partsVisibility: ['User_Layer_01'],
             position: [-0.7, 12, -4.5],
             scale: [0.8, 0.8, 0.8],
             rotation: [4.8, 0, 0]
@@ -39,7 +39,7 @@ export const glasses_list: Glasses[] = [
             name: 'Lights'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Metal_02'],
+            partsVisibility: ['Metal_02'],
             position: [-0.5, 14, -1],
             scale: [0.41, 0.41, 0.41],
             rotation: [4.6, 0, 0]
@@ -61,7 +61,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_02'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_02', 'Creation_Curves', 'Object_6', 'Object_7', 'Object_10', 'Object_11'],
+            partsVisibility: ['Gem_02', 'Creation_Curves', 'Object_6', 'Object_7', 'Object_10', 'Object_11'],
             position: [0, 13, 2.5],
             scale: [1.2, 1.2, 1.2],
             rotation: [4.6, 0, 0]
@@ -83,7 +83,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_03'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_03', 'Heads'],
+            partsVisibility: ['Gem_03', 'Heads'],
             position: [0.5, 21, 9.5],
             scale: [0.38, 0.38, 0.38],
             rotation: [4.8, 0, 0]
@@ -105,7 +105,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_03'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_03', 'Object_7', 'Object_8', 'Object_9', 'Object_10'],
+            partsVisibility: ['Gem_03', 'Object_7', 'Object_8', 'Object_9', 'Object_10'],
             position: [0, 14.5, 9.5],
             scale: [0.38, 0.38, 0.38],
             rotation: [4.8, 0, 0]
@@ -127,7 +127,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_03'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_03', 'Object_11', 'Object_12', 'Object_13', 'Object_10', 'Heads'],
+            partsVisibility: ['Gem_03', 'Object_11', 'Object_12', 'Object_13', 'Object_10', 'Heads'],
             position: [0, 14.5, 7],
             scale: [0.38, 0.38, 0.38],
             rotation: [4.8, 0, 0]
@@ -149,7 +149,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_03'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_03', 'Object_7', 'Object_9', 'Heads'],
+            partsVisibility: ['Gem_03', 'Object_7', 'Object_9', 'Heads'],
             position: [0, 14.5, 7],
             scale: [0.38, 0.38, 0.38],
             rotation: [4.8, 0, 0]
@@ -171,7 +171,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_03'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_03', 'Heads', 'pCube1', 'pCube1_2'],
+            partsVisibility: ['Gem_03', 'Heads', 'pCube1', 'pCube1_2'],
             position: [0, 14.5, 5],
             scale: [0.38, 0.38, 0.38],
             rotation: [4.8, 0, 0]
@@ -193,7 +193,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_02'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_02', 'Creation_Curves', 'Object_16', 'Object_19', 'Object_18', 'Object_11', 'Finger_Sizes'],
+            partsVisibility: ['Gem_02', 'Creation_Curves', 'Object_16', 'Object_19', 'Object_18', 'Object_11', 'Finger_Sizes'],
             position: [0, 14.5, 19],
             scale: [0.8, 0.8, 0.8],
             rotation: [4.8, 0, 0]
@@ -215,7 +215,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_02'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_02', 'Creation_Curves', 'Object_16', 'Object_19', 'Object_18', 'Object_11', 'Finger_Sizes'],
+            partsVisibility: ['Gem_02', 'Creation_Curves', 'Object_16', 'Object_19', 'Object_18', 'Object_11', 'Finger_Sizes'],
             position: [0, 14.5, 19],
             scale: [0.8, 0.8, 0.8],
             rotation: [4.8, 0, 0]
@@ -237,7 +237,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_03'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Object_40', 'Object_52', 'Creation_Curves', 'Object_53', 'Object_15'],
+            partsVisibility: ['Object_40', 'Object_52', 'Creation_Curves', 'Object_53', 'Object_15'],
             position: [0, 14.5, 10],
             scale: [0.35, 0.35, 0.35],
             rotation: [4.8, 0, 0]
@@ -259,7 +259,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_02'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_02', 'Object_1', 'Object_16', 'Object_17', 'Object_8'],
+            partsVisibility: ['Gem_02', 'Object_1', 'Object_16', 'Object_17', 'Object_8'],
             position: [0, 14.5, 12],
             scale: [0.35, 0.35, 0.35],
             rotation: [4.8, 0, 0]
@@ -281,7 +281,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_03'
         },
         snapshot_options: {
-            bracketsItemsNames: ['polySurface12', 'polySurface12_2'],
+            partsVisibility: ['polySurface12', 'polySurface12_2'],
             position: [-0.3, 12.5, 28.5],
             scale: [0.35, 0.35, 0.35],
             rotation: [4.8, 0, 0]
@@ -303,7 +303,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_04'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_04', 'Object_6', 'Object_19', 'Cutting_Objects'],
+            partsVisibility: ['Gem_04', 'Object_6', 'Object_19', 'Cutting_Objects'],
             position: [0, 14.5, 23],
             scale: [0.35, 0.35, 0.35],
             rotation: [4.8, 0, 0]
@@ -325,7 +325,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_03'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_03', 'polySurface8', 'polySurface8_2'],
+            partsVisibility: ['Gem_03', 'polySurface8', 'polySurface8_2'],
             position: [0, 14.5, 23],
             scale: [0.5, 0.5, 0.5],
             rotation: [4.8, 0, 0]
@@ -347,7 +347,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_03'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_03', 'Object_30', 'Object_32', 'Object_34', 'Object_36', 'Finger_Sizes'],
+            partsVisibility: ['Gem_03', 'Object_30', 'Object_32', 'Object_34', 'Object_36', 'Finger_Sizes'],
             position: [0, 14.5, 23],
             scale: [0.4, 0.4, 0.4],
             rotation: [4.8, 0, 0]
@@ -369,7 +369,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_02'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_02', 'Object_4', 'Object_17'],
+            partsVisibility: ['Gem_02', 'Object_4', 'Object_17'],
             position: [0, 14.5, 21],
             scale: [0.6, 0.6, 0.6],
             rotation: [4.8, 0, 0]
@@ -391,7 +391,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_02'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_02'],
+            partsVisibility: ['Gem_02'],
             position: [0, 14.5, 20.5],
             scale: [0.9, 0.9, 0.9],
             rotation: [4.8, 0, 0]
@@ -413,7 +413,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_02'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_02', 'pCube2', 'pCube3', 'pCube2_2', 'pCube3_2'],
+            partsVisibility: ['Gem_02', 'pCube2', 'pCube3', 'pCube2_2', 'pCube3_2'],
             position: [0, 14.5, 14],
             scale: [0.2, 0.2, 0.2],
             rotation: [4.8, 0, 0]
@@ -435,7 +435,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_04'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_04', 'Object_21', 'Object_22', 'User_Layer_03', 'Finger_Sizes'],
+            partsVisibility: ['Gem_04', 'Object_21', 'Object_22', 'User_Layer_03', 'Finger_Sizes'],
             position: [0, 14.5, 16],
             scale: [0.3, 0.3, 0.3],
             rotation: [4.8, 0, 0]
@@ -457,7 +457,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_03'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_03', 'polySurface4', 'polySurface5', 'polySurface4_2', 'polySurface5_2', 'polySurface6', 'polySurface6_2'],
+            partsVisibility: ['Gem_03', 'polySurface4', 'polySurface5', 'polySurface4_2', 'polySurface5_2', 'polySurface6', 'polySurface6_2'],
             position: [0, 14.5, 25.5],
             scale: [0.35, 0.35, 0.35],
             rotation: [4.8, 0, 0]
@@ -479,7 +479,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_03'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Gem_03', 'pCube2', 'pCube2_2', 'Heads'],
+            partsVisibility: ['Gem_03', 'pCube2', 'pCube2_2', 'Heads'],
             position: [0, 14.5, 25],
             scale: [0.35, 0.35, 0.35],
             rotation: [4.8, 0, 0]
@@ -501,7 +501,7 @@ export const glasses_list: Glasses[] = [
             name: 'Gem_02'
         },
         snapshot_options: {
-            bracketsItemsNames: ['Object_1', 'Object_6', 'Finger_Sizes'],
+            partsVisibility: ['Object_1', 'Object_6', 'Finger_Sizes'],
             position: [0, 14.5, 12],
             scale: [0.3, 0.3, 0.3],
             rotation: [4.8, 0, 0]

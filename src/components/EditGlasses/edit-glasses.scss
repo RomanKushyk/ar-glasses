@@ -21,6 +21,9 @@
 
   &__button {
     @include top-control-box;
+    @include completed(20px, -10px, -10px);
+
+    position: relative;
   }
 
   &__scene {
@@ -28,6 +31,7 @@
     margin-bottom: 30px;
 
     @include box-element;
+    @include selectedScene;
   }
 
   &__preview-scene {
@@ -37,6 +41,7 @@
 
     @include square(10vh);
     @include box-element;
+    @include selectedScene;
   }
 
   &__params-container {
@@ -94,6 +99,17 @@
     @include top-control-box;
   }
 
+  &__checkbox-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__checkbox-label {
+  }
+
+  &__checkbox-input {
+  }
+
   &__navigation-panel {
     display: flex;
     padding: $primary-v-padding $primary-h-padding;
@@ -108,36 +124,15 @@
     @include box-element;
     @include gap-margins(0, 10px);
     @include normalize-background;
+    @include completed(20px, 0, 0);
 
     position: relative;
     background-size: 32px, 32px;
     transition: after 0.5s;
 
-    &::after {
-      content: "";
-      @include box-element;
-      @include square(20px);
-      @include normalize-background;
-
-      position: absolute;
-      margin-top: -20px;
-      right: 0;
-      bottom: 0;
-      background-color: #14d114;
-      background-image: url("../../images/admin/edit/completed.png");
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
     &_selected {
       background-color: rgba(255, 255, 255, 0.5);
       color: black;
-    }
-
-    &_completed {
-      &::after {
-        opacity: 0.7;
-      }
     }
 
     &_scale {
@@ -148,7 +143,7 @@
       background-image: url("../../images/admin/edit/position.png");
     }
 
-    &_rotate {
+    &_rotation {
       background-image: url("../../images/admin/edit/rotate.png");
     }
 

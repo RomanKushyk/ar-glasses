@@ -43,14 +43,20 @@ export const getPngFromFbx = (glasses: Glasses, URL?: string) => {
     object.position.set(...glasses.snapshot_options.position);
     object.scale.set(...glasses.snapshot_options.scale);
     object.rotation.set(...glasses.snapshot_options.rotation);
-    glasses.snapshot_options.bracketsItemsNames.forEach(name => {
-      object.getObjectByName(name)
-        ?.traverse((obj => {
-          if (obj.visible) {
-            obj.visible = false;
-          }
-        }))
-    });
+
+    if (glasses.snapshot_options.partsVisibility) {
+      const parts = Object.entries(glasses.snapshot_options.partsVisibility);
+
+      parts.forEach(([name, value]) => {
+        const item = object.getObjectByName(name);
+
+        if (item) {
+          item.traverse(element => {
+            element.visible = value;
+          })
+        }
+      });
+    }
     scene.add(object);
 
     renderer.render(scene, camera);

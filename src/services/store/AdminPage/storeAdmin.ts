@@ -1,34 +1,29 @@
-import { Glasses } from '../../../interfaces/consts/Glasses';
-import { action, makeObservable, observable } from 'mobx';
-import { createContext } from 'react';
+import {Glasses} from '../../../interfaces/consts/Glasses';
+import {action, makeObservable, observable} from 'mobx';
+import {createContext} from 'react';
 import {
   addGlassesToList,
   deleteGlassesFromList,
   editGlassesFromList,
   getGlassesList
 } from '../../../api/firebase/store/glasses';
-import { createNewGlassesInfo } from '../../../utils/createNewGlassesInfo';
-import {
-  deleteGlassesFromStorage,
-  downloadGlassesFromStorage,
-  uploadGlassesToStorage
-} from '../../../api/firebase/storage/glasses';
-import { getNameFromPath } from '../../../utils/getNameFromPath';
+import {createNewGlassesInfo} from '../../../utils/createNewGlassesInfo';
+import {deleteGlassesFromStorage, uploadGlassesToStorage} from '../../../api/firebase/storage/glasses';
 import {PreviewScene} from '../../../scenes/AdminPage/PreviewScene/PreviewScene';
 import {getPngFromFbx} from '../../../utils/getPngFromFbx';
 import {getDownloadURL, ref} from 'firebase/storage';
 import {firebaseStorage} from '../../../utils/firebase';
+import {Group} from 'three';
+import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
 
 interface StoreGlasses {
   selected: undefined | Glasses,
   temporary: Omit<Glasses, 'id'> | null,
   list: Glasses[],
   modelFiles: {
-    [id: string]: File,      //файли підгружаються з мережі
+    [id: string]: Group,      //файли підгружаються з мережі
   },
-  previewFiles: {
-    [id: string]: File,
-  },
+  filesReady: boolean,
 }
 
 class StoreAdmin {
@@ -37,7 +32,7 @@ class StoreAdmin {
     temporary: null,
     list: [],
     modelFiles: {},
-    previewFiles: {},
+    filesReady: false,
   };
 
   acceptedFile: File | null = null;
@@ -51,10 +46,6 @@ class StoreAdmin {
       saveChangesInTheSelectedToFirebase: action,
       loadAllGlassesFiles: action,
       clearTemporary: action,
-
-      // addToGlassesList: action,
-      // editInGlassesList: action,
-      // deleteFromGlassesList: action,
 
       acceptedFile: observable,
       getFileFromUser: action,
@@ -94,37 +85,23 @@ class StoreAdmin {
     await editGlassesFromList(id, data);
   }
 
-  loadAllGlassesFiles () {
-    this.glasses.list.forEach(item => {
-      downloadGlassesFromStorage(
-        item.file_path,
-        getNameFromPath(item.file_path),
-      )
-        .then(data => this.glasses.modelFiles[item.id] = data);
+  async loadAllGlassesFiles () {
+    this.glasses.filesReady = false;
 
-      downloadGlassesFromStorage(
-        item.preview_file_path,
-        `${getNameFromPath(item.preview_file_path)}`,
-      )
-        .then(data => this.glasses.previewFiles[item.id] = data);
-    });
+    const fbxLoader = new FBXLoader();
+
+    for (const item of this.glasses.list) {
+      const url = await getDownloadURL(ref(firebaseStorage, item.file_path));
+
+      this.glasses.modelFiles[item.id] = await fbxLoader.loadAsync(url);
+    }
+
+    this.glasses.filesReady = true;
   }
 
   clearTemporary () {
     this.glasses.temporary = null;
   }
-
-  // async addToGlassesList (data: Omit<Glasses, 'id'>) {
-  //   await addGlassesToList(data);
-  // }
-  //
-  // async editInGlassesList (id: string, data: Partial<Glasses>) {
-  //   await editGlassesFromList(id, data);
-  // }
-  //
-  // async deleteFromGlassesList (id: string) {
-  //   await deleteGlassesFromList(id);
-  // }
 
   getFileFromUser (file: File) {
     this.acceptedFile = file;
@@ -135,13 +112,15 @@ class StoreAdmin {
 
     this.previewScene = new PreviewScene();
     await this.previewScene.createScene(this.glasses.selected);
-    this.previewScene.updatePosition(this.glasses.selected);
+    await this.previewScene.updatePosition(this.glasses.selected);
+    this.glasses.selected.snapshot_options.partsVisibility =
+      this.previewScene.getChildrenList() as {[name: string]: boolean};
   }
 
-  updateScenes () {
+  async updateScenes () {
     if (!this.previewScene) return;
 
-    this.previewScene.updatePosition(this.glasses.selected);
+    await this.previewScene.updatePosition(this.glasses.selected);
   }
 
   async makePreviewPngAndUpload () {
@@ -161,6 +140,8 @@ class StoreAdmin {
     const previewUrl = await getDownloadURL(ref(firebaseStorage, previewPath));
 
     await editGlassesFromList(this.glasses.selected.id, { preview_file_path: previewUrl });
+    await this.loadGlassesList();
+    this.setSelected(this.glasses.selected.id);
   }
 
   async uploadTemporaryToFirebase () {

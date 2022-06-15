@@ -15,16 +15,17 @@ export const createNewGlassesInfo: CreateNewGlassesInfo = (file) => {
     model: null,
     options: {
       position: [0, 0, 0],
-      scale: [0, 0, 0],
+      rotation: [4.8, 0, 0],
+      scale: [0.8, 0.8, 0.8],
     },
     glass_group: {
-      name: ''
+      name: '',
     },
     snapshot_options: {
-      bracketsItemsNames: [],
+      partsVisibility: null,
       position: [0, 0, 0],
-      scale: [0, 0, 0],
-      rotation: [0, 0, 0],
+      rotation: [4.8, 0, 0],
+      scale: [0.8, 0.8, 0.8],
     },
   };
 };

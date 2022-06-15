@@ -13,6 +13,9 @@ enum Input {
   positionX = 'positionX',
   positionY = 'positionY',
   positionZ = 'positionZ',
+  rotationX = 'rotationX',
+  rotationY = 'rotationY',
+  rotationZ = 'rotationZ',
   scaleX = 'scaleX',
   scaleY = 'scaleY',
   scaleZ = 'scaleZ',
@@ -25,17 +28,19 @@ enum Input {
   prevScaleX = 'previewScaleX',
   prevScaleY = 'previewScaleY',
   prevScaleZ = 'previewScaleZ',
+  prevThree = 'previewThree',
 }
 
 enum Option {
   position = 'Position',
+  rotation = 'Rotation',
   scale = 'Scale',
   three = 'three',
   prevPosition = 'Preview position',
   prevRotate = 'Preview rotate',
   prevScale = 'Preview scale',
   prevThree = 'Preview three',
-  prevSave = 'Sava preview image'
+  prevSave = 'Sava preview image',
 }
 
 enum View {
@@ -44,7 +49,8 @@ enum View {
 }
 
 export const EditGlasses: FC = observer(() => {
-  const [previewSaved, setPreviewSaved] = useState(false);
+  const [previewIsSaved, setPreviewIsSaved] = useState(false);
+  const [allChangesSaved, setAllChangesSaved] = useState(false);
   const store = useContext(StoreContextAdmin);
   const params = useParams();
 
@@ -62,10 +68,20 @@ export const EditGlasses: FC = observer(() => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!store.glasses.selected) return;
 
-    const { name } = event.target;
+    const { name, id } = event.target;
     const value = event.target.value as unknown as number;
 
+    if (name.startsWith('preview')) {
+      setPreviewIsSaved(false);
+    }
+
+    setAllChangesSaved(false);
+
     switch (name) {
+      case Input.name:
+        editor.changeName(store.glasses.selected, event.target.value);
+        break;
+
       case Input.positionX:
         editor.changePositionX(store.glasses.selected, value);
         break;
@@ -76,6 +92,18 @@ export const EditGlasses: FC = observer(() => {
 
       case Input.positionZ:
         editor.changePositionZ(store.glasses.selected, value);
+        break;
+
+      case Input.rotationX:
+        editor.changeRotationX(store.glasses.selected, value);
+        break;
+
+      case Input.rotationY:
+        editor.changeRotationY(store.glasses.selected, value);
+        break;
+
+      case Input.rotationZ:
+        editor.changeRotationZ(store.glasses.selected, value);
         break;
 
       case Input.scaleX:
@@ -126,6 +154,10 @@ export const EditGlasses: FC = observer(() => {
         editor.changePreviewScaleZ(store.glasses.selected, value);
         break;
 
+      case Input.prevThree:
+        editor.changePartVisibilityForPreview(store.glasses.selected, id);
+        break;
+
       default:
         break;
     }
@@ -167,11 +199,25 @@ export const EditGlasses: FC = observer(() => {
             <button
               className={cn(
                 "params-container__button",
+                "params-container__button_rotation",
+                {"params-container__button_selected": optionsBlockName === Option.rotation}
+              )}
+              type="button"
+              title={Option.rotation}
+              onClick={() => {
+                setOptionsBlockName(Option.rotation);
+              }}
+            />
+
+            <button
+              className={cn(
+                "params-container__button",
                 "params-container__button_three",
                 {"params-container__button_selected": optionsBlockName === Option.three}
               )}
               type="button"
               title={Option.three}
+              hidden={true} // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
               onClick={() => {
                 setOptionsBlockName(Option.three);
               }}
@@ -211,7 +257,7 @@ export const EditGlasses: FC = observer(() => {
             <button
               className={cn(
                 "params-container__button",
-                "params-container__button_rotate",
+                "params-container__button_rotation",
                 {"params-container__button_selected": optionsBlockName === Option.prevRotate}
               )}
               type="button"
@@ -239,14 +285,14 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_save-preview",
-                { "params-container__button_completed": previewSaved }
+                { "params-container__button_completed": previewIsSaved }
               )}
               type="button"
               title={Option.prevSave}
               onClick={async () => {
-                setPreviewSaved(false);
+                setPreviewIsSaved(false);
                 await store.makePreviewPngAndUpload();
-                setPreviewSaved(true);
+                setPreviewIsSaved(true);
               }}
             />
           </>
@@ -302,7 +348,7 @@ export const EditGlasses: FC = observer(() => {
     if (!store.glasses.selected) return;
 
     const positionParams: [min: number, max: number, step: number] = [-50, 50, 0.01];
-    const rotateParams: [min: number, max: number, step: number] = [0, 6.3, 0.01];
+    const rotationParams: [min: number, max: number, step: number] = [0, 6.3, 0.01];
     const scaleParams: [min: number, max: number, step: number] = [0, 10, 0.01];
     const options = store.glasses.selected.options;
     const prevOptions = store.glasses.selected.snapshot_options;
@@ -320,12 +366,35 @@ export const EditGlasses: FC = observer(() => {
             Input.positionY,
             options.position[1],
             handleChange,
-            ...positionParams),
+            ...positionParams
+          ),
           createInputBlock(
             Input.positionZ,
             options.position[2],
             handleChange,
             ...positionParams
+          ),
+        ];
+
+      case Option.rotation:
+        return [
+          createInputBlock(
+            Input.rotationX,
+            options.rotation[0],
+            handleChange,
+            ...rotationParams
+          ),
+          createInputBlock(
+            Input.rotationY,
+            options.rotation[1],
+            handleChange,
+            ...rotationParams
+          ),
+          createInputBlock(
+            Input.rotationZ,
+            options.rotation[2],
+            handleChange,
+            ...rotationParams
           ),
         ];
 
@@ -379,18 +448,18 @@ export const EditGlasses: FC = observer(() => {
             Input.prevRotateX,
             prevOptions.rotation[0],
             handleChange,
-            ...rotateParams
+            ...rotationParams
           ),
           createInputBlock(Input.prevRotateY,
             prevOptions.rotation[1],
             handleChange,
-            ...rotateParams,
+            ...rotationParams,
           ),
           createInputBlock(
             Input.prevRotateZ,
             prevOptions.rotation[2],
             handleChange,
-            ...rotateParams,
+            ...rotationParams,
           ),
         ];
 
@@ -416,13 +485,46 @@ export const EditGlasses: FC = observer(() => {
           ),
         ];
 
+      case Option.prevThree:
+        if (!store.glasses.selected.snapshot_options.partsVisibility) return;
+
+        const list = Object.entries(store.glasses.selected.snapshot_options.partsVisibility);
+
+        return (
+          <div
+            className="params-container__param-item"
+          >
+            <div className="params-container__checkbox-container">
+              {list.map(([name, value]) => (
+                <label
+                  key={name}
+                  className="params-container__checkbox-label"
+                >
+                  <input
+                    className="params-container__checkbox-input"
+                    type="checkbox"
+                    name={Input.prevThree}
+                    id={name}
+                    checked={value}
+                    onChange={handleChange}
+                  />
+
+                  {name}
+                </label>
+              ))}
+            </div>
+          </div>
+        )
+
       default:
         break;
     }
   };
 
   const handleSave = async () => {
-    store.saveChangesInTheSelectedToFirebase();
+    setAllChangesSaved(false);
+    await store.saveChangesInTheSelectedToFirebase();
+    setAllChangesSaved(true);
   };
 
   return (
@@ -432,19 +534,18 @@ export const EditGlasses: FC = observer(() => {
           <input
             className="edit-glasses__input"
             type="text"
-            name="glasses-name"
+            name={Input.name}
             placeholder={Input.name}
             title={Input.name}
             value={store.glasses.selected?.name}
-            onChange={event => {
-              if (store.glasses.selected) {
-                editor.changeName(store.glasses.selected, event.target.value);
-              }
-            }}
+            onChange={handleChange}
           />
 
           <button
-            className="edit-glasses__button"
+            className={cn(
+              "edit-glasses__button",
+              {"edit-glasses__button_completed": allChangesSaved},
+            )}
             onClick={() => {
               handleSave();
             }}

@@ -17,6 +17,18 @@ export class EditGlassesOptions {
     glasses.options.position[2] = z;
   }
 
+  changeRotationX (glasses: Glasses, x: number) {
+    glasses.options.rotation[0] = x;
+  }
+
+  changeRotationY (glasses: Glasses, y: number) {
+    glasses.options.rotation[1] = y;
+  }
+
+  changeRotationZ (glasses: Glasses, z: number) {
+    glasses.options.rotation[2] = z;
+  }
+
   changeScaleX (glasses: Glasses, x: number) {
     glasses.options.scale[0] = x;
   }
@@ -65,24 +77,10 @@ export class EditGlassesOptions {
     glasses.snapshot_options.rotation[2] = z;
   }
 
-  changePartVisibilityForPreview (glasses: Glasses, parts: { [name: string]: boolean }) {
-    for (const key in parts) {
-      const existingPart = glasses.snapshot_options.bracketsItemsNames
-        .find(name => name === key);
+  changePartVisibilityForPreview (glasses: Glasses, part: string) {
+    if (!glasses.snapshot_options.partsVisibility) return;
 
-      const existingPartIndex = glasses.snapshot_options.bracketsItemsNames
-        .findIndex(name => name === key);
-
-      if (parts[key]) {
-        if (!existingPart) {
-          glasses.snapshot_options.bracketsItemsNames.push(key);
-        }
-      } else {
-        if (existingPartIndex) {
-          glasses.snapshot_options.bracketsItemsNames
-            .splice(existingPartIndex, 1);
-        }
-      }
-    }
+    glasses.snapshot_options.partsVisibility[part] =
+      !glasses.snapshot_options.partsVisibility[part];
   }
 }
