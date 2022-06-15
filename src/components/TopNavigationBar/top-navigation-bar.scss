@@ -1,0 +1,28 @@
+@import "../../styles/main";
+
+.top-navigation-bar {
+  display: flex;
+  position: relative;
+  width: 100%;
+
+  &__button {
+    @extend %noBorder;
+    @include square($top-nav-bar-height);
+    @include box-element;
+    @include normalize-background;
+
+    position: relative;
+    background-size: 32px, 32px;
+    background-color: #fdfdfd;
+
+    &_back {
+      background-image:
+        url("../../images/admin/top-navigation-bar/back.png");
+    }
+  }
+
+  &__sign-out-button {
+    position: absolute;
+    right: 0;
+  }
+}

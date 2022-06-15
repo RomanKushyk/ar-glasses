@@ -3,6 +3,7 @@ import {FC, useEffect} from 'react';
 import storeAdmin, { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
 import { SignOut } from '../../components/SignOut';
 import {Outlet, useLocation, useNavigate} from 'react-router-dom';
+import {TopNavigationBar} from '../../components/TopNavigationBar/TopNavigationBar';
 
 export const AdminPage: FC = () => {
   const navigate = useNavigate();
@@ -17,7 +18,9 @@ export const AdminPage: FC = () => {
   return (
     <StoreContextAdmin.Provider value={storeAdmin}>
       <div className="admin-page">
-        <SignOut/>
+        <TopNavigationBar>
+          <SignOut/>
+        </TopNavigationBar>
 
         <Outlet/>
       </div>

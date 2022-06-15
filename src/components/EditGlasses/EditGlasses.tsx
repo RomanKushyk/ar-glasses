@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import {EditGlassesOptions} from '../../utils/EditGlassesOptions';
 import {observer} from 'mobx-react-lite';
 import { previewSceneCanvas } from '../../scenes/AdminPage/PreviewScene/PreviewScene';
+import {createInputsBlock} from '../../utils/createInputsBlock';
 
 enum Input {
   name = 'Glasses name',
@@ -285,7 +286,7 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_save-preview",
-                { "params-container__button_completed": previewIsSaved }
+                {"params-container__button_completed": previewIsSaved}
               )}
               type="button"
               title={Option.prevSave}
@@ -298,51 +299,8 @@ export const EditGlasses: FC = observer(() => {
           </>
         );
     }
-  }
-
-  const createInputBlock = (
-    name: string,
-    value: number,
-    callback: (event: ChangeEvent<HTMLInputElement>) => void,
-    min: number,
-    max: number,
-    step: number,
-  ) => {
-    return (
-      <div
-        className="params-container__param-item"
-        key={name}
-      >
-            <span className="params-container__param-title">
-            {name.slice(-1) + ':'}
-          </span>
-
-        <div className="params-container__inputs-container">
-          <input
-            className="params-container__range-input"
-            type="range"
-            name={name}
-            min={min}
-            max={max}
-            step={step}
-            value={value}
-            onChange={callback}
-          />
-
-          <input
-            className="params-container__additional-input"
-            type="number"
-            min={min}
-            max={max}
-            step={step}
-            name={name}
-            value={value}
-            onChange={callback}
-          />
-        </div>
-      </div>
-    );
   };
+
 
   const createOptionBlock = (blockName: Option) => {
     if (!store.glasses.selected) return;
@@ -356,19 +314,19 @@ export const EditGlasses: FC = observer(() => {
     switch (blockName) {
       case Option.position:
         return [
-          createInputBlock(
+          createInputsBlock(
             Input.positionX,
             options.position[0],
             handleChange,
             ...positionParams
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.positionY,
             options.position[1],
             handleChange,
             ...positionParams
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.positionZ,
             options.position[2],
             handleChange,
@@ -378,19 +336,19 @@ export const EditGlasses: FC = observer(() => {
 
       case Option.rotation:
         return [
-          createInputBlock(
+          createInputsBlock(
             Input.rotationX,
             options.rotation[0],
             handleChange,
             ...rotationParams
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.rotationY,
             options.rotation[1],
             handleChange,
             ...rotationParams
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.rotationZ,
             options.rotation[2],
             handleChange,
@@ -400,19 +358,19 @@ export const EditGlasses: FC = observer(() => {
 
       case Option.scale:
         return [
-          createInputBlock(
+          createInputsBlock(
             Input.scaleX,
             options.scale[0],
             handleChange,
             ...scaleParams
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.scaleY,
             options.scale[1],
             handleChange,
             ...scaleParams
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.scaleZ,
             options.scale[2],
             handleChange,
@@ -422,19 +380,19 @@ export const EditGlasses: FC = observer(() => {
 
       case Option.prevPosition:
         return [
-          createInputBlock(
+          createInputsBlock(
             Input.prevPositionX,
             prevOptions.position[0],
             handleChange,
             ...positionParams
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.prevPositionY,
             prevOptions.position[1],
             handleChange,
             ...positionParams
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.prevPositionZ,
             prevOptions.position[2],
             handleChange,
@@ -444,18 +402,18 @@ export const EditGlasses: FC = observer(() => {
 
       case Option.prevRotate:
         return [
-          createInputBlock(
+          createInputsBlock(
             Input.prevRotateX,
             prevOptions.rotation[0],
             handleChange,
             ...rotationParams
           ),
-          createInputBlock(Input.prevRotateY,
+          createInputsBlock(Input.prevRotateY,
             prevOptions.rotation[1],
             handleChange,
             ...rotationParams,
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.prevRotateZ,
             prevOptions.rotation[2],
             handleChange,
@@ -465,19 +423,19 @@ export const EditGlasses: FC = observer(() => {
 
       case Option.prevScale:
         return [
-          createInputBlock(
+          createInputsBlock(
             Input.prevScaleX,
             prevOptions.scale[0],
             handleChange,
             ...scaleParams,
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.prevScaleY,
             prevOptions.scale[1],
             handleChange,
             ...scaleParams,
           ),
-          createInputBlock(
+          createInputsBlock(
             Input.prevScaleZ,
             prevOptions.scale[2],
             handleChange,
@@ -586,7 +544,9 @@ export const EditGlasses: FC = observer(() => {
             {optionsBlockName + ':'}
           </span>
 
-          {createOptionBlock(optionsBlockName)}
+          <div className="params-container__params-group">
+            {createOptionBlock(optionsBlockName)}
+          </div>
         </div>
 
         <div className="params-container__navigation-panel">
