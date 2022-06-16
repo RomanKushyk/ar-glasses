@@ -135,7 +135,7 @@ class StoreAdmin {
           this.glasses.modelFiles[item.id] = await fbxLoader.loadAsync(item.file_path);
           break;
 
-        case false:
+        default:
           const url = await getDownloadURL(ref(firebaseStorage, item.file_path));
           this.glasses.modelFiles[item.id] = await fbxLoader.loadAsync(url);
           break

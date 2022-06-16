@@ -3,6 +3,10 @@ import Scene from "../../../scenes/Scene";
 import { createContext } from "react";
 import IFacetype from "../../../interfaces/Facetype";
 import { Glasses } from '../../../interfaces/consts/Glasses';
+import {Group} from 'three';
+import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
+import {getDownloadURL, ref} from 'firebase/storage';
+import {firebaseStorage} from '../../../utils/firebase';
 
 class Store {
   ready: boolean = false;
@@ -13,11 +17,15 @@ class Store {
     detections: 1,
   };
   glasses: {
-    active_glasses: undefined | number;
+    active_glasses: undefined | number | string;
     list: Array<Glasses>;
+    files: {
+      [id: string]: Group,      //файли підгружаються з мережі
+    },
   } = {
     active_glasses: undefined,
     list: [],
+    files: {},
   };
 
   constructor() {
@@ -30,6 +38,7 @@ class Store {
 
       glasses: observable,
       updateGlassesList: action,
+      loadGlassesFiles: action,
       newActiveGlasses: action,
     });
   }
@@ -44,11 +53,28 @@ class Store {
     this.ready = ready;
   }
 
-  updateGlassesList() {
+  async updateGlassesList() {
+    await this.scene.glasses_controller.loadGlassesList()
     this.glasses.list = this.scene.glasses_controller.glasses_list;
   }
 
-  async newActiveGlasses(id: number) {
+  async loadGlassesFiles() {
+    const fbxLoader = new FBXLoader();
+
+    for (const item of this.glasses.list) {
+      switch (item.local) {
+        case true:
+          this.glasses.files[item.id] = await fbxLoader.loadAsync(item.file_path);
+          break;
+
+        default:
+          const url = await getDownloadURL(ref(firebaseStorage, item.file_path));
+          this.glasses.files[item.id] = await fbxLoader.loadAsync(url);
+      }
+    }
+  }
+
+  async newActiveGlasses(id: number | string) {
     this.glasses.active_glasses = id;
     await this.scene.updateGlasses(id);
   }

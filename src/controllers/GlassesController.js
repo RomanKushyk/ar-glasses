@@ -1,15 +1,37 @@
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { glasses_list } from '../consts/glasses.ts';
+import {getGlassesList} from '../api/firebase/store/glasses';
 
 const fbxLoader = new FBXLoader();
 
 export class GlassesController {
   constructor() {}
 
-  glasses_list = glasses_list;
+  glasses_list = [];
   glasses_loading_promise = undefined;
 
   _active_glass_id = undefined;
+
+  async loadGlassesList () {
+    this.glasses_list = glasses_list;
+
+    const querySnapshot = await getGlassesList();
+
+    querySnapshot.forEach(doc => {
+      this.glasses_list.push({
+        id: doc.id,
+        ...doc.data(),
+      })
+    });
+
+    this.glasses_list.sort((item1, item2) => {
+      if (item1.local || item2.local) {
+        return 0;
+      }
+
+      return item1.name.localeCompare(item2.name);
+    })
+  }
 
   set active_glass(id) {
     if (this._active_glass_id !== id) {
