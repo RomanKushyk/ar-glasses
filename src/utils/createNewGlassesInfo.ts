@@ -10,6 +10,7 @@ export const createNewGlassesInfo: CreateNewGlassesInfo = (file) => {
     name,
     file_path: ``,
     preview_file_path: ``,
+    local: false,
     loaded: false,
     error: false,
     model: null,

@@ -5,6 +5,7 @@ export interface Glasses {
     name: string,
     file_path: string,
     preview_file_path: string,
+    local: boolean,
     loaded: boolean,
     error: boolean,
     model: null | THREE.Object3D,

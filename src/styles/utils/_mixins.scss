@@ -37,6 +37,29 @@
   }
 }
 
+@mixin aborted ($size, $right, $bottom) {
+  &::before {
+    content: "";
+    @include box-element;
+    @include square($size);
+    @include normalize-background;
+
+    position: absolute;
+    right: $right;
+    bottom: $bottom;
+    background-color: #d11414;
+    background-image: url("../../images/admin/edit/aborted.png");
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  &_aborted {
+    &::before {
+      opacity: 0.9;
+    }
+  }
+}
+
 @mixin noBorder {
   border: none;
   outline: none;

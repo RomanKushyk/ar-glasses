@@ -4,10 +4,10 @@ import cn from 'classnames';
 import React, {ChangeEvent, FC, useContext, useEffect, useState} from 'react';
 import { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
 import { useParams } from 'react-router-dom';
-import {EditGlassesOptions} from '../../utils/EditGlassesOptions';
-import {observer} from 'mobx-react-lite';
+import { EditGlassesOptions } from '../../utils/EditGlassesOptions';
+import { observer } from 'mobx-react-lite';
 import { previewSceneCanvas } from '../../scenes/AdminPage/PreviewScene/PreviewScene';
-import {createInputsBlock} from '../../utils/createInputsBlock';
+import { createInputsBlock } from '../../utils/createInputsBlock';
 
 enum Input {
   name = 'Glasses name',
@@ -50,8 +50,6 @@ enum View {
 }
 
 export const EditGlasses: FC = observer(() => {
-  const [previewIsSaved, setPreviewIsSaved] = useState(false);
-  const [allChangesSaved, setAllChangesSaved] = useState(false);
   const store = useContext(StoreContextAdmin);
   const params = useParams();
 
@@ -62,6 +60,7 @@ export const EditGlasses: FC = observer(() => {
   useEffect(() => {
     if (!params.glassesId) return;
 
+    store.clearIndicators();
     store.setSelected(params.glassesId);
     store.createScenes();
   }, [params]);
@@ -71,12 +70,6 @@ export const EditGlasses: FC = observer(() => {
 
     const { name, id } = event.target;
     const value = event.target.value as unknown as number;
-
-    if (name.startsWith('preview')) {
-      setPreviewIsSaved(false);
-    }
-
-    setAllChangesSaved(false);
 
     switch (name) {
       case Input.name:
@@ -286,14 +279,13 @@ export const EditGlasses: FC = observer(() => {
               className={cn(
                 "params-container__button",
                 "params-container__button_save-preview",
-                {"params-container__button_completed": previewIsSaved}
+                {"params-container__button_completed": store.glasses.pngSaved},
+                {"params-container__button_aborted": store.glasses.savePngAborted},
               )}
               type="button"
               title={Option.prevSave}
               onClick={async () => {
-                setPreviewIsSaved(false);
                 await store.makePreviewPngAndUpload();
-                setPreviewIsSaved(true);
               }}
             />
           </>
@@ -480,9 +472,7 @@ export const EditGlasses: FC = observer(() => {
   };
 
   const handleSave = async () => {
-    setAllChangesSaved(false);
     await store.saveChangesInTheSelectedToFirebase();
-    setAllChangesSaved(true);
   };
 
   return (
@@ -502,7 +492,8 @@ export const EditGlasses: FC = observer(() => {
           <button
             className={cn(
               "edit-glasses__button",
-              {"edit-glasses__button_completed": allChangesSaved},
+              {"edit-glasses__button_completed": store.glasses.saved},
+              {"edit-glasses__button_aborted": store.glasses.saveAborted},
             )}
             onClick={() => {
               handleSave();

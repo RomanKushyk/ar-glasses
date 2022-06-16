@@ -34,8 +34,18 @@ export class PreviewScene {
     this.renderer.setSize(this.sizes.width, this.sizes.height);
 
     this.fbxLoader = new FBXLoader();
-    const url = await getDownloadURL(ref(firebaseStorage, glasses.file_path));
-    this.object = await this.fbxLoader.loadAsync(url);
+
+    switch (glasses.local) {
+      case true:
+        this.object = await this.fbxLoader.loadAsync(document.location.origin + glasses.file_path);
+        break;
+
+      default:
+        const url = await getDownloadURL(ref(firebaseStorage, glasses.file_path));
+        this.object = await this.fbxLoader.loadAsync(url);
+        break;
+    }
+
     this.scene.add(this.object);
   }
 
@@ -59,16 +69,7 @@ export class PreviewScene {
         }
       });
     }
-    // glasses.snapshot_options.bracketsItemsNames.forEach((name) => {
-    //   this.object.getObjectByName(name)
-    //     ?.traverse((obj => {
-    //       if (obj.visible) {
-    //         obj.visible = false;
-    //       }
-    //     }))
-    // });
 
-    console.log('this obj', this.object);
     this.renderer.render(this.scene, this.camera);
   }
 
