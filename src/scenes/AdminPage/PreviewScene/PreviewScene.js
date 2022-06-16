@@ -92,7 +92,6 @@ export class PreviewScene {
     //     }))
     // });
 
-    console.log('this obj', this.object);
     this.renderer.render(this.scene, this.camera);
   }
 

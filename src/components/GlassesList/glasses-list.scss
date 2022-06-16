@@ -24,7 +24,7 @@
   &__preview-container {
     margin-right: 13px;
 
-    @include square(46px);
+    @include square($standard-square-size);
     @include box-element;
   }
 
@@ -36,6 +36,20 @@
 
     text-align: center;
     font-size: 12px;
+  }
+
+  &__title {
+    font-family: inherit;
+    font-weight: 500;
+  }
+
+  &__is-local {
+    @include square($standard-square-size);
+    @include normalize-background;
+    @extend %noBorder;
+
+    background-image: url("../../images/admin/add-new-glasses/local.png");
+    background-size: 24px 24px;
   }
 
   &__option-container {

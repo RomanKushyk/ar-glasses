@@ -22,6 +22,7 @@
   &__button {
     @include top-control-box;
     @include completed(20px, -10px, -10px);
+    @include aborted(20px, -10px, -10px);
 
     position: relative;
   }
@@ -138,11 +139,12 @@
 
   &__button {
     @extend %noBorder;
-    @include square($params-button-size);
+    @include square($standard-square-size);
     @include box-element;
     @include gap-margins(0, 10px);
     @include normalize-background;
     @include completed(20px, 0, 0);
+    @include aborted(20px, 0, 0);
 
     position: relative;
     background-size: 32px, 32px;

@@ -6,6 +6,7 @@ import { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
 import { useNavigate } from 'react-router-dom';
 import {getDownloadURL, ref} from 'firebase/storage';
 import {firebaseStorage} from '../../utils/firebase';
+import {Glasses} from '../../interfaces/consts/Glasses';
 
 export const GlassesList: FC = observer(() => {
   const store = useContext(StoreContextAdmin);
@@ -15,23 +16,40 @@ export const GlassesList: FC = observer(() => {
     store.loadGlassesList();
   }, []);
 
+  const getPreviewPath = (item: Glasses) => {
+    switch (item.local) {
+      case true:
+        return document.location.origin + '/' + item.preview_file_path;
+
+      default:
+        return item.preview_file_path;
+    }
+  };
+
+  console.log(document.location)
+
   return (
     <section className="glasses-list">
       {store.glasses.list.map(element => (
         <div
           key={element.id}
-          className={"glasses-list__item"}
+          className="glasses-list__item"
         >
           <div className="glasses-list__description-container">
             <div className="glasses-list__preview-container">
               <img
                 alt="glasses"
-                src={element.preview_file_path}
+                src={getPreviewPath(element)}
                 className="glasses-list__preview-img"
               />
             </div>
 
-            <p>{element.name}</p>
+            <p className="glasses-list__title">{element.name}</p>
+
+            {
+              element.local &&
+              <span className="glasses-list__is-local"/>
+            }
           </div>
 
           <div className="glasses-list__option-container">
