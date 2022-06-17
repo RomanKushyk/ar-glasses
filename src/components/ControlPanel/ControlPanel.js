@@ -1,11 +1,10 @@
-import { useRef, useEffect, useState, Fragment } from "react";
 import "./control-panel.scss";
 import { observer } from "mobx-react-lite";
 import { useContext, createContext } from "react";
 
-import { StoreContext } from "../../store/Store.ts";
+import { StoreContext } from "../../services/store/app/store.ts";
 import { saveSnapshotFromCanvas } from "../../utils/saveSnapshotFromCanvas.ts";
-import { EFacetypes } from "enums/EFacetypes";
+import { EFacetypes } from "../../enums/EFacetypes";
 
 const ControlPanel = observer(() => {
   const store = useContext(StoreContext);

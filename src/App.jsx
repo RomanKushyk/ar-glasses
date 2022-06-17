@@ -3,8 +3,7 @@ import Webcam from "react-webcam";
 import { useRef, useEffect, useState } from "react";
 
 import runFacemesh from "./utils/tf_setup";
-import Scene from "./scene/Scene.js";
-import store, { StoreContext } from "./store/Store.ts";
+import store, { StoreContext } from "./services/store/app/store";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import Preloader from "./components/Preloader/Preloader";
@@ -17,7 +16,7 @@ let TFSetupOptions = {
 };
 
 runFacemesh(TFSetupOptions, () => {
-  store.updateReadyState(true);
+  store.newReadyState(true);
 });
 
 function App() {
@@ -35,8 +34,9 @@ function App() {
   });
 
   TFSetupOptions.cb = async () => {
-    store.updateGlassesList();
-    store.newActiveGlasses(store.glasses.list[0].id);
+    await store.updateGlassesList();
+    await store.loadGlassesFiles();
+    await store.newActiveGlasses(store.glasses.list[0].id);
     store.newReadyState(true);
   };
 
@@ -44,7 +44,8 @@ function App() {
     <div className="App" ref={appDivRef}>
       <Preloader store={store} />
 
-      <Webcam ref={webcamRef} className="webcam"></Webcam>
+      <Webcam ref={webcamRef} className="webcam"/>
+
       <StoreContext.Provider value={store}>
         <ControlPanel />
       </StoreContext.Provider>

@@ -1,16 +1,11 @@
 import * as THREE from "three";
-import { Vector3 } from "three";
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import FacetypeGetter from "../utils/FacetypeGetter/FacetypeGetter";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { GlassesController } from "../controllers/GlassesController.js";
-import { EFacetypes } from "enums/EFacetypes";
+import {Vector3} from "three";
+import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
+import {GlassesController} from "../controllers/GlassesController.js";
 
 export default class Scene {
   created = false;
   ready = false;
-
-  constructor() {}
 
   setUpSize(width, height, videoWidth, videoHeight) {
     this.width = width;
@@ -21,13 +16,12 @@ export default class Scene {
 
   glasses_controller = new GlassesController();
 
-  async loadGlass() {
+  async loadGlass() {                              // unused
     const fbxLoader = new FBXLoader();
-    const model = await fbxLoader.loadAsync(
-      "assets/Glasses/01/01%20-%20Model.fbx"
-    );
 
-    return model;
+    return await fbxLoader.loadAsync(
+      "assets/Glasses/01/01 - Model.fbx"
+    );
   }
 
   setUpScene(parent, video) {

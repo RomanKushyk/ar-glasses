@@ -1,7 +1,8 @@
-import { saveFromUrl } from '../utils/saveFromUrl';
+// @ts-ignore
+import { saveFromUrl } from './saveFromUrl.ts';
 import { WebGLRenderer } from 'three';
 
-type SaveSnapshotFromCanvas = (canvas: WebGLRenderer.domElement, video: HTMLVideoElement) => void;
+type SaveSnapshotFromCanvas = (canvas: WebGLRenderer["domElement"], video: HTMLVideoElement) => void;
 
 export const saveSnapshotFromCanvas: SaveSnapshotFromCanvas = (canvas, video) => {
   let scale: number;
@@ -24,8 +25,8 @@ export const saveSnapshotFromCanvas: SaveSnapshotFromCanvas = (canvas, video) =>
   const offsetX = (canvas.offsetWidth - scaledVideoWidth) / 2;
   const correctedY = (canvas.offsetHeight - scaledVideoHeight) / 2;
 
-  resultCanvasContext.drawImage(video, offsetX, correctedY, scaledVideoWidth, scaledVideoHeight);
-  resultCanvasContext.drawImage(canvas, 0, 0, video.offsetWidth, video.offsetHeight);
+  resultCanvasContext?.drawImage(video, offsetX, correctedY, scaledVideoWidth, scaledVideoHeight);
+  resultCanvasContext?.drawImage(canvas, 0, 0, video.offsetWidth, video.offsetHeight);
 
   saveFromUrl(resulCanvas.toDataURL(strMime), 'snapshot.jpg');
 };

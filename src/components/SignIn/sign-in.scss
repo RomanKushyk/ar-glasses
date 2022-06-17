@@ -1,0 +1,42 @@
+@import "../../styles/main";
+
+.sign-in {
+  $form-element-mb: 10px;
+  $input-height: 20px;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    max-width: 400px;
+    padding: 20px 30px;
+
+    @include box-element;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__input {
+    margin-bottom: $form-element-mb;
+
+    @include input;
+
+    &_error {
+      border-bottom-color: red;
+    }
+  }
+
+  &__button {
+    margin-bottom: $form-element-mb;
+    height: 35px;
+
+    @extend %noBorder;
+    @include box-element;
+
+    &_submit {
+    }
+  }
+}

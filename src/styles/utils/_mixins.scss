@@ -1,0 +1,108 @@
+@mixin box-element {
+  background-color: #fdfdfd;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
+
+  &_selected {
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+  }
+}
+
+@mixin selectedScene {
+  &_selected {
+    border: rgba(0, 0, 0, 0.40) 2px solid;
+  }
+}
+
+@mixin completed ($size, $right, $bottom) {
+  &::after {
+    content: "";
+    @include box-element;
+    @include square($size);
+    @include normalize-background;
+
+    position: absolute;
+    right: $right;
+    bottom: $bottom;
+    background-color: #14d114;
+    background-image: url("../../images/admin/edit/completed.png");
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  &_completed {
+    &::after {
+      opacity: 0.7;
+    }
+  }
+}
+
+@mixin aborted ($size, $right, $bottom) {
+  &::before {
+    content: "";
+    @include box-element;
+    @include square($size);
+    @include normalize-background;
+
+    position: absolute;
+    right: $right;
+    bottom: $bottom;
+    background-color: #d11414;
+    background-image: url("../../images/admin/edit/aborted.png");
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  &_aborted {
+    &::before {
+      opacity: 0.9;
+    }
+  }
+}
+
+@mixin noBorder {
+  border: none;
+  outline: none;
+}
+
+@mixin square ($dim) {
+  width: $dim;
+  height: $dim;
+}
+
+@mixin input {
+  border: none;
+  border-bottom: 1px solid #4d457b;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 10px 5px;
+  color: #4d457b;
+  outline: none;
+}
+
+@mixin top-control-box {
+  padding: 4px 11px;
+  border: none;
+  outline: none;
+  background: #D9D9D9;
+  border-radius: 5px;
+
+  font-size: 14px;
+}
+
+@mixin gap-margins ($v, $h) {
+  margin-right: $h;
+  margin-bottom: $v;
+
+  &:last-child {
+    margin-right: 0;
+    margin-bottom: 0;
+  }
+}
+
+@mixin normalize-background {
+  background-size: contain;
+  background-position: center;
+  background-color: transparent;
+  background-repeat: no-repeat;
+}

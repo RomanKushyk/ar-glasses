@@ -1,0 +1,178 @@
+@import "../../styles/main";
+
+.edit-glasses {
+
+  &__views-container {
+    position: relative;
+  }
+
+  &__top-panel {
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: $primary-v-padding $primary-h-padding;
+  }
+
+  &__input {
+    @include top-control-box;
+  }
+
+  &__button {
+    @include top-control-box;
+    @include completed(20px, -10px, -10px);
+    @include aborted(20px, -10px, -10px);
+
+    position: relative;
+  }
+
+  &__input {
+    @include top-control-box;
+  }
+
+  &__button {
+    @include top-control-box;
+  }
+
+  &__scene {
+    height: $admin-scene-height;
+    margin-bottom: $scene-margin-bottom;
+
+    @include box-element;
+    @include selectedScene;
+  }
+
+  &__preview-scene {
+    position: absolute;
+    bottom: $primary-v-padding;
+    left: $primary-h-padding;
+
+    @include square(10vh);
+    @include box-element;
+    @include selectedScene;
+  }
+
+  &__params-container {
+
+  }
+}
+
+.params-container {
+  &__title {
+    margin-bottom: 10px;
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 19px;
+  }
+
+  &__params-list {
+    display: flex;
+    flex-direction: column;
+    padding: $primary-v-padding $primary-h-padding;
+    margin-bottom: $block-item-margin;
+    max-height: $params-list-height;
+
+    @include box-element;
+  }
+
+  &__params-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: auto;
+  }
+
+  &__param-item {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+
+
+    @include gap-margins(10px, 0);
+  }
+
+  &__param-title {
+    font-family: inherit;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 15px;
+  }
+
+  &__inputs-container {
+    display: flex;
+    width: 100%;
+  }
+
+  &__range-input {
+    width: 100%;
+    margin-right: 10px;
+  }
+
+  &__additional-input {
+    width: 80px;
+
+    @include top-control-box;
+  }
+
+  &__checkbox-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__checkbox-label {
+  }
+
+  &__checkbox-input {
+  }
+
+  &__navigation-panel {
+    display: flex;
+    padding: $primary-v-padding $primary-h-padding;
+
+    background: #D9D9D9;
+    border-radius: 13px;
+  }
+
+  &__button {
+    @extend %noBorder;
+    @include square($standard-square-size);
+    @include box-element;
+    @include gap-margins(0, 10px);
+    @include normalize-background;
+    @include completed(20px, 0, 0);
+    @include aborted(20px, 0, 0);
+
+    position: relative;
+    background-size: 32px, 32px;
+    transition: after 0.5s;
+
+    &_selected {
+      background-color: rgba(255, 255, 255, 0.5);
+      color: black;
+    }
+
+    &_scale {
+      background-image: url("../../images/admin/edit/scale.png");
+    }
+
+    &_position {
+      background-image: url("../../images/admin/edit/position.png");
+    }
+
+    &_rotation {
+      background-image: url("../../images/admin/edit/rotate.png");
+    }
+
+    &_three {
+      background-image: url("../../images/admin/edit/three.png");
+    }
+
+    &_save-preview {
+      background-image: url("../../images/admin/edit/save-preview.png");
+    }
+  }
+}

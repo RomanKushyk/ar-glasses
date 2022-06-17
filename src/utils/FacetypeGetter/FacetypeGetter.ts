@@ -1,12 +1,12 @@
-import { EFacetypes } from "enums/EFacetypes.js";
+import { EFacetypes } from "../../enums/EFacetypes.js";
 import NN from "./nn/NN.js";
 import { Vector3 } from "three";
-import IFacetype from "interfaces/Facetype.js";
+import IFacetype from "../../interfaces/Facetype.js";
 let facetype_recognition_preset = require("./presets/facetype_recognition_result.json");
 
 let nn = new NN();
 
-let detections = [];
+let detections: any[] = [];
 const DETECTIONS = 600;
 
 let trainee = [];
@@ -23,7 +23,7 @@ export interface IFacelines {
   a2: number;
 }
 
-export default (keypoints): IFacetype => {
+export default (keypoints: any): IFacetype => {
   let getLengthFromIndexedPoints = (i1: number, i2: number): number => {
     return new Vector3().copy(keypoints[i1]).sub(keypoints[i2]).length();
   };
@@ -101,7 +101,7 @@ export default (keypoints): IFacetype => {
     [facedata.A5],
   ]
 
-  let result = nn.Activation(parsed_facedata).map((i) => i[0]);
+  let result = nn.Activation(parsed_facedata).map((i: any) => i[0]);
 
   result = result.indexOf(Math.max(...result));
 
