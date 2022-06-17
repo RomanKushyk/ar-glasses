@@ -4,9 +4,7 @@ import { FC, useContext, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
 import { useNavigate } from 'react-router-dom';
-import {getDownloadURL, ref} from 'firebase/storage';
-import {firebaseStorage} from '../../utils/firebase';
-import {Glasses} from '../../interfaces/consts/Glasses';
+import { Glasses } from '../../interfaces/consts/Glasses';
 
 export const GlassesList: FC = observer(() => {
   const store = useContext(StoreContextAdmin);
@@ -25,8 +23,6 @@ export const GlassesList: FC = observer(() => {
         return item.preview_file_path;
     }
   };
-
-  console.log(document.location)
 
   return (
     <section className="glasses-list">

@@ -37,7 +37,7 @@ export class PreviewScene {
 
     switch (glasses.local) {
       case true:
-        this.object = await this.fbxLoader.loadAsync(document.location.origin + glasses.file_path);
+        this.object = await this.fbxLoader.loadAsync(document.location.origin + '/' + glasses.file_path);
         break;
 
       default:

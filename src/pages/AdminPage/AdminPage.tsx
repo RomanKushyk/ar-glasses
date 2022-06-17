@@ -10,8 +10,8 @@ export const AdminPage: FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === '/admin') {
-      navigate('new');
+    if (location.pathname.endsWith('admin/') || location.pathname.endsWith('admin')) {
+      navigate('. /new');
     }
   }, [location.pathname]);
 
