@@ -35,6 +35,7 @@ function App() {
 
   TFSetupOptions.cb = async () => {
     await store.updateGlassesList();
+    await store.loadGlassesFiles();
     await store.newActiveGlasses(store.glasses.list[0].id);
     store.newReadyState(true);
   };

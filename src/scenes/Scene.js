@@ -1,13 +1,11 @@
 import * as THREE from "three";
-import { Vector3 } from "three";
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import { GlassesController } from "../controllers/GlassesController.js";
+import {Vector3} from "three";
+import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
+import {GlassesController} from "../controllers/GlassesController.js";
 
 export default class Scene {
   created = false;
   ready = false;
-
-  constructor() {}
 
   setUpSize(width, height, videoWidth, videoHeight) {
     this.width = width;
@@ -18,13 +16,12 @@ export default class Scene {
 
   glasses_controller = new GlassesController();
 
-  async loadGlass() {
+  async loadGlass() {                              // unused
     const fbxLoader = new FBXLoader();
-    const model = await fbxLoader.loadAsync(
+
+    return await fbxLoader.loadAsync(
       "assets/Glasses/01/01 - Model.fbx"
     );
-
-    return model;
   }
 
   setUpScene(parent, video) {
