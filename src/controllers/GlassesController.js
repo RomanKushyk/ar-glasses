@@ -1,12 +1,8 @@
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { glasses_list } from '../consts/glasses.ts';
-import {getGlassesList} from '../api/firebase/store/glasses';
-
-const fbxLoader = new FBXLoader();
+import { getGlassesList } from '../api/firebase/store/glasses';
+import store from '../services/store/app/store';
 
 export class GlassesController {
-  constructor() {}
-
   glasses_list = [];
   glasses_loading_promise = undefined;
 
@@ -36,16 +32,11 @@ export class GlassesController {
   set active_glass(id) {
     if (this._active_glass_id !== id) {
       this._active_glass_id = id;
-      let glass = this.glasses_list.find((glass_state) => glass_state.id == id);
+      let glass = this.glasses_list.find((glass_state) => glass_state.id === id);
 
       this.glasses_loading_promise = new Promise(async (resolve, reject) => {
         if (!glass.loaded) {
-          glass.model = await fbxLoader
-            .loadAsync(glass.file_path)
-            .catch((err) => {
-              glass.error = err;
-              reject(err);
-            });
+          glass.model = store.glasses.files[id];
 
           glass.loaded = true;
         }
@@ -56,12 +47,12 @@ export class GlassesController {
   }
 
   get active_glass() {
-    if (this._active_glass_id == undefined) {
+    if (this._active_glass_id === undefined) {
       return undefined;
     }
 
     return this.glasses_list.find(
-      (glass_state) => glass_state.id == this._active_glass_id
+      (glass_state) => glass_state.id === this._active_glass_id
     );
   }
 }

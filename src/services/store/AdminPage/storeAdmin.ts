@@ -213,13 +213,11 @@ class StoreAdmin {
     );
 
     if (glassesId) {
-      await editGlassesFromList(glassesId, { loaded: true, file_path: url });
-      console.log('edited')
+      await editGlassesFromList(glassesId, { file_path: url });
     }
 
     this.clearTemporary();
     await this.loadGlassesList();
-    console.log('last reloaded', this.glasses.list);
   }
 
   async deleteGlassesFromFirebase (item: Glasses) {
