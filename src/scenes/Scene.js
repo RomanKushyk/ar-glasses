@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import {Vector3} from "three";
-import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {GlassesController} from "../controllers/GlassesController.js";
 import {observe} from 'mobx';
 import store from '../services/store/app/store';
@@ -53,6 +52,8 @@ export default class Scene {
 
     initialInstallationOfModels();
     observe(store.glasses, async ({ object: glasses }) => {
+      if (!glasses.active_glasses) return;
+
       await this.updateGlasses(glasses.active_glasses);
       console.log(`glasses updated to ${glasses.active_glasses}`);
     });
