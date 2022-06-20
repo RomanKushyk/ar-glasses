@@ -74,9 +74,8 @@ class Store {
     }
   }
 
-  async newActiveGlasses(id: number | string) {
+  newActiveGlasses(id: number | string) {
     this.glasses.active_glasses = id;
-    await this.scene.updateGlasses(id);
   }
 }
 const store = new Store();

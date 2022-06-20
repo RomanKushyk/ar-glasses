@@ -2,6 +2,8 @@ import * as THREE from "three";
 import {Vector3} from "three";
 import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {GlassesController} from "../controllers/GlassesController.js";
+import {observe} from 'mobx';
+import store from '../services/store/app/store';
 
 export default class Scene {
   created = false;
@@ -15,14 +17,6 @@ export default class Scene {
   }
 
   glasses_controller = new GlassesController();
-
-  async loadGlass() {                              // unused
-    const fbxLoader = new FBXLoader();
-
-    return await fbxLoader.loadAsync(
-      "assets/Glasses/01/01 - Model.fbx"
-    );
-  }
 
   setUpScene(parent, video) {
     this.video = video;
@@ -58,6 +52,10 @@ export default class Scene {
     };
 
     initialInstallationOfModels();
+    observe(store.glasses, async ({ object: glasses }) => {
+      await this.updateGlasses(glasses.active_glasses);
+      console.log(`glasses updated to ${glasses.active_glasses}`);
+    });
   }
 
   setUpHeadWrapper() {
