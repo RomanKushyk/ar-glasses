@@ -7,8 +7,17 @@ import store from '../services/store/app/store';
 export default class Scene {
   created = false;
   ready = false;
+  private width: number | undefined;
+  private height: number | undefined;
+  private videoWidth: number | undefined;
+  private videoHeight: number | undefined;
 
-  setUpSize(width, height, videoWidth, videoHeight) {
+  setUpSize(
+    width: number,
+    height: number,
+    videoWidth: number,
+    videoHeight: number,
+  ) {
     this.width = width;
     this.height = height;
     this.videoWidth = videoWidth;
