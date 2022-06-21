@@ -4,6 +4,15 @@ import {GlassesController} from "../controllers/GlassesController.js";
 import {observe} from 'mobx';
 import store from '../services/store/app/store';
 import {Glasses} from '../interfaces/consts/Glasses';
+import {Face, Keypoint} from '@tensorflow-models/face-detection';
+
+interface TargetPoints {
+  top: Keypoint,
+  left: Keypoint,
+  right: Keypoint,
+  bottom: Keypoint,
+  center_x: THREE.Vector3 | undefined,
+}
 
 export default class Scene {
   created = false;
@@ -171,7 +180,7 @@ export default class Scene {
     }
   }
 
-  target_points = {
+  target_points: TargetPoints = {
     top: {
       x: 0,
       y: 0,
@@ -193,7 +202,6 @@ export default class Scene {
       z: 0,
     },
     center_x: undefined,
-
   };
 
   normalize = (
@@ -206,7 +214,7 @@ export default class Scene {
     return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
   };
 
-  normalize_vec(vec: {x: number, y: number, z: number}) {
+  normalize_vec(vec: Keypoint) {
     if (
       !this.videoWidth
       || !this.videoHeight
@@ -278,7 +286,11 @@ export default class Scene {
   };
 
   drawGlass() {
-    if (!this.head_wrapper) return;
+    if (
+      !this.head_wrapper
+      || !this.target_points.top.z
+      || !this.target_points.bottom.z
+    ) return;
 
     this.gide_lines.x
       .copy(this.target_points.left as THREE.Vector3)
@@ -382,10 +394,15 @@ export default class Scene {
     this.head_wrapper.add(this.head);
   }
 
-  drawScene(predictions) {
-    if (!this.ready || !predictions.length) {
-      return;
-    }
+  drawScene(predictions: Face[]) {
+    if (
+      !this.ready
+      || !predictions.length
+      || !this.renderer
+      || !this.scene
+      || !this.camera
+    ) return;
+
     this.renderer.render(this.scene, this.camera);
 
     let keypoints = predictions[0].keypoints;
