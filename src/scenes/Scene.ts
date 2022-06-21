@@ -15,9 +15,6 @@ interface TargetPoints {
 }
 
 export default class Scene {
-  created = false;
-  ready = false;
-
   private width: number | undefined;
   private height: number | undefined;
   private videoWidth: number | undefined;
@@ -34,6 +31,9 @@ export default class Scene {
   private video_material: THREE.ShaderMaterial | undefined;
   private video_texture: THREE.VideoTexture | undefined;
   private head: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial> | undefined;
+
+  created = false;
+  ready = false;
 
   setUpSize(
     width: number,
@@ -221,6 +221,7 @@ export default class Scene {
       || !this.width
       || !this.height
       || !this.camera
+      || !this.viewSize
     ) return;
 
     let scale;
@@ -418,6 +419,8 @@ export default class Scene {
   }
 
   get viewSize() {
+    if (!this.camera || !this.width || !this.height) return undefined;
+
     let distance = this.camera.position.z;
     let vFov = (this.camera.fov * Math.PI) / 180;
     let height;
