@@ -22,6 +22,9 @@ export default class Scene {
   private glasses_wrapper: THREE.Object3D<THREE.Event> | undefined;
   private glasses_state: Glasses | undefined;
   private glasses: THREE.Object3D<THREE.Event> | undefined;
+  private video_material: THREE.ShaderMaterial | undefined;
+  private video_texture: THREE.VideoTexture | undefined;
+  private head: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial> | undefined;
 
   setUpSize(
     width: number,
@@ -332,9 +335,12 @@ export default class Scene {
   }
 
   setUpVideoMaterial() {
+    if (!this.video) return;
+
     this.video_texture = new THREE.VideoTexture(this.video);
     this.video_material = new THREE.ShaderMaterial({
       uniforms: {
+    // @ts-ignore
         txt: this.video_texture,
       },
       vertexShader: `
@@ -358,10 +364,9 @@ export default class Scene {
     });
   }
 
-  video_material = undefined;
-  video_texture = undefined;
-
   async setUpHead() {
+    if (!this.video_material || !this.head_wrapper) return;
+
     const model_geometry = new THREE.PlaneGeometry(50, 50);
 
     this.head = new THREE.Mesh(model_geometry, this.video_material);
