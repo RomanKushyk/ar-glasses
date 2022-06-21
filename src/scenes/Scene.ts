@@ -7,10 +7,18 @@ import store from '../services/store/app/store';
 export default class Scene {
   created = false;
   ready = false;
+
   private width: number | undefined;
   private height: number | undefined;
   private videoWidth: number | undefined;
   private videoHeight: number | undefined;
+  private video: HTMLVideoElement | undefined;
+  private camera: THREE.PerspectiveCamera | undefined;
+  private scene: THREE.Scene | undefined;
+  private renderer: THREE.WebGLRenderer | undefined;
+  private canvas: HTMLCanvasElement | undefined;
+  private head_wrapper: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial> | undefined;
+  private glasses_wrapper: THREE.Object3D<THREE.Event> | undefined;
 
   setUpSize(
     width: number,
@@ -26,7 +34,9 @@ export default class Scene {
 
   glasses_controller = new GlassesController();
 
-  setUpScene(parent, video) {
+  setUpScene(parent: HTMLElement, video: HTMLVideoElement) {
+    if (!this.width || !this.height) return;
+
     this.video = video;
     this.camera = new THREE.PerspectiveCamera(
       1,
@@ -77,6 +87,9 @@ export default class Scene {
     });
 
     this.head_wrapper = new THREE.Mesh(geometry, material);
+
+    if (!this.scene) return;
+
     this.scene.add(this.head_wrapper);
 
     this.glasses_wrapper = new THREE.Object3D();
