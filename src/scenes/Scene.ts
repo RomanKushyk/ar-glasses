@@ -3,6 +3,7 @@ import {Vector3} from "three";
 import {GlassesController} from "../controllers/GlassesController.js";
 import {observe} from 'mobx';
 import store from '../services/store/app/store';
+import {Glasses} from '../interfaces/consts/Glasses';
 
 export default class Scene {
   created = false;
@@ -19,6 +20,8 @@ export default class Scene {
   private canvas: HTMLCanvasElement | undefined;
   private head_wrapper: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial> | undefined;
   private glasses_wrapper: THREE.Object3D<THREE.Event> | undefined;
+  private glasses_state: Glasses | undefined;
+  private glasses: THREE.Object3D<THREE.Event> | undefined;
 
   setUpSize(
     width: number,
@@ -96,7 +99,9 @@ export default class Scene {
     this.head_wrapper.add(this.glasses_wrapper);
   }
 
-  async updateGlasses(id) {
+  async updateGlasses(id: number | string) {
+    if (!this.glasses_wrapper) return;
+
     this.glasses_controller.active_glass = id;
 
     if (!this.glasses_controller.active_glass.loaded)
@@ -107,7 +112,10 @@ export default class Scene {
     });
 
     this.glasses_wrapper.traverse((element) => {
-      if (element.material) {
+      if (
+        element instanceof THREE.Mesh
+        && element.material
+      ) {
         if (element.material.length) {
           for (let i = 0; i < element.material.length; ++i) {
             element.material[i].dispose();
@@ -116,14 +124,17 @@ export default class Scene {
           element.material.dispose();
         }
       }
-      if (element.geometry) element.geometry.dispose();
+      if (element instanceof THREE.Mesh && element.geometry) element.geometry.dispose();
     });
 
+    if (!this.renderer) return;
     this.renderer.renderLists.dispose();
 
     this.glasses_state = this.glasses_controller.active_glass;
 
-    let compute_glasses_name = (id) => "glasses_" + id;
+    let compute_glasses_name = (id: string | number) => "glasses_" + id;
+
+    if (!this.glasses_state || !this.glasses_state.model) return;
     if (
       !this.glasses_wrapper.getObjectByName(
         compute_glasses_name(this.glasses_state.id)
@@ -132,8 +143,8 @@ export default class Scene {
       this.glasses = this.glasses_state.model;
       this.glasses
         .getObjectByName(this.glasses_state.glass_group.name)
-        .traverse((obj) => {
-          if (obj.material) {
+        ?.traverse((obj) => {
+          if (obj instanceof THREE.Mesh && obj.material) {
             obj.material.opacity = 0.5;
           }
         });
@@ -146,9 +157,14 @@ export default class Scene {
       this.glasses = this.glasses_wrapper.getObjectByName(
         compute_glasses_name(this.glasses_state.id)
       );
-      this.glasses_wrapper.getObjectByName(
+
+      const glasses = this.glasses_wrapper.getObjectByName(
         compute_glasses_name(this.glasses_state.id)
-      ).visible = true;
+      );
+
+      if (glasses) {
+        glasses.visible = true
+      }
     }
   }
 
