@@ -85,6 +85,7 @@ export default class Scene {
     };
 
     initialInstallationOfModels();
+
     observe(store.glasses, async ({ object: glasses }) => {
       if (!glasses.active_glasses) return;
 
@@ -93,7 +94,7 @@ export default class Scene {
     });
   }
 
-  setUpHeadWrapper() {
+  private setUpHeadWrapper() {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshBasicMaterial({
       color: 0x0000ff,
@@ -111,7 +112,7 @@ export default class Scene {
     this.head_wrapper.add(this.glasses_wrapper);
   }
 
-  async updateGlasses(id: number | string) {
+  private async updateGlasses(id: number | string) {
     if (!this.glasses_wrapper) return;
 
     this.glasses_controller.active_glass = id;
@@ -180,7 +181,7 @@ export default class Scene {
     }
   }
 
-  target_points: TargetPoints = {
+  private target_points: TargetPoints = {
     top: {
       x: 0,
       y: 0,
@@ -204,7 +205,7 @@ export default class Scene {
     center_x: undefined,
   };
 
-  normalize = (
+  private normalize = (
     num: number,
     in_min: number,
     in_max: number,
@@ -214,7 +215,7 @@ export default class Scene {
     return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
   };
 
-  normalize_vec(vec: Keypoint) {
+  private normalize_vec(vec: Keypoint) {
     if (
       !this.videoWidth
       || !this.videoHeight
@@ -262,7 +263,7 @@ export default class Scene {
     return _vec;
   }
 
-  axis : {
+  private axis : {
     x: THREE.Vector3
     y: THREE.Vector3
     z: THREE.Vector3
@@ -272,7 +273,7 @@ export default class Scene {
     z: new Vector3(0, 0, 1),
   };
 
-  gide_lines: {
+  private gide_lines: {
     x: THREE.Vector3,
     y: THREE.Vector3,
     z_x: THREE.Vector3,
@@ -286,7 +287,7 @@ export default class Scene {
     x_y: new THREE.Vector3(),
   };
 
-  drawGlass() {
+  private drawGlass() {
     if (
       !this.head_wrapper
       || !this.target_points.top.z
@@ -347,7 +348,7 @@ export default class Scene {
     this.head_wrapper.position.copy(center);
   }
 
-  setUpVideoMaterial() {
+  private setUpVideoMaterial() {
     if (!this.video) return;
 
     this.video_texture = new THREE.VideoTexture(this.video);
@@ -377,7 +378,7 @@ export default class Scene {
     });
   }
 
-  async setUpHead() {
+  private async setUpHead() {
     if (!this.video_material || !this.head_wrapper) return;
 
     const model_geometry = new THREE.PlaneGeometry(50, 50);
@@ -418,7 +419,7 @@ export default class Scene {
     this.drawGlass();
   }
 
-  get viewSize() {
+  private get viewSize() {
     if (!this.camera || !this.width || !this.height) return undefined;
 
     let distance = this.camera.position.z;
