@@ -1,10 +1,10 @@
 import * as THREE from "three";
-import {Vector3} from "three";
-import {GlassesController} from "../controllers/GlassesController.js";
-import {observe} from 'mobx';
+import { Vector3 } from "three";
+import { GlassesController } from "../controllers/GlassesController.js";
+import { observe } from 'mobx';
 import store from '../services/store/app/store';
-import {Glasses} from '../interfaces/consts/Glasses';
-import {Face, Keypoint} from '@tensorflow-models/face-detection';
+import { Glasses } from '../interfaces/consts/Glasses';
+import { Face, Keypoint } from '@tensorflow-models/face-detection';
 
 interface TargetPoints {
   top: Keypoint,
@@ -90,7 +90,6 @@ export default class Scene {
       if (!glasses.active_glasses) return;
 
       await this.updateGlasses(glasses.active_glasses);
-      console.log(`glasses updated to ${glasses.active_glasses}`);
     });
   }
 

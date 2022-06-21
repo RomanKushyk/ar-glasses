@@ -4,6 +4,8 @@ import React from 'react';
 import {ref} from 'firebase/storage';
 import {firebaseStorage} from '../../../utils/firebase';
 import { getDownloadURL } from 'firebase/storage';
+import {observe} from 'mobx';
+import storeAdmin from '../../../services/store/AdminPage/storeAdmin';
 
 export const previewSceneCanvas/*: LegacyRef<HTMLCanvasElement>*/ = React.createRef(); // ref
 
@@ -47,6 +49,11 @@ export class PreviewScene {
     }
 
     this.scene.add(this.object);
+
+
+    // observe(storeAdmin.glasses, async ({ object: observableGlasses }) => {
+    //   await this.updatePosition(observableGlasses.selected);
+    // });
   }
 
   async updatePosition (glasses) {

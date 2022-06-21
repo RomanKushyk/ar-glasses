@@ -61,8 +61,6 @@ class StoreAdmin {
       getFileFromUser: action,
 
       previewScene: observable,
-      createScenes: action,
-      updateScenes: action,
       makePreviewPngAndUpload: action,
 
       uploadTemporaryToFirebase: action,
@@ -103,7 +101,7 @@ class StoreAdmin {
     this.glasses.savePngAborted = false;
   }
 
-  setSelected (id: string) {
+  setSelected (id: number | string) {
     this.glasses.selected = this.glasses.list
       .find(item => id === item.id);
   }
@@ -151,22 +149,6 @@ class StoreAdmin {
 
   getFileFromUser (file: File) {
     this.acceptedFile = file;
-  }
-
-  async createScenes () {
-    if (!this.glasses.selected) return;
-
-    this.previewScene = new PreviewScene();
-    await this.previewScene.createScene(this.glasses.selected);
-    await this.previewScene.updatePosition(this.glasses.selected);
-    this.glasses.selected.snapshot_options.partsVisibility =
-      this.previewScene.getChildrenList() as {[name: string]: boolean};
-  }
-
-  async updateScenes () {
-    if (!this.previewScene) return;
-
-    await this.previewScene.updatePosition(this.glasses.selected);
   }
 
   async makePreviewPngAndUpload () {

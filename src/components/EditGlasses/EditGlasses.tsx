@@ -1,12 +1,12 @@
 import './edit-glasses.scss';
 
 import cn from 'classnames';
-import React, {ChangeEvent, FC, useContext, useEffect, useState} from 'react';
-import { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
+import React, { ChangeEvent, FC, useContext, useEffect, useState } from 'react';
+import StoreAdmin, { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
 import { useParams } from 'react-router-dom';
 import { EditGlassesOptions } from '../../utils/EditGlassesOptions';
 import { observer } from 'mobx-react-lite';
-import { previewSceneCanvas } from '../../scenes/AdminPage/PreviewScene/PreviewScene';
+import {PreviewScene, previewSceneCanvas} from '../../scenes/AdminPage/PreviewScene/PreviewScene';
 import { createInputsBlock } from '../../utils/createInputsBlock';
 
 enum Input {
@@ -49,6 +49,18 @@ enum View {
   preview = 'Preview',
 }
 
+const setupScenes = async (store:typeof StoreAdmin) => {
+  if (!store.glasses.selected) return;
+
+  store.previewScene = new PreviewScene();
+
+  await store.previewScene.createScene(store.glasses.selected);
+  await store.previewScene.updatePosition(store.glasses.selected);
+
+  store.glasses.selected.snapshot_options.partsVisibility =
+    store.previewScene.getChildrenList() as {[name: string]: boolean};
+};
+
 export const EditGlasses: FC = observer(() => {
   const store = useContext(StoreContextAdmin);
   const params = useParams();
@@ -58,12 +70,18 @@ export const EditGlasses: FC = observer(() => {
   const editor = new EditGlassesOptions();
 
   useEffect(() => {
-    if (!params.glassesId) return;
+    const update = async () => {
+      await store.loadGlassesList()
 
-    store.clearIndicators();
-    store.setSelected(params.glassesId);
-    store.createScenes();
-  }, [params]);
+      if (!params.glassesId) return;
+
+      store.setSelected(params.glassesId);
+
+      await setupScenes(store);
+    };
+
+    update();
+  }, [params.glassesId, store])
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!store.glasses.selected) return;
@@ -156,7 +174,7 @@ export const EditGlasses: FC = observer(() => {
         break;
     }
 
-    store.updateScenes();
+    store.previewScene?.updatePosition(store.glasses.selected);
   };
 
   const createNavigationPanel = (view: View) => {
