@@ -189,13 +189,29 @@ export default class Scene {
       y: 0,
       z: 0,
     },
+    center_x: undefined,
+
   };
 
-  normalize = (num, in_min, in_max, out_min, out_max) => {
+  normalize = (
+    num: number,
+    in_min: number,
+    in_max: number,
+    out_min: number,
+    out_max: number,
+  ) => {
     return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
   };
 
-  normalize_vec(vec) {
+  normalize_vec(vec: {x: number, y: number, z: number}) {
+    if (
+      !this.videoWidth
+      || !this.videoHeight
+      || !this.width
+      || !this.height
+      || !this.camera
+    ) return;
+
     let scale;
     let _vec = new THREE.Vector3(vec.x, vec.y, vec.z);
 
@@ -234,13 +250,23 @@ export default class Scene {
     return _vec;
   }
 
-  axis = {
+  axis : {
+    x: THREE.Vector3
+    y: THREE.Vector3
+    z: THREE.Vector3
+  } = {
     x: new Vector3(1, 0, 0),
     y: new Vector3(0, 1, 0),
     z: new Vector3(0, 0, 1),
   };
 
-  gide_lines = {
+  gide_lines: {
+    x: THREE.Vector3,
+    y: THREE.Vector3,
+    z_x: THREE.Vector3,
+    y_z: THREE.Vector3,
+    x_y: THREE.Vector3,
+  } = {
     x: new THREE.Vector3(),
     y: new THREE.Vector3(),
     z_x: new THREE.Vector3(),
@@ -249,15 +275,17 @@ export default class Scene {
   };
 
   drawGlass() {
+    if (!this.head_wrapper) return;
+
     this.gide_lines.x
-      .copy(this.target_points.left)
-      .sub(this.target_points.right)
+      .copy(this.target_points.left as THREE.Vector3)
+      .sub(this.target_points.right as THREE.Vector3)
       .normalize()
       .multiplyScalar(10);
 
     this.gide_lines.y
-      .copy(this.target_points.top)
-      .sub(this.target_points.bottom)
+      .copy(this.target_points.top  as THREE.Vector3)
+      .sub(this.target_points.bottom  as THREE.Vector3)
       .normalize()
       .multiplyScalar(100000);
 
@@ -285,12 +313,19 @@ export default class Scene {
 
     let left_for_scale = this.normalize_vec(this.target_points.left);
     let right_for_scale = this.normalize_vec(this.target_points.right);
+
+    if (!left_for_scale || !right_for_scale) return;
+
     left_for_scale.z = 0;
     right_for_scale.z = 0;
+
     let scale =
       new THREE.Vector3().copy(left_for_scale).sub(right_for_scale).length() /
       15;
+
     this.head_wrapper.scale.set(scale, scale, scale);
+
+    if (!this.target_points.center_x) return;
 
     let center = this.target_points.center_x;
     this.head_wrapper.position.copy(center);
