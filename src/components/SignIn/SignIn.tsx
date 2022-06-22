@@ -16,6 +16,14 @@ export const SignIn = () => {
   const [hasPasswordError, setHasPasswordError] = useState<boolean>(false);
   const [user] = useAuthState(firebaseAuth);
 
+  useEffect(() => {
+    signInWithEmailAndPassword(
+      firebaseAuth,
+      'rkushyk@qualium-systems.com',
+      '1q2w3e4r',
+      );
+  }, [])                   //! For develop!!!!
+
   if (user) {
     return <Navigate to="/admin" replace />;
   }
