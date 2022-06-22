@@ -1,0 +1,20 @@
+@import "react-responsive-carousel/lib/styles/carousel.min.css";
+@import "../../styles/main";
+
+.carousel {
+  border-radius: 14px;
+}
+
+.face-carousel {
+
+  &__image-container {
+    box-sizing: border-box;
+    height: 50vh;
+  }
+
+  &__image {
+    box-sizing: border-box;
+    object-fit: contain;
+    height: 100%;
+  }
+}

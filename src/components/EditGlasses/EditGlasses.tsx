@@ -8,6 +8,7 @@ import { EditGlassesOptions } from '../../utils/EditGlassesOptions';
 import { observer } from 'mobx-react-lite';
 import {PreviewScene, previewSceneCanvas} from '../../scenes/AdminPage/PreviewScene/PreviewScene';
 import { createInputsBlock } from '../../utils/createInputsBlock';
+import {FaceCarousel} from '../FaceCarousel';
 
 enum Input {
   name = 'Glasses name',
@@ -530,6 +531,7 @@ export const EditGlasses: FC = observer(() => {
             setOptionsBlockName(Option.position);
           }}
         >
+          <FaceCarousel/>
         </div>
 
         <canvas

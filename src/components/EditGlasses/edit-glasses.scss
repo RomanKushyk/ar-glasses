@@ -36,11 +36,14 @@
   }
 
   &__scene {
+    position: relative;
     height: $admin-scene-height;
     margin-bottom: $scene-margin-bottom;
 
     @include box-element;
     @include selectedScene;
+
+    box-sizing: content-box;
   }
 
   &__preview-scene {
