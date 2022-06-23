@@ -9,6 +9,8 @@
 }
 
 @mixin selectedScene {
+  border: transparent 2px solid;
+
   &_selected {
     border: rgba(0, 0, 0, 0.40) 2px solid;
   }

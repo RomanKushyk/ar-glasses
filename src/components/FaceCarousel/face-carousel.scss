@@ -3,10 +3,13 @@
 
 .carousel {
   border-radius: 14px;
+
+  .control-arrow {
+    width: 50px;
+  }
 }
 
 .face-carousel {
-
   &__image-container {
     box-sizing: border-box;
     height: 50vh;
