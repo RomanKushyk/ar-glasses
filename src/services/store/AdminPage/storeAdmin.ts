@@ -160,8 +160,6 @@ class StoreAdmin {
       return;
     }
 
-    await this.saveChangesInTheSelectedToFirebase();
-
     const modelUrl = await getDownloadURL(ref(firebaseStorage, this.glasses.selected.file_path));
     const data = await getPngFromFbx(this.glasses.selected, modelUrl) as string;
     const res = await fetch(data);
