@@ -178,7 +178,7 @@ export const EditGlasses: FC = observer(() => {
     store.previewScene?.updatePosition(store.glasses.selected);
   };
 
-  const createNavigationPanel = (view: View) => {
+  const createBottomNavigationPanelButtons = (view: View) => {
     switch (view) {
       case View.main:
         return (
@@ -491,7 +491,7 @@ export const EditGlasses: FC = observer(() => {
   };
 
   const handleSave = async () => {
-    await store.saveChangesInTheSelectedToFirebase();
+    await store.saveAllChangesInTheSelectedToFirebase();
   };
 
   return (
@@ -561,7 +561,7 @@ export const EditGlasses: FC = observer(() => {
         </div>
 
         <div className="params-container__navigation-panel">
-          {createNavigationPanel(currentView)}
+          {createBottomNavigationPanelButtons(currentView)}
         </div>
       </div>
     </section>

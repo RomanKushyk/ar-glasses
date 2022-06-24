@@ -15,7 +15,7 @@ import { getDownloadURL, ref} from 'firebase/storage';
 import { firebaseStorage } from '../../../utils/firebase';
 import { Group } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-import {glasses_list} from '../../../consts/glasses';
+import { glasses_list } from '../../../consts/glasses';
 
 interface StoreGlasses {
   selected: undefined | Glasses,
@@ -53,7 +53,7 @@ class StoreAdmin {
       loadGlassesList: action,
       clearIndicators: action,
       setSelected: action,
-      saveChangesInTheSelectedToFirebase: action,
+      saveAllChangesInTheSelectedToFirebase: action,
       loadAllGlassesFiles: action,
       clearTemporary: action,
 
@@ -63,7 +63,7 @@ class StoreAdmin {
       previewScene: observable,
       makePreviewPngAndUpload: action,
 
-      uploadTemporaryToFirebase: action,
+      uploadAllTemporaryDataToFirebase: action,
       deleteGlassesFromFirebase: action,
     })
   }
@@ -106,7 +106,7 @@ class StoreAdmin {
       .find(item => id === item.id);
   }
 
-  async saveChangesInTheSelectedToFirebase () {
+  async saveAllChangesInTheSelectedToFirebase () {
     this.clearIndicators();
 
     if (!this.glasses.selected || this.glasses.selected.local) {
@@ -171,14 +171,19 @@ class StoreAdmin {
     );
     const previewUrl = await getDownloadURL(ref(firebaseStorage, previewPath));
 
-    await editGlassesFromList(this.glasses.selected.id, { preview_file_path: previewUrl });
+    await editGlassesFromList(
+      this.glasses.selected.id,
+      {
+        preview_file_path: previewUrl,
+        snapshot_options: this.glasses.selected.snapshot_options,
+      });
     await this.loadGlassesList();
     this.setSelected(this.glasses.selected.id);
 
     this.glasses.pngSaved = true;
   }
 
-  async uploadTemporaryToFirebase () {
+  async uploadAllTemporaryDataToFirebase () {
     if (!this.acceptedFile) return;
 
     let glassesId: string | undefined;
