@@ -1,7 +1,7 @@
 import "./face-carousel.scss";
 
-import { Carousel } from 'react-responsive-carousel';
-import {faceTypes} from '../../consts/faceTypes';
+import { Carousel } from "react-responsive-carousel";
+import { faceTypes } from "../../consts/faceTypes";
 
 const carouselConfig = {
   showArrows: true,
@@ -28,15 +28,12 @@ export const FaceCarousel = () => {
   return (
     <div className="face-carousel">
       <Carousel {...carouselConfig}>
-        {faceTypes.map(item => (
-          <div
-            key={item.id}
-            className="face-carousel__image-container"
-          >
+        {faceTypes.map((item) => (
+          <div key={item.id} className="face-carousel__image-container">
             <img
               className="face-carousel__image"
               alt=""
-              src={document.location.origin + '/' + item.src}
+              src={document.location.origin + "/" + item.src}
             />
           </div>
         ))}

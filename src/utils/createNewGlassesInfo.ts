@@ -1,6 +1,6 @@
-import {Glasses} from '../interfaces/consts/Glasses';
+import { Glasses } from "../interfaces/consts/Glasses";
 
-type CreateNewGlassesInfo = (file: File) => Omit<Glasses, 'id'>;
+type CreateNewGlassesInfo = (file: File) => Omit<Glasses, "id">;
 
 export const createNewGlassesInfo: CreateNewGlassesInfo = (file) => {
   const name = getFileNameWithoutExt(file);
@@ -20,7 +20,7 @@ export const createNewGlassesInfo: CreateNewGlassesInfo = (file) => {
       scale: [0.8, 0.8, 0.8],
     },
     glass_group: {
-      name: '',
+      name: "",
     },
     snapshot_options: {
       partsVisibility: null,
@@ -35,6 +35,6 @@ const getFileNameWithoutExt = (file: File) => {
   const fullNameWithExt = file.name.toString();
 
   return fullNameWithExt
-    .replaceAll(' ', '_')
-    .slice(0, fullNameWithExt.indexOf('.'));
+    .replaceAll(" ", "_")
+    .slice(0, fullNameWithExt.indexOf("."));
 };

@@ -40,9 +40,9 @@ let transform = {
     let incoming_layer = layer.incoming_layer;
     let memory = "public_memory";
 
-    if(self){
-        incoming_layer = layer;
-        memory = "private_memory";
+    if (self) {
+      incoming_layer = layer;
+      memory = "private_memory";
     }
 
     layer[memory].activation_sum = JSON.parse(
@@ -52,15 +52,12 @@ let transform = {
     for (i = 0; i < layer.size; i++) {
       for (k = 0; k < incoming_layer.size; k++) {
         layer[memory].activation_sum[i][0] +=
-          incoming_layer[memory].outputs[k][0] *
-          incoming_layer.weights[k][i];
+          incoming_layer[memory].outputs[k][0] * incoming_layer.weights[k][i];
       }
     }
 
     for (i = 0; i < layer.size; i++) {
-      layer[memory].outputs[i][0] = sigmoid(
-        layer[memory].activation_sum[i][0]
-      );
+      layer[memory].outputs[i][0] = sigmoid(layer[memory].activation_sum[i][0]);
       layer[memory].derivative_outputs[i][0] = derivative_sigmoid(
         layer[memory].activation_sum[i][0]
       );
@@ -70,9 +67,9 @@ let transform = {
     let outgoing_layer = layer.outgoing_layer;
     let memory = "public_memory";
 
-    if(self){
-        outgoing_layer = layer;
-        memory = "private_memory";
+    if (self) {
+      outgoing_layer = layer;
+      memory = "private_memory";
     }
 
     layer[memory].propagate_sum.forEach(
@@ -90,8 +87,7 @@ let transform = {
             layer[memory].outputs[i][0];
 
           layer[memory].propagate_sum[i][0] +=
-            layer.weights[i][k] *
-            outgoing_layer[memory].errors[k][0];
+            layer.weights[i][k] * outgoing_layer[memory].errors[k][0];
         }
       }
     } else {
@@ -105,8 +101,7 @@ let transform = {
       layer[memory].errors[i][0] =
         layer[memory].propagate_sum[i][0] *
         layer[memory].derivative_outputs[i][0];
-      layer[memory].bias[i][0] -=
-        layer.rate * layer[memory].errors[i][0];
+      layer[memory].bias[i][0] -= layer.rate * layer[memory].errors[i][0];
     }
   },
 };

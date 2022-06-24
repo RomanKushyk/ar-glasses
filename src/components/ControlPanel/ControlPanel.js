@@ -1,6 +1,6 @@
 import "./control-panel.scss";
 import { observer } from "mobx-react-lite";
-import { useContext, createContext } from "react";
+import { useContext } from "react";
 
 import { StoreContext } from "../../services/store/app/store.ts";
 import { saveSnapshotFromCanvas } from "../../utils/saveSnapshotFromCanvas.ts";
@@ -39,7 +39,10 @@ const ControlPanel = observer(() => {
     Inner = [
       <span key={0}>
         Facetype detection{" "}
-        {Math.round((store.facetype.current_detections / store.facetype.detections) * 100)}%
+        {Math.round(
+          (store.facetype.current_detections / store.facetype.detections) * 100
+        )}
+        %
       </span>,
     ];
   } else {

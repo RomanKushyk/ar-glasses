@@ -1,6 +1,6 @@
-import { glasses_list } from '../consts/glasses.ts';
-import { getGlassesList } from '../api/firebase/store/glasses';
-import store from '../services/store/app/store';
+import { glasses_list } from "../consts/glasses.ts";
+import { getGlassesList } from "../api/firebase/store/glasses";
+import store from "../services/store/app/store";
 
 export class GlassesController {
   glasses_list = [];
@@ -8,16 +8,16 @@ export class GlassesController {
 
   _active_glass_id = undefined;
 
-  async loadGlassesList () {
+  async loadGlassesList() {
     this.glasses_list = glasses_list;
 
     const querySnapshot = await getGlassesList();
 
-    querySnapshot.forEach(doc => {
+    querySnapshot.forEach((doc) => {
       this.glasses_list.push({
         id: doc.id,
         ...doc.data(),
-      })
+      });
     });
 
     this.glasses_list.sort((item1, item2) => {
@@ -26,13 +26,15 @@ export class GlassesController {
       }
 
       return item1.name.localeCompare(item2.name);
-    })
+    });
   }
 
   set active_glass(id) {
     if (this._active_glass_id !== id) {
       this._active_glass_id = id;
-      let glass = this.glasses_list.find((glass_state) => glass_state.id === id);
+      let glass = this.glasses_list.find(
+        (glass_state) => glass_state.id === id
+      );
 
       this.glasses_loading_promise = new Promise(async (resolve, reject) => {
         if (!glass.loaded) {

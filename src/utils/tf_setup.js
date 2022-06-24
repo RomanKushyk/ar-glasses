@@ -59,7 +59,7 @@ export default async (refs) => {
   try {
     detector = await FaceLandmarksDetection.createDetector(
       model,
-      detectorConfig,
+      detectorConfig
     );
   } catch (e) {
     console.error(e);

@@ -1,17 +1,17 @@
 import * as THREE from "three";
 import { Vector3 } from "three";
 import { GlassesController } from "../controllers/GlassesController.js";
-import { observe } from 'mobx';
-import store from '../services/store/app/store';
-import { Glasses } from '../interfaces/consts/Glasses';
-import { Face, Keypoint } from '@tensorflow-models/face-detection';
+import { observe } from "mobx";
+import store from "../services/store/app/store";
+import { Glasses } from "../interfaces/consts/Glasses";
+import { Face, Keypoint } from "@tensorflow-models/face-detection";
 
 interface TargetPoints {
-  top: Keypoint,
-  left: Keypoint,
-  right: Keypoint,
-  bottom: Keypoint,
-  center_x: THREE.Vector3 | undefined,
+  top: Keypoint;
+  left: Keypoint;
+  right: Keypoint;
+  bottom: Keypoint;
+  center_x: THREE.Vector3 | undefined;
 }
 
 export default class Scene {
@@ -24,13 +24,17 @@ export default class Scene {
   private scene: THREE.Scene | undefined;
   private renderer: THREE.WebGLRenderer | undefined;
   private canvas: HTMLCanvasElement | undefined;
-  private head_wrapper: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial> | undefined;
+  private head_wrapper:
+    | THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>
+    | undefined;
   private glasses_wrapper: THREE.Object3D<THREE.Event> | undefined;
   private glasses_state: Glasses | undefined;
   private glasses: THREE.Object3D<THREE.Event> | undefined;
   private video_material: THREE.ShaderMaterial | undefined;
   private video_texture: THREE.VideoTexture | undefined;
-  private head: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial> | undefined;
+  private head:
+    | THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>
+    | undefined;
 
   created = false;
   ready = false;
@@ -39,7 +43,7 @@ export default class Scene {
     width: number,
     height: number,
     videoWidth: number,
-    videoHeight: number,
+    videoHeight: number
   ) {
     this.width = width;
     this.height = height;
@@ -124,10 +128,7 @@ export default class Scene {
     });
 
     this.glasses_wrapper.traverse((element) => {
-      if (
-        element instanceof THREE.Mesh
-        && element.material
-      ) {
+      if (element instanceof THREE.Mesh && element.material) {
         if (element.material.length) {
           for (let i = 0; i < element.material.length; ++i) {
             element.material[i].dispose();
@@ -136,7 +137,8 @@ export default class Scene {
           element.material.dispose();
         }
       }
-      if (element instanceof THREE.Mesh && element.geometry) element.geometry.dispose();
+      if (element instanceof THREE.Mesh && element.geometry)
+        element.geometry.dispose();
     });
 
     if (!this.renderer) return;
@@ -175,7 +177,7 @@ export default class Scene {
       );
 
       if (glasses) {
-        glasses.visible = true
+        glasses.visible = true;
       }
     }
   }
@@ -209,20 +211,21 @@ export default class Scene {
     in_min: number,
     in_max: number,
     out_min: number,
-    out_max: number,
+    out_max: number
   ) => {
     return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
   };
 
   private normalize_vec(vec: Keypoint) {
     if (
-      !this.videoWidth
-      || !this.videoHeight
-      || !this.width
-      || !this.height
-      || !this.camera
-      || !this.viewSize
-    ) return;
+      !this.videoWidth ||
+      !this.videoHeight ||
+      !this.width ||
+      !this.height ||
+      !this.camera ||
+      !this.viewSize
+    )
+      return;
 
     let scale;
     let _vec = new THREE.Vector3(vec.x, vec.y, vec.z);
@@ -262,10 +265,10 @@ export default class Scene {
     return _vec;
   }
 
-  private axis : {
-    x: THREE.Vector3
-    y: THREE.Vector3
-    z: THREE.Vector3
+  private axis: {
+    x: THREE.Vector3;
+    y: THREE.Vector3;
+    z: THREE.Vector3;
   } = {
     x: new Vector3(1, 0, 0),
     y: new Vector3(0, 1, 0),
@@ -273,11 +276,11 @@ export default class Scene {
   };
 
   private gide_lines: {
-    x: THREE.Vector3,
-    y: THREE.Vector3,
-    z_x: THREE.Vector3,
-    y_z: THREE.Vector3,
-    x_y: THREE.Vector3,
+    x: THREE.Vector3;
+    y: THREE.Vector3;
+    z_x: THREE.Vector3;
+    y_z: THREE.Vector3;
+    x_y: THREE.Vector3;
   } = {
     x: new THREE.Vector3(),
     y: new THREE.Vector3(),
@@ -288,10 +291,11 @@ export default class Scene {
 
   private drawGlass() {
     if (
-      !this.head_wrapper
-      || !this.target_points.top.z
-      || !this.target_points.bottom.z
-    ) return;
+      !this.head_wrapper ||
+      !this.target_points.top.z ||
+      !this.target_points.bottom.z
+    )
+      return;
 
     this.gide_lines.x
       .copy(this.target_points.left as THREE.Vector3)
@@ -300,8 +304,8 @@ export default class Scene {
       .multiplyScalar(10);
 
     this.gide_lines.y
-      .copy(this.target_points.top  as THREE.Vector3)
-      .sub(this.target_points.bottom  as THREE.Vector3)
+      .copy(this.target_points.top as THREE.Vector3)
+      .sub(this.target_points.bottom as THREE.Vector3)
       .normalize()
       .multiplyScalar(100000);
 
@@ -353,7 +357,7 @@ export default class Scene {
     this.video_texture = new THREE.VideoTexture(this.video);
     this.video_material = new THREE.ShaderMaterial({
       uniforms: {
-    // @ts-ignore
+        // @ts-ignore
         txt: this.video_texture,
       },
       vertexShader: `
@@ -397,12 +401,13 @@ export default class Scene {
 
   drawScene(predictions: Face[]) {
     if (
-      !this.ready
-      || !predictions.length
-      || !this.renderer
-      || !this.scene
-      || !this.camera
-    ) return;
+      !this.ready ||
+      !predictions.length ||
+      !this.renderer ||
+      !this.scene ||
+      !this.camera
+    )
+      return;
 
     this.renderer.render(this.scene, this.camera);
 

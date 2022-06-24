@@ -1,1 +1,1 @@
-export * from './FaceCarousel';
+export * from "./FaceCarousel";

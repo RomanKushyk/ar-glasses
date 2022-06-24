@@ -1,17 +1,17 @@
-import * as THREE from 'three';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-import { Glasses } from '../interfaces/consts/Glasses';
-import {getDownloadURL, ref} from 'firebase/storage';
-import {firebaseStorage} from './firebase';
+import * as THREE from "three";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+import { Glasses } from "../interfaces/consts/Glasses";
+import { getDownloadURL, ref } from "firebase/storage";
+import { firebaseStorage } from "./firebase";
 
 export const getPngFromFbx = (glasses: Glasses, URL?: string) => {
   return new Promise(async (resolve: any, reject: any) => {
-      let path = glasses.file_path;
+    let path = glasses.file_path;
 
     if (URL) {
       path = await getDownloadURL(ref(firebaseStorage, glasses.file_path));
     }
-    const strMime = 'image/png';
+    const strMime = "image/png";
     const sizes = {
       width: 640,
       height: 640,
@@ -20,10 +20,10 @@ export const getPngFromFbx = (glasses: Glasses, URL?: string) => {
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(
-        45,
-        sizes.width/sizes.height,
-        0.1,
-        1000,
+      45,
+      sizes.width / sizes.height,
+      0.1,
+      1000
     );
     camera.position.set(0, 14, 40);
     scene.add(camera);
@@ -51,9 +51,9 @@ export const getPngFromFbx = (glasses: Glasses, URL?: string) => {
         const item = object.getObjectByName(name);
 
         if (item) {
-          item.traverse(element => {
+          item.traverse((element) => {
             element.visible = value;
-          })
+          });
         }
       });
     }

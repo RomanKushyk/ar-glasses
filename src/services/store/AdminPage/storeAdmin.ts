@@ -1,34 +1,37 @@
-import { Glasses } from '../../../interfaces/consts/Glasses';
-import { action, makeObservable, observable } from 'mobx';
-import { createContext } from 'react';
+import { Glasses } from "../../../interfaces/consts/Glasses";
+import { action, makeObservable, observable } from "mobx";
+import { createContext } from "react";
 import {
   addGlassesToList,
   deleteGlassesFromList,
   editGlassesFromList,
-  getGlassesList
-} from '../../../api/firebase/store/glasses';
-import { createNewGlassesInfo } from '../../../utils/createNewGlassesInfo';
-import { deleteGlassesFromStorage, uploadGlassesToStorage } from '../../../api/firebase/storage/glasses';
-import { PreviewScene } from '../../../scenes/AdminPage/PreviewScene/PreviewScene';
-import { getPngFromFbx } from '../../../utils/getPngFromFbx';
-import { getDownloadURL, ref} from 'firebase/storage';
-import { firebaseStorage } from '../../../utils/firebase';
-import { Group } from 'three';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-import { glasses_list } from '../../../consts/glasses';
+  getGlassesList,
+} from "../../../api/firebase/store/glasses";
+import { createNewGlassesInfo } from "../../../utils/createNewGlassesInfo";
+import {
+  deleteGlassesFromStorage,
+  uploadGlassesToStorage,
+} from "../../../api/firebase/storage/glasses";
+import { PreviewScene } from "../../../scenes/AdminPage/PreviewScene/PreviewScene";
+import { getPngFromFbx } from "../../../utils/getPngFromFbx";
+import { getDownloadURL, ref } from "firebase/storage";
+import { firebaseStorage } from "../../../utils/firebase";
+import { Group } from "three";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+import { glasses_list } from "../../../consts/glasses";
 
 interface StoreGlasses {
-  selected: undefined | Glasses,
-  temporary: Omit<Glasses, 'id'> | null,
-  list: Glasses[],
+  selected: undefined | Glasses;
+  temporary: Omit<Glasses, "id"> | null;
+  list: Glasses[];
   modelFiles: {
-    [id: string]: Group,      //файли підгружаються з мережі
-  },
-  filesReady: boolean,
-  saveAborted: boolean,
-  saved: boolean,
-  savePngAborted: boolean,
-  pngSaved: boolean,
+    [id: string]: Group; //файли підгружаються з мережі
+  };
+  filesReady: boolean;
+  saveAborted: boolean;
+  saved: boolean;
+  savePngAborted: boolean;
+  pngSaved: boolean;
 }
 
 class StoreAdmin {
@@ -47,7 +50,7 @@ class StoreAdmin {
   acceptedFile: File | null = null;
   previewScene: null | PreviewScene = null;
 
-  constructor () {
+  constructor() {
     makeObservable(this, {
       glasses: observable,
       loadGlassesList: action,
@@ -65,18 +68,18 @@ class StoreAdmin {
 
       uploadAllTemporaryDataToFirebase: action,
       deleteGlassesFromFirebase: action,
-    })
+    });
   }
 
-  async loadGlassesList () {
+  async loadGlassesList() {
     const querySnapshot = await getGlassesList();
 
     this.glasses.list = [];
-    glasses_list.forEach(item => {
+    glasses_list.forEach((item) => {
       this.glasses.list.push(JSON.parse(JSON.stringify(item)));
-    })
+    });
 
-    querySnapshot.forEach(doc => {
+    querySnapshot.forEach((doc) => {
       this.glasses.list.push({
         id: doc.id,
         ...doc.data(),
@@ -88,25 +91,24 @@ class StoreAdmin {
         return 0;
       }
 
-      return item1.name.localeCompare(item2.name)
+      return item1.name.localeCompare(item2.name);
     });
 
     this.clearIndicators();
   }
 
-  clearIndicators () {
+  clearIndicators() {
     this.glasses.saved = false;
     this.glasses.saveAborted = false;
     this.glasses.pngSaved = false;
     this.glasses.savePngAborted = false;
   }
 
-  setSelected (id: number | string) {
-    this.glasses.selected = this.glasses.list
-      .find(item => id === item.id);
+  setSelected(id: number | string) {
+    this.glasses.selected = this.glasses.list.find((item) => id === item.id);
   }
 
-  async saveAllChangesInTheSelectedToFirebase () {
+  async saveAllChangesInTheSelectedToFirebase() {
     this.clearIndicators();
 
     if (!this.glasses.selected || this.glasses.selected.local) {
@@ -122,7 +124,7 @@ class StoreAdmin {
     this.glasses.saved = true;
   }
 
-  async loadAllGlassesFiles () {
+  async loadAllGlassesFiles() {
     this.glasses.filesReady = false;
 
     const fbxLoader = new FBXLoader();
@@ -130,28 +132,32 @@ class StoreAdmin {
     for (const item of this.glasses.list) {
       switch (item.local) {
         case true:
-          this.glasses.modelFiles[item.id] = await fbxLoader.loadAsync(item.file_path);
+          this.glasses.modelFiles[item.id] = await fbxLoader.loadAsync(
+            item.file_path
+          );
           break;
 
         default:
-          const url = await getDownloadURL(ref(firebaseStorage, item.file_path));
+          const url = await getDownloadURL(
+            ref(firebaseStorage, item.file_path)
+          );
           this.glasses.modelFiles[item.id] = await fbxLoader.loadAsync(url);
-          break
+          break;
       }
     }
 
     this.glasses.filesReady = true;
   }
 
-  clearTemporary () {
+  clearTemporary() {
     this.glasses.temporary = null;
   }
 
-  getFileFromUser (file: File) {
+  getFileFromUser(file: File) {
     this.acceptedFile = file;
   }
 
-  async makePreviewPngAndUpload () {
+  async makePreviewPngAndUpload() {
     this.clearIndicators();
 
     if (!this.glasses.selected || this.glasses.selected.local) {
@@ -160,41 +166,45 @@ class StoreAdmin {
       return;
     }
 
-    const modelUrl = await getDownloadURL(ref(firebaseStorage, this.glasses.selected.file_path));
-    const data = await getPngFromFbx(this.glasses.selected, modelUrl) as string;
+    const modelUrl = await getDownloadURL(
+      ref(firebaseStorage, this.glasses.selected.file_path)
+    );
+    const data = (await getPngFromFbx(
+      this.glasses.selected,
+      modelUrl
+    )) as string;
     const res = await fetch(data);
     const blob = await res.blob();
-    const file = new File([blob], "File name",{ type: "image/png" })
+    const file = new File([blob], "File name", { type: "image/png" });
     const previewPath = await uploadGlassesToStorage(
       file,
-      `${this.glasses.selected.id}/${this.glasses.selected.id}_preview.png`,
+      `${this.glasses.selected.id}/${this.glasses.selected.id}_preview.png`
     );
     const previewUrl = await getDownloadURL(ref(firebaseStorage, previewPath));
 
-    await editGlassesFromList(
-      this.glasses.selected.id,
-      {
-        preview_file_path: previewUrl,
-        snapshot_options: this.glasses.selected.snapshot_options,
-      });
+    await editGlassesFromList(this.glasses.selected.id, {
+      preview_file_path: previewUrl,
+      snapshot_options: this.glasses.selected.snapshot_options,
+    });
     await this.loadGlassesList();
     this.setSelected(this.glasses.selected.id);
 
     this.glasses.pngSaved = true;
   }
 
-  async uploadAllTemporaryDataToFirebase () {
+  async uploadAllTemporaryDataToFirebase() {
     if (!this.acceptedFile) return;
 
     let glassesId: string | undefined;
 
     this.glasses.temporary = createNewGlassesInfo(this.acceptedFile);
-    await addGlassesToList(this.glasses.temporary)
-      .then(id => glassesId = id);
+    await addGlassesToList(this.glasses.temporary).then(
+      (id) => (glassesId = id)
+    );
 
     const url = await uploadGlassesToStorage(
       this.acceptedFile,
-      `${glassesId}/${glassesId}_model.fbx`,
+      `${glassesId}/${glassesId}_model.fbx`
     );
 
     if (glassesId) {
@@ -205,7 +215,7 @@ class StoreAdmin {
     await this.loadGlassesList();
   }
 
-  async deleteGlassesFromFirebase (item: Glasses) {
+  async deleteGlassesFromFirebase(item: Glasses) {
     await deleteGlassesFromStorage(item.file_path);
 
     if (item.preview_file_path.length) {

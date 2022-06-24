@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent } from "react";
 
 export const createInputsBlock = (
   name: string,
@@ -6,16 +6,13 @@ export const createInputsBlock = (
   callback: (event: ChangeEvent<HTMLInputElement>) => void,
   min: number,
   max: number,
-  step: number,
+  step: number
 ) => {
   return (
-    <div
-      className="params-container__param-item"
-      key={name}
-    >
-            <span className="params-container__param-title">
-            {name.slice(-1) + ':'}
-          </span>
+    <div className="params-container__param-item" key={name}>
+      <span className="params-container__param-title">
+        {name.slice(-1) + ":"}
+      </span>
 
       <div className="params-container__inputs-container">
         <input
