@@ -2,7 +2,7 @@ import * as faceMesh from "@mediapipe/face_mesh";
 import "@tensorflow-models/face-detection";
 import "@tensorflow/tfjs-backend-webgl";
 import * as FaceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
-import FacetypeGetter from "./FacetypeGetter/FacetypeGetter";
+import FacetypeGetter from "../FacetypeGetter/FacetypeGetter";
 
 const detect = async (detector, store, appDivRef, webcamRef, cb) => {
   if (typeof webcamRef.current == "undefined" || webcamRef.current == null) {
@@ -59,7 +59,7 @@ export default async (refs) => {
   try {
     detector = await FaceLandmarksDetection.createDetector(
       model,
-      detectorConfig
+      detectorConfig,
     );
   } catch (e) {
     console.error(e);

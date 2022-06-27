@@ -19,6 +19,7 @@ import { firebaseStorage } from "../../../utils/firebase";
 import { Group } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { glasses_list } from "../../../consts/glasses";
+import { IStoreForTF } from "../../../interfaces/services/store/StoreForTF";
 
 interface StoreGlasses {
   selected: undefined | Glasses;
@@ -34,7 +35,15 @@ interface StoreGlasses {
   pngSaved: boolean;
 }
 
-class StoreAdmin {
+class StoreAdmin implements IStoreForTF {
+  tf: {
+    facedata: any;
+    initiated: boolean;
+  } = {
+    facedata: undefined,
+    initiated: false,
+  };
+
   glasses: StoreGlasses = {
     selected: undefined,
     temporary: null,

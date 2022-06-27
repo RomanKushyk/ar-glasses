@@ -568,7 +568,7 @@ export const EditGlasses: FC = observer(() => {
             setOptionsBlockName(Option.position);
           }}
         >
-          <FaceCarousel />
+          <FaceCarousel store={store} />
         </div>
 
         <canvas

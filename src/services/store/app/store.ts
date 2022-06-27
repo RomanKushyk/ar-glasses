@@ -7,10 +7,18 @@ import { Group } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { getDownloadURL, ref } from "firebase/storage";
 import { firebaseStorage } from "../../../utils/firebase";
+import { IStoreForTF } from "../../../interfaces/services/store/StoreForTF";
 
-class Store {
+class Store implements IStoreForTF {
   ready: boolean = false;
   scene: Scene = new Scene();
+  tf: {
+    facedata: any;
+    initiated: boolean;
+  } = {
+    facedata: undefined,
+    initiated: false,
+  };
   facetype: IFacetype = {
     type: NaN,
     current_detections: 0,
@@ -31,7 +39,7 @@ class Store {
   constructor() {
     makeObservable(this, {
       ready: observable,
-      newReadyState: action,
+      updateReadyState: action,
 
       facetype: observable,
       updateFacetype: action,
@@ -49,7 +57,7 @@ class Store {
     this.facetype.detections = facetype.detections;
   }
 
-  newReadyState(ready: boolean) {
+  updateReadyState(ready: boolean) {
     this.ready = ready;
   }
 
@@ -85,5 +93,6 @@ class Store {
 const store = new Store();
 const StoreContext = createContext(store);
 export { StoreContext };
+export { Store };
 
 export default store;
