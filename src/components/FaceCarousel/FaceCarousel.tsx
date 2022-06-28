@@ -7,6 +7,9 @@ import tensorflowSetUp from "../../utils/tensorflow_setup/tensorflowSetUp";
 import React, { useEffect } from "react";
 import { image } from "@tensorflow/tfjs-core";
 import { IStoreForTF } from "../../interfaces/services/store/StoreForTF";
+import { StoreAdmin } from "../../services/store/AdminPage/storeAdmin";
+import FacetypeGetter from "../../utils/FacetypeGetter/FacetypeGetter";
+import store from "../../services/store/app/store";
 
 const carouselConfig = {
   showArrows: true,
@@ -34,30 +37,27 @@ const tf_config = {
 };
 
 interface FaceCarouselProps {
-  store: IStoreForTF,
+  store: StoreAdmin;
 }
 
 export class FaceCarousel extends React.Component<FaceCarouselProps> {
-  store: IStoreForTF;
-  constructor(props: {
-    store: IStoreForTF,
-  }) {
+  store: StoreAdmin;
+  constructor(props: { store: StoreAdmin }) {
     super(props);
 
     this.store = props.store;
-
-    console.log("created");
   }
 
   carousel = React.createRef<HTMLDivElement>();
+  scene = React.createRef<HTMLDivElement>();
 
   state: {
     active_item: {
-      current: undefined | HTMLImageElement,
+      current: undefined | HTMLImageElement;
     };
   } = {
     active_item: {
-      current: undefined
+      current: undefined,
     },
   };
 
@@ -68,52 +68,94 @@ export class FaceCarousel extends React.Component<FaceCarouselProps> {
 
     let images = this.carousel.current?.querySelectorAll("img");
 
-    if(!images || !images.length) {
+    if (!images || !images.length) {
       return;
     }
-
 
     this.state.active_item.current = images[index_of_active];
   }
 
-  componentDidMount(){
+  async componentDidMount() {
     if (!tf_config.created) {
       tf_config.created = true;
-      console.log("start")
 
-      tensorflowSetUp({
+      let onCreate = async () => {
+        this.updateActiveImage(0);
+
+        await this.store.loadGlassesList();
+
+        await this.store.loadAllGlassesFiles();
+      };
+
+      await onCreate();
+
+      await tensorflowSetUp({
         source: this.state.active_item,
         store: this.store,
         listeners: {
-          onCreate: () => {},
-          onDraw: () => {
-            // console.log(this.store.tf.facedata)
+          onCreate: async () => {
+            if (!this.carousel.current || !this.scene.current) return;
+
+            const videoWidth = this.carousel.current.offsetWidth;
+            const videoHeight = this.carousel.current.offsetHeight;
+
+            await this.store.scene.setUpSize(
+              videoWidth,
+              videoHeight,
+              videoWidth,
+              videoHeight
+            );
+
+            await this.store.scene.setUpScene(
+              this.scene.current,
+              this.carousel as unknown as HTMLVideoElement,
+              this.store
+            );
           },
-        }
+          onDraw: async () => {
+            if (!this.store.scene.created) return;
+
+            if (this.store.tf.facedata.length > 0) {
+              await this.store.scene.drawScene(this.store.tf.facedata);
+
+              if (Number.isNaN(this.store.facetype.type)) {
+                let result = await FacetypeGetter(
+                  this.store.tf.facedata[0].keypoints
+                );
+
+                await this.store.updateFacetype(result);
+              }
+            }
+          },
+        },
       });
     }
   }
 
   render() {
     return (
-      <div className="face-carousel" ref={this.carousel}>
-        <Carousel
-          onChange={(i, item) => {
-            this.updateActiveImage(i);
-          }}
-          {...carouselConfig}
-        >
-          {faceTypes.map((item) => (
-            <div key={item.id} className="face-carousel__image-container">
-              <img
-                className="face-carousel__image"
-                alt=""
-                src={document.location.origin + "/" + item.src}
-              />
-            </div>
-          ))}
-        </Carousel>
-      </div>
+      <>
+        <div ref={this.scene} />
+
+        <div className="face-carousel" ref={this.carousel}>
+          <Carousel
+            {...carouselConfig}
+            onChange={(i, item) => {
+              this.updateActiveImage(i);
+            }}
+          >
+            {faceTypes.map((item, i) => (
+              <div key={item.id} className="face-carousel__image-container">
+                <img
+                  className="face-carousel__image"
+                  alt=""
+                  src={document.location.origin + "/" + item.src}
+                />
+              </div>
+            ))}
+          </Carousel>
+        </div>
+      </>
     );
   }
 }

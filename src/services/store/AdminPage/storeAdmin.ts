@@ -20,14 +20,16 @@ import { Group } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { glasses_list } from "../../../consts/glasses";
 import { IStoreForTF } from "../../../interfaces/services/store/StoreForTF";
+import Scene from "../../../scenes/Scene";
+import IFacetype from "../../../interfaces/Facetype";
+import { StoreWithActiveGlasses } from "../../../interfaces/services/store/StoreWithActiveGlasses";
 
 interface StoreGlasses {
+  active_glasses: undefined | number | string;
   selected: undefined | Glasses;
   temporary: Omit<Glasses, "id"> | null;
   list: Glasses[];
-  modelFiles: {
-    [id: string]: Group; //файли підгружаються з мережі
-  };
+  files: Record<string, Group>;
   filesReady: boolean;
   saveAborted: boolean;
   saved: boolean;
@@ -35,7 +37,7 @@ interface StoreGlasses {
   pngSaved: boolean;
 }
 
-class StoreAdmin implements IStoreForTF {
+class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
   tf: {
     facedata: any;
     initiated: boolean;
@@ -44,11 +46,18 @@ class StoreAdmin implements IStoreForTF {
     initiated: false,
   };
 
+  facetype: IFacetype = {
+    type: NaN,
+    current_detections: 0,
+    detections: 1,
+  };
+
   glasses: StoreGlasses = {
+    active_glasses: undefined,
     selected: undefined,
     temporary: null,
     list: [],
-    modelFiles: {},
+    files: {},
     filesReady: false,
     saveAborted: false,
     saved: false,
@@ -57,10 +66,14 @@ class StoreAdmin implements IStoreForTF {
   };
 
   acceptedFile: File | null = null;
+  scene: Scene = new Scene();
   previewScene: null | PreviewScene = null;
 
   constructor() {
     makeObservable(this, {
+      facetype: observable,
+      updateFacetype: action,
+
       glasses: observable,
       loadGlassesList: action,
       clearIndicators: action,
@@ -72,12 +85,20 @@ class StoreAdmin implements IStoreForTF {
       acceptedFile: observable,
       getFileFromUser: action,
 
+      scene: observable,
+
       previewScene: observable,
       makePreviewPngAndUpload: action,
 
       uploadAllTemporaryDataToFirebase: action,
       deleteGlassesFromFirebase: action,
     });
+  }
+
+  updateFacetype(facetype: IFacetype) {
+    this.facetype.type = facetype.type;
+    this.facetype.current_detections = facetype.current_detections;
+    this.facetype.detections = facetype.detections;
   }
 
   async loadGlassesList() {
@@ -103,6 +124,8 @@ class StoreAdmin implements IStoreForTF {
       return item1.name.localeCompare(item2.name);
     });
 
+    this.scene.glasses_controller.loadGlassesList(this.glasses.list);
+
     this.clearIndicators();
   }
 
@@ -115,6 +138,7 @@ class StoreAdmin implements IStoreForTF {
 
   setSelected(id: number | string) {
     this.glasses.selected = this.glasses.list.find((item) => id === item.id);
+    this.glasses.active_glasses = this.glasses.selected?.id;
   }
 
   async saveAllChangesInTheSelectedToFirebase() {
@@ -141,8 +165,8 @@ class StoreAdmin implements IStoreForTF {
     for (const item of this.glasses.list) {
       switch (item.local) {
         case true:
-          this.glasses.modelFiles[item.id] = await fbxLoader.loadAsync(
-            item.file_path
+          this.glasses.files[item.id] = await fbxLoader.loadAsync(
+            document.location.origin + "/" + item.file_path
           );
           break;
 
@@ -150,10 +174,11 @@ class StoreAdmin implements IStoreForTF {
           const url = await getDownloadURL(
             ref(firebaseStorage, item.file_path)
           );
-          this.glasses.modelFiles[item.id] = await fbxLoader.loadAsync(url);
-          break;
+          this.glasses.files[item.id] = await fbxLoader.loadAsync(url);
       }
     }
+
+    this.scene.glasses_controller.loadGlassesFiles(this.glasses.files);
 
     this.glasses.filesReady = true;
   }
@@ -240,5 +265,6 @@ class StoreAdmin implements IStoreForTF {
 
 const storeAdmin = new StoreAdmin();
 export const StoreContextAdmin = createContext(storeAdmin);
+export { StoreAdmin };
 
 export default storeAdmin;

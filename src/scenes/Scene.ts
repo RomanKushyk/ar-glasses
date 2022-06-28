@@ -2,9 +2,11 @@ import * as THREE from "three";
 import { Vector3 } from "three";
 import { GlassesController } from "../controllers/GlassesController.js";
 import { observe } from "mobx";
-import store from "../services/store/app/store";
+import store, { Store } from "../services/store/app/store";
 import { Glasses } from "../interfaces/consts/Glasses";
 import { Face, Keypoint } from "@tensorflow-models/face-detection";
+import { StoreAdmin } from "../services/store/AdminPage/storeAdmin";
+import { StoreWithActiveGlasses } from "../interfaces/services/store/StoreWithActiveGlasses";
 
 interface TargetPoints {
   top: Keypoint;
@@ -38,6 +40,7 @@ export default class Scene {
 
   created = false;
   ready = false;
+  private store: StoreWithActiveGlasses | undefined;
 
   setUpSize(
     width: number,
@@ -53,7 +56,11 @@ export default class Scene {
 
   glasses_controller = new GlassesController();
 
-  setUpScene(parent: HTMLElement, video: HTMLVideoElement) {
+  setUpScene(
+    parent: HTMLElement,
+    video: HTMLVideoElement,
+    store: StoreWithActiveGlasses
+  ) {
     if (!this.width || !this.height) return;
 
     this.video = video;
@@ -80,6 +87,8 @@ export default class Scene {
 
     this.created = true;
 
+    this.store = store;
+
     let initialInstallationOfModels = async () => {
       this.setUpVideoMaterial();
       this.setUpHeadWrapper();
@@ -89,12 +98,6 @@ export default class Scene {
     };
 
     initialInstallationOfModels();
-
-    observe(store.glasses, async ({ object: glasses }) => {
-      if (!glasses.active_glasses) return;
-
-      await this.updateGlasses(glasses.active_glasses);
-    });
   }
 
   private setUpHeadWrapper() {
@@ -400,6 +403,9 @@ export default class Scene {
   }
 
   drawScene(predictions: Face[]) {
+    if (!this.store || !this.store.glasses.active_glasses) return;
+    this.updateGlasses(this.store.glasses.active_glasses);
+
     if (
       !this.ready ||
       !predictions.length ||
@@ -421,6 +427,13 @@ export default class Scene {
     this.target_points.center_x = this.normalize_vec(keypoints[168]);
 
     this.drawGlass();
+  }
+
+  updatePositionAndScale(glasses: Glasses) {
+    if (!this.glasses) return;
+
+    this.glasses.position.set(...glasses.options.position);
+    this.glasses.scale.set(...glasses.options.scale);
   }
 
   private get viewSize() {

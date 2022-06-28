@@ -41,52 +41,65 @@ function App() {
   // });
 
   useEffect(() => {
-    if (store.tf.initiated) {
-      return;
-    }
+    const initialize = async () => {
+      if (store.tf.initiated) {
+        return;
+      }
 
-    store.tf.initiated = true;
+      store.tf.initiated = true;
 
-    let onCreate = async () => {
-      await store.updateGlassesList();
-      await store.loadGlassesFiles();
-      await store.newActiveGlasses(store.glasses.list[0].id);
-      store.updateReadyState(true);
+      let onCreate = async () => {
+        await store.updateGlassesList();
+        await store.loadGlassesFiles();
+        store.updateReadyState(true);
+      };
+
+      await onCreate();
+
+      await tensorflowSetUp({
+        source: webcamRef,
+        store: store,
+        listeners: {
+          onCreate: async () => {
+            const videoWidth = webcamRef.current.video.videoWidth;
+            const videoHeight = webcamRef.current.video.videoHeight;
+
+            await store.scene.setUpSize(
+              document.body.offsetWidth,
+              document.body.offsetHeight,
+              videoWidth,
+              videoHeight
+            );
+
+            await store.scene.setUpScene(
+              appDivRef.current,
+              webcamRef.current.video,
+              store
+            );
+
+            await store.newActiveGlasses(store.glasses.list[0].id);
+          },
+          onDraw: async () => {
+            if (!store.scene.created) {
+              return;
+            }
+
+            if (store.tf.facedata.length > 0) {
+              await store.scene.drawScene(store.tf.facedata);
+
+              if (Number.isNaN(store.facetype.type)) {
+                let result = await FacetypeGetter(
+                  store.tf.facedata[0].keypoints
+                );
+                await store.updateFacetype(result);
+              }
+            }
+          },
+        },
+      });
     };
 
-    tensorflowSetUp({
-      source: webcamRef,
-      store: store,
-      listeners: {
-        onCreate: () => {
-          const videoWidth = webcamRef.current.video.videoWidth;
-          const videoHeight = webcamRef.current.video.videoHeight;
-          store.scene.setUpSize(
-            document.body.offsetWidth,
-            document.body.offsetHeight,
-            videoWidth,
-            videoHeight
-          );
-          store.scene.setUpScene(appDivRef.current, webcamRef.current.video);
-
-          onCreate();
-        },
-        onDraw: () => {
-          if (!store.scene.created) {
-            return;
-          }
-
-          if (store.tf.facedata.length > 0) {
-            store.scene.drawScene(store.tf.facedata);
-
-            if (Number.isNaN(store.facetype.type)) {
-              let result = FacetypeGetter(store.tf.facedata[0].keypoints);
-              store.updateFacetype(result);
-            }
-          }
-        },
-      },
-    });
+    initialize();
   });
 
   // TFSetupOptions.cb = async () => {

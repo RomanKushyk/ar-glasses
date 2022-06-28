@@ -35,7 +35,10 @@ const detect = async (options: {
     return;
   }
 
-  if (options.source.current instanceof Webcam && options.source.current.video) {
+  if (
+    options.source.current instanceof Webcam &&
+    options.source.current.video
+  ) {
     source = options.source.current.video;
     result = await options.detector.estimateFaces(source);
   }
@@ -45,7 +48,7 @@ const detect = async (options: {
     result = await options.detector.estimateFaces(source);
   }
 
-  console.log(result)
+  // console.log(result)
 
   options.store.tf.facedata = result;
 

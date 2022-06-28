@@ -182,7 +182,18 @@ export const EditGlasses: FC = observer(() => {
         break;
     }
 
-    store.previewScene?.updatePosition(store.glasses.selected);
+    switch (currentView) {
+      case View.main:
+        store.scene.updatePositionAndScale(store.glasses.selected);
+        break;
+
+      case View.preview:
+        store.previewScene?.updatePosition(store.glasses.selected);
+        break;
+
+      default:
+        break;
+    }
   };
 
   const createBottomNavigationPanelButtons = (view: View) => {
