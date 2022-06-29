@@ -21,7 +21,7 @@ export default class Scene {
   private height: number | undefined;
   private videoWidth: number | undefined;
   private videoHeight: number | undefined;
-  private video: HTMLVideoElement | undefined;
+  private video: HTMLVideoElement | HTMLCanvasElement | undefined;
   private camera: THREE.PerspectiveCamera | undefined;
   private scene: THREE.Scene | undefined;
   private renderer: THREE.WebGLRenderer | undefined;
@@ -33,7 +33,7 @@ export default class Scene {
   private glasses_state: Glasses | undefined;
   private glasses: THREE.Object3D<THREE.Event> | undefined;
   private video_material: THREE.ShaderMaterial | undefined;
-  private video_texture: THREE.VideoTexture | undefined;
+  private video_texture: THREE.VideoTexture | THREE.CanvasTexture | undefined;
   private head:
     | THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>
     | undefined;
@@ -52,13 +52,15 @@ export default class Scene {
     this.height = height;
     this.videoWidth = videoWidth;
     this.videoHeight = videoHeight;
+
+    console.log(this.width, this.height, this.videoWidth, this.videoHeight);
   }
 
   glasses_controller = new GlassesController();
 
   setUpScene(
     parent: HTMLElement,
-    video: HTMLVideoElement,
+    video: HTMLVideoElement | HTMLCanvasElement,
     store: StoreWithActiveGlasses
   ) {
     if (!this.width || !this.height) return;
@@ -84,8 +86,8 @@ export default class Scene {
     this.canvas = this.renderer.domElement;
 
     parent.appendChild(this.canvas);
-
     this.created = true;
+    console.log(this.created)
 
     this.store = store;
 
@@ -357,7 +359,10 @@ export default class Scene {
   private setUpVideoMaterial() {
     if (!this.video) return;
 
+    if(this.video instanceof HTMLVideoElement)
     this.video_texture = new THREE.VideoTexture(this.video);
+    if(this.video instanceof HTMLCanvasElement)
+    this.video_texture = new THREE.CanvasTexture(this.video);
     this.video_material = new THREE.ShaderMaterial({
       uniforms: {
         // @ts-ignore
@@ -464,8 +469,13 @@ export default class Scene {
     let height;
     let width;
 
-    height = 2 * Math.tan(vFov / 2) * distance;
-    width = height * (this.width / this.height);
+    if (this.height > this.width) {
+      height = 2 * Math.tan(vFov / 2) * distance;
+      width = height * (this.width / this.height);
+    } else {
+      width = 2 * Math.tan(vFov / 2) * distance;
+      height = width * (this.height / this.width);
+    }
     return { width, height, vFov };
   }
 }

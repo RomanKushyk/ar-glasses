@@ -1,18 +1,11 @@
-import "./face-carousel.scss";
-
-import { Carousel } from "react-responsive-carousel";
-import { faceTypes } from "../../consts/faceTypes";
-
 import tensorflowSetUp from "../../utils/tensorflow_setup/tensorflowSetUp";
 import React, { useEffect, useRef, useState } from "react";
-import { image } from "@tensorflow/tfjs-core";
-import { IStoreForTF } from "../../interfaces/services/store/StoreForTF";
-import storeAdmin, {
-  StoreAdmin,
-} from "../../services/store/AdminPage/storeAdmin";
+import { StoreAdmin } from "../../services/store/AdminPage/storeAdmin";
 import FacetypeGetter from "../../utils/FacetypeGetter/FacetypeGetter";
-import store from "../../services/store/app/store";
 import Scene from "../../scenes/Scene";
+
+import FaceBackground from "./Scene";
+import "./face-carousel.scss";
 
 const carouselConfig = {
   showArrows: true,
@@ -36,59 +29,53 @@ const carouselConfig = {
 };
 
 const tf_config = {
-  creates: false,
+  created: false,
 };
 
 interface FaceCarouselProps {
   store: StoreAdmin;
 }
 
-export const FaceCarousel2: React.FC<FaceCarouselProps> = ({ store }) => {
-  const carousel = useRef<HTMLDivElement>(null);
+export const FaceCarousel2 = ({ store }: FaceCarouselProps) => {
   const scene = useRef<HTMLDivElement>(null);
+  const faceBackground = useRef<HTMLDivElement>(null);
+  const parent = useRef<HTMLDivElement>(null);
 
-  const updateActiveImage = async (indexOfActive: number) => {
-    console.log("refresh");
-    if (
-      store.scene &&
-      store.activeItem.current &&
-      carousel.current &&
-      scene.current
-    ) {
-      const scale =
-        carousel.current.offsetHeight / store.activeItem.current.naturalHeight;
-      const width = store.activeItem.current.naturalWidth * scale;
+  const updateSceneSize = (canvas: HTMLCanvasElement) => {
+    if (store.scene && scene.current) {
+
+      store.scene.setUpSize(
+        canvas.offsetWidth,
+        canvas.offsetHeight,
+        canvas.offsetWidth,
+        canvas.offsetHeight
+      );
 
       store.scene.updateCanvasSize(
-        width,
-        carousel.current.offsetHeight,
-        store.activeItem.current.naturalWidth,
-        store.activeItem.current.naturalHeight
+        canvas.offsetWidth,
+        canvas.offsetHeight,
+        canvas.offsetWidth,
+        canvas.offsetHeight
       );
-      console.log("setUpSize");
     }
-
-    if (!carousel.current) return;
-
-    const images = carousel.current.querySelectorAll("img");
-
-    if (!images || !images.length) {
-      return;
-    }
-
-    store.activeItem.current = images[indexOfActive];
   };
 
   useEffect(() => {
     const initialize = async () => {
-      if (!tf_config.creates) {
-        tf_config.creates = true;
+      if (!parent.current) {
+        return;
+      }
+
+      if (!tf_config.created) {
+        tf_config.created = true;
+
+        let canvas = FaceBackground(faceBackground);
 
         let onCreate = async () => {
           store.scene = null;
           store.scene = new Scene();
-
-          await updateActiveImage(carouselConfig.selectedItem);
+          
+          updateSceneSize(canvas);
 
           await store.loadGlassesList();
 
@@ -98,40 +85,20 @@ export const FaceCarousel2: React.FC<FaceCarouselProps> = ({ store }) => {
         await onCreate();
 
         await tensorflowSetUp({
-          source: store.activeItem,
+          source: {
+            current: canvas,
+          },
           store,
           listeners: {
             onCreate: async () => {
-              if (!carousel.current || !scene.current || !store.scene) return;
+              if (!scene.current || !store.scene) return;
 
-              if (!store.activeItem.current) return;
-
-              const scale =
-                carousel.current.offsetHeight /
-                store.activeItem.current.naturalHeight;
-              const width = store.activeItem.current.naturalWidth * scale;
-
-              store.scene.setUpSize(
-                width,
-                carousel.current.offsetHeight,
-                store.activeItem.current.naturalWidth,
-                store.activeItem.current.naturalHeight
-              );
-              console.log(
-                carousel.current.clientWidth,
-                carousel.current.clientHeight,
-                store.activeItem.current?.naturalWidth,
-                store.activeItem.current?.naturalHeight
-              );
-
-              await store.scene.setUpScene(
-                scene.current,
-                carousel as unknown as HTMLVideoElement,
-                store
-              );
+              await store.scene.setUpScene(scene.current, canvas, store);
             },
             onDraw: async () => {
               if (!store.scene || !store.scene.created) return;
+
+              console.log(store.tf.facedata.length);
 
               if (store.tf.facedata.length > 0) {
                 await store.scene.drawScene(store.tf.facedata);
@@ -148,7 +115,7 @@ export const FaceCarousel2: React.FC<FaceCarouselProps> = ({ store }) => {
           },
         });
 
-        tf_config.creates = false;
+        tf_config.created = false;
       }
     };
 
@@ -156,27 +123,15 @@ export const FaceCarousel2: React.FC<FaceCarouselProps> = ({ store }) => {
   }, [store.glasses.active_glasses, store.activeItem]);
 
   return (
-    <div className="face-carousel">
-      <div className="face-carousel__scene-wrapper" ref={scene} />
+    <div className="face-carousel" ref={parent}>
+      <div className="face-carousel__scene-wrapper" style={{
+        pointerEvents: 'none',
+        zIndex: 1,
+      }} ref={scene} />
 
-      <div className="face-carousel__carousel" ref={carousel}>
-        <Carousel
-          {...carouselConfig}
-          onChange={(i, item) => {
-            updateActiveImage(i);
-          }}
-        >
-          {faceTypes.map((item, i) => (
-            <div key={item.id} className="face-carousel__image-container">
-              <img
-                className="face-carousel__image"
-                alt=""
-                src={document.location.origin + "/" + item.src}
-              />
-            </div>
-          ))}
-        </Carousel>
-      </div>
+      <div className="face-carousel__scene-wrapper" style={{
+        zIndex: 0,
+      }} ref={faceBackground}></div>
     </div>
   );
 };

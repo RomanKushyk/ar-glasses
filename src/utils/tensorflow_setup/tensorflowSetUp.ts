@@ -13,14 +13,14 @@ const detect = async (options: {
   source:
     | React.MutableRefObject<Webcam>
     | {
-        current: undefined | HTMLImageElement;
+        current: undefined | HTMLCanvasElement;
       };
   store: IStoreForTF;
   listeners: {
     onDraw: () => void;
   };
 }) => {
-  let source: HTMLVideoElement | HTMLImageElement;
+  let source: HTMLCanvasElement | HTMLImageElement;
   let result: any;
 
   if (!options.source.current) {
@@ -36,10 +36,10 @@ const detect = async (options: {
   }
 
   if (
-    options.source.current instanceof Webcam &&
-    options.source.current.video
+    options.source.current instanceof HTMLCanvasElement &&
+    options.source.current
   ) {
-    source = options.source.current.video;
+    source = options.source.current;
     result = await options.detector.estimateFaces(source);
   }
 
@@ -47,8 +47,6 @@ const detect = async (options: {
     source = options.source.current;
     result = await options.detector.estimateFaces(source);
   }
-
-  // console.log(result)
 
   options.store.tf.facedata = result;
 
@@ -59,7 +57,7 @@ const tensorflowSetUp = async (options: {
   source:
     | React.MutableRefObject<Webcam>
     | {
-        current: undefined | HTMLImageElement;
+        current: undefined | HTMLCanvasElement;
       };
   store: IStoreForTF;
   listeners: {
