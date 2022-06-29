@@ -553,7 +553,7 @@ export const EditGlasses: FC = observer(() => {
             name={Input.name}
             placeholder={Input.name}
             title={Input.name}
-            value={store.glasses.selected?.name}
+            value={store.glasses.selected?.name || ""}
             onChange={handleChange}
           />
 

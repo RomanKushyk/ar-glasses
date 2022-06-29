@@ -2,11 +2,11 @@ import React, { ChangeEvent } from "react";
 
 export const createInputsBlock = (
   name: string,
-  value: number,
+  value: number = 0,
   callback: (event: ChangeEvent<HTMLInputElement>) => void,
-  min: number,
-  max: number,
-  step: number
+  min: number = 0,
+  max: number = 0,
+  step: number = 0
 ) => {
   return (
     <div className="params-container__param-item" key={name}>
