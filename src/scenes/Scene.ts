@@ -21,11 +21,9 @@ export default class Scene {
   private height: number | undefined;
   private videoWidth: number | undefined;
   private videoHeight: number | undefined;
-  private video: HTMLVideoElement | HTMLCanvasElement | undefined;
   private camera: THREE.PerspectiveCamera | undefined;
   private scene: THREE.Scene | undefined;
   private renderer: THREE.WebGLRenderer | undefined;
-  private canvas: HTMLCanvasElement | undefined;
   private head_wrapper:
     | THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>
     | undefined;
@@ -37,7 +35,10 @@ export default class Scene {
   private head:
     | THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>
     | undefined;
+  private store: StoreWithActiveGlasses | undefined;
 
+  video: HTMLVideoElement | undefined;
+  canvas: HTMLCanvasElement | undefined;
   created = false;
   ready = false;
   private store: StoreWithActiveGlasses | undefined;

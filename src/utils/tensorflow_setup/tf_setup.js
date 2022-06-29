@@ -30,7 +30,7 @@ const detect = async (detector, store, appDivRef, webcamRef, cb) => {
   );
 
   if (!store.scene.created) {
-    store.scene.setUpScene(appDivRef.current, webcamRef.current.video);
+    store.scene.setUpScene(appDivRef.current, webcamRef.current.video, store);
     cb();
   }
 
@@ -59,7 +59,7 @@ export default async (refs) => {
   try {
     detector = await FaceLandmarksDetection.createDetector(
       model,
-      detectorConfig,
+      detectorConfig
     );
   } catch (e) {
     console.error(e);
