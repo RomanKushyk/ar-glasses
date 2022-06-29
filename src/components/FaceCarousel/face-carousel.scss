@@ -11,6 +11,15 @@
 }
 
 .face-carousel {
+  &__scene-wrapper {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
   &__image-container {
     box-sizing: border-box;
     height: 50vh;

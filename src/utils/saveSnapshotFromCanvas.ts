@@ -29,12 +29,12 @@ export const saveSnapshotFromCanvas: SaveSnapshotFromCanvas = (
   const scaledVideoWidth = scale * video.width;
   const scaledVideoHeight = scale * video.height;
   const offsetX = (canvas.offsetWidth - scaledVideoWidth) / 2;
-  const correctedY = (canvas.offsetHeight - scaledVideoHeight) / 2;
+  const offsetY = (canvas.offsetHeight - scaledVideoHeight) / 2;
 
   resultCanvasContext?.drawImage(
     video,
     offsetX,
-    correctedY,
+    offsetY,
     scaledVideoWidth,
     scaledVideoHeight
   );

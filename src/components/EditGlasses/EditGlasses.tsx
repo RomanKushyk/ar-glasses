@@ -13,7 +13,7 @@ import {
   previewSceneCanvas,
 } from "../../scenes/AdminPage/PreviewScene/PreviewScene";
 import { createInputsBlock } from "../../utils/createInputsBlock";
-import { FaceCarousel } from "../FaceCarousel";
+import { FaceCarousel2 } from "../FaceCarousel";
 
 enum Input {
   name = "Glasses name",
@@ -184,7 +184,9 @@ export const EditGlasses: FC = observer(() => {
 
     switch (currentView) {
       case View.main:
-        store.scene.updatePositionAndScale(store.glasses.selected);
+        if (!store.scene) return;
+
+        store.scene.updateModelPositionAndScale(store.glasses.selected);
         break;
 
       case View.preview:
@@ -579,7 +581,8 @@ export const EditGlasses: FC = observer(() => {
             setOptionsBlockName(Option.position);
           }}
         >
-          <FaceCarousel store={store} />
+          {/*<FaceCarousel store={store} />*/}
+          <FaceCarousel2 store={store} />
         </div>
 
         <canvas

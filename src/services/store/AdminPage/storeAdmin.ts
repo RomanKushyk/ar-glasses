@@ -66,8 +66,11 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
   };
 
   acceptedFile: File | null = null;
-  scene: Scene = new Scene();
+  scene: null | Scene = null;
   previewScene: null | PreviewScene = null;
+  activeItem: { current: undefined | HTMLImageElement } = {
+    current: undefined,
+  };
 
   constructor() {
     makeObservable(this, {
@@ -89,6 +92,8 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
 
       previewScene: observable,
       makePreviewPngAndUpload: action,
+
+      activeItem: observable,
 
       uploadAllTemporaryDataToFirebase: action,
       deleteGlassesFromFirebase: action,
@@ -124,7 +129,9 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
       return item1.name.localeCompare(item2.name);
     });
 
-    this.scene.glasses_controller.loadGlassesList(this.glasses.list);
+    if (this.scene) {
+      this.scene.glasses_controller.loadGlassesList(this.glasses.list);
+    }
 
     this.clearIndicators();
   }
@@ -178,7 +185,9 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
       }
     }
 
-    this.scene.glasses_controller.loadGlassesFiles(this.glasses.files);
+    if (this.scene) {
+      this.scene.glasses_controller.loadGlassesFiles(this.glasses.files);
+    }
 
     this.glasses.filesReady = true;
   }

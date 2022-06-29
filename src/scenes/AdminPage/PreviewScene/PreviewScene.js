@@ -52,10 +52,6 @@ export class PreviewScene {
     }
 
     this.scene.add(this.object);
-
-    // observe(storeAdmin.glasses, async ({ object: observableGlasses }) => {
-    //   await this.updatePosition(observableGlasses.selected);
-    // });
   }
 
   async updatePosition(glasses) {
@@ -78,28 +74,6 @@ export class PreviewScene {
         }
       });
     }
-
-    if (glasses.snapshot_options.partsVisibility) {
-      const parts = Object.entries(glasses.snapshot_options.partsVisibility);
-
-      parts.forEach(([name, value]) => {
-        const item = this.object.getObjectByName(name);
-
-        if (item) {
-          item.traverse((element) => {
-            element.visible = value;
-          });
-        }
-      });
-    }
-    // glasses.snapshot_options.bracketsItemsNames.forEach((name) => {
-    //   this.object.getObjectByName(name)
-    //     ?.traverse((obj => {
-    //       if (obj.visible) {
-    //         obj.visible = false;
-    //       }
-    //     }))
-    // });
 
     this.renderer.render(this.scene, this.camera);
   }

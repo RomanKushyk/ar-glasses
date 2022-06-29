@@ -404,7 +404,10 @@ export default class Scene {
 
   drawScene(predictions: Face[]) {
     if (!this.store || !this.store.glasses.active_glasses) return;
-    this.updateGlasses(this.store.glasses.active_glasses);
+
+    if (this.store.glasses.active_glasses !== this.glasses_state?.id) {
+      this.updateGlasses(this.store.glasses.active_glasses);
+    }
 
     if (
       !this.ready ||
@@ -429,11 +432,28 @@ export default class Scene {
     this.drawGlass();
   }
 
-  updatePositionAndScale(glasses: Glasses) {
+  updateModelPositionAndScale(glasses: Glasses) {
     if (!this.glasses) return;
 
     this.glasses.position.set(...glasses.options.position);
     this.glasses.scale.set(...glasses.options.scale);
+  }
+
+  updateCanvasSize(
+    width: number,
+    height: number,
+    videoWidth: number,
+    videoHeight: number
+  ) {
+    if (!this.renderer) return;
+    this.renderer.domElement.width = width;
+    this.renderer.domElement.height = height;
+
+    this.renderer?.setSize(width, height);
+
+    if (this.camera) {
+      this.camera.aspect = width / height;
+    }
   }
 
   private get viewSize() {
