@@ -159,7 +159,7 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
 
     const { id, ...data } = this.glasses.selected;
 
-    await editGlassesFromList(id, data);
+    await editGlassesFromList(id, { ...data, model: null });
 
     this.glasses.saved = true;
   }
