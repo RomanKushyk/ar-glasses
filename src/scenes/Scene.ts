@@ -356,10 +356,10 @@ export default class Scene {
   private setUpVideoMaterial() {
     if (!this.video) return;
 
-    if(this.video instanceof HTMLVideoElement)
-    this.video_texture = new THREE.VideoTexture(this.video);
-    if(this.video instanceof HTMLCanvasElement)
-    this.video_texture = new THREE.CanvasTexture(this.video);
+    if (this.video instanceof HTMLVideoElement)
+      this.video_texture = new THREE.VideoTexture(this.video);
+    if (this.video instanceof HTMLCanvasElement)
+      this.video_texture = new THREE.CanvasTexture(this.video);
     this.video_material = new THREE.ShaderMaterial({
       uniforms: {
         // @ts-ignore
@@ -466,13 +466,8 @@ export default class Scene {
     let height;
     let width;
 
-    if (this.height > this.width) {
-      height = 2 * Math.tan(vFov / 2) * distance;
-      width = height * (this.width / this.height);
-    } else {
-      width = 2 * Math.tan(vFov / 2) * distance;
-      height = width * (this.height / this.width);
-    }
+    height = 2 * Math.tan(vFov / 2) * distance;
+    width = height * (this.width / this.height);
     return { width, height, vFov };
   }
 }

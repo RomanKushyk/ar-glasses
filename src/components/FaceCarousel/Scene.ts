@@ -106,11 +106,13 @@ export default (ref: React.RefObject<HTMLDivElement>) => {
     scene.add(fbx);
   });
 
-  let light_1 = new THREE.PointLight(0xffffff, 1);
-
-  light_1.position.set(50, 50, 50);
-
+  let light_1 = new THREE.PointLight(0xffffff, 0.5);
+  light_1.position.set(50, 100, 50);
   scene.add(light_1);
+
+  let light_2 = new THREE.PointLight(0xffffff, 0.5);
+  light_2.position.set(-50, 100, 50);
+  scene.add(light_2);
 
   function animate() {
     // required if controls.enableDamping or controls.autoRotate are set to true
