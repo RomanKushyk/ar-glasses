@@ -20,14 +20,14 @@ export const saveSnapshotFromCanvas: SaveSnapshotFromCanvas = (
 
   const resultCanvasContext = resulCanvas.getContext("2d");
 
-  if (video.width / video.height > canvas.offsetWidth / canvas.offsetHeight) {
-    scale = canvas.offsetHeight / video.height;
+  if (video.videoWidth / video.videoHeight > canvas.offsetWidth / canvas.offsetHeight) {
+    scale = canvas.offsetHeight / video.videoHeight;
   } else {
-    scale = canvas.offsetWidth / video.width;
+    scale = canvas.offsetWidth / video.videoWidth;
   }
 
-  const scaledVideoWidth = scale * video.width;
-  const scaledVideoHeight = scale * video.height;
+  const scaledVideoWidth = scale * video.videoWidth;
+  const scaledVideoHeight = scale * video.videoHeight;
   const offsetX = (canvas.offsetWidth - scaledVideoWidth) / 2;
   const offsetY = (canvas.offsetHeight - scaledVideoHeight) / 2;
 
