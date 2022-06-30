@@ -48,6 +48,7 @@ export const GlassesList: FC = observer(() => {
               type="button"
               onClick={() => {
                 navigate(`../edit/${element.id}`);
+                document.location.reload();
               }}
             />
 
