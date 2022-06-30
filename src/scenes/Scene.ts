@@ -52,8 +52,6 @@ export default class Scene {
     this.height = height;
     this.videoWidth = videoWidth;
     this.videoHeight = videoHeight;
-
-    console.log(this.width, this.height, this.videoWidth, this.videoHeight);
   }
 
   glasses_controller = new GlassesController();
@@ -87,7 +85,6 @@ export default class Scene {
 
     parent.appendChild(this.canvas);
     this.created = true;
-    console.log(this.created)
 
     this.store = store;
 

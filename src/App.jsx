@@ -84,7 +84,7 @@ function App() {
               return;
             }
 
-            if (store.tf.facedata.length > 0) {
+            if (store.tf.facedata && store.tf.facedata.length > 0) {
               await store.scene.drawScene(store.tf.facedata);
 
               if (Number.isNaN(store.facetype.type)) {

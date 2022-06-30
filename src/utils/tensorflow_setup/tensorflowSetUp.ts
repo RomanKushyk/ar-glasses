@@ -20,7 +20,7 @@ const detect = async (options: {
     onDraw: () => void;
   };
 }) => {
-  let source: HTMLCanvasElement | HTMLImageElement;
+  let source: HTMLCanvasElement | HTMLVideoElement;
   let result: any;
 
   if (!options.source.current) {
@@ -36,14 +36,15 @@ const detect = async (options: {
   }
 
   if (
-    options.source.current instanceof HTMLCanvasElement &&
+    options.source.current instanceof Webcam &&
+    options.source.current.video &&
     options.source.current
   ) {
-    source = options.source.current;
+    source = options.source.current.video;
     result = await options.detector.estimateFaces(source);
   }
 
-  if (options.source.current instanceof HTMLImageElement) {
+  if (options.source.current instanceof HTMLCanvasElement) {
     source = options.source.current;
     result = await options.detector.estimateFaces(source);
   }
