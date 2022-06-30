@@ -1,35 +1,42 @@
-import './sign-in.scss';
+import "./sign-in.scss";
 
-import {getAuth, signInWithPopup} from 'firebase/auth';
-import firebase from 'firebase/compat';
-import {GoogleAuthProvider, signInWithEmailAndPassword} from 'firebase/auth';
-import {firebaseAuth} from '../../utils/firebase';
-import {ChangeEvent, FormEvent, useEffect, useState} from 'react';
-import cn from 'classnames';
-import {Navigate, useNavigate} from 'react-router-dom';
-import {useAuthState} from 'react-firebase-hooks/auth';
+import { signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
+import { firebaseAuth } from "../../utils/firebase";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import cn from "classnames";
+import { Navigate } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export const SignIn = () => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [hasEmailError, setHasEmailError] = useState<boolean>(false);
   const [hasPasswordError, setHasPasswordError] = useState<boolean>(false);
   const [user] = useAuthState(firebaseAuth);
+
+  useEffect(() => {
+    signInWithEmailAndPassword(
+      firebaseAuth,
+      "rkushyk@qualium-systems.com",
+      "1q2w3e4r"
+    );
+  }, []); //! For develop!!!!
 
   if (user) {
     return <Navigate to="/admin" replace />;
   }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = event.target;
+    const { name, value } = event.target;
 
     switch (name) {
-      case 'sign-in-email':
+      case "sign-in-email":
         setEmail(value);
         setHasEmailError(false);
         break;
 
-      case 'sign-in-password':
+      case "sign-in-password":
         setPassword(value);
         setHasPasswordError(false);
         break;
@@ -40,9 +47,9 @@ export const SignIn = () => {
   };
 
   const resetForm = () => {
-    setEmail('');
+    setEmail("");
     setHasEmailError(false);
-    setPassword('');
+    setPassword("");
     setHasPasswordError(false);
   };
 
@@ -72,15 +79,11 @@ export const SignIn = () => {
   return (
     <section className="sign-in">
       <div className="sign-in__container">
-        <form
-          className="sign-in__form"
-          onSubmit={handleSubmit}
-        >
+        <form className="sign-in__form" onSubmit={handleSubmit}>
           <input
-            className={cn(
-              'sign-in__input',
-              {'sign-in__input_error': hasEmailError}
-            )}
+            className={cn("sign-in__input", {
+              "sign-in__input_error": hasEmailError,
+            })}
             type="email"
             name="sign-in-email"
             placeholder="Email"
@@ -89,10 +92,9 @@ export const SignIn = () => {
           />
 
           <input
-            className={cn(
-              'sign-in__input',
-              {'sign-in__input_error': hasPasswordError}
-            )}
+            className={cn("sign-in__input", {
+              "sign-in__input_error": hasPasswordError,
+            })}
             type="password"
             name="sign-in-password"
             placeholder="Password"
@@ -105,10 +107,7 @@ export const SignIn = () => {
           </button>
         </form>
 
-        <button
-          className="sign-in__button"
-          onClick={signInWithGoogle}
-        >
+        <button className="sign-in__button" onClick={signInWithGoogle}>
           Sign in with Google
         </button>
       </div>

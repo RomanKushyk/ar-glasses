@@ -1,10 +1,10 @@
-import './glasses-list.scss';
+import "./glasses-list.scss";
 
-import { FC, useContext, useEffect } from 'react';
-import { observer } from 'mobx-react-lite';
-import { StoreContextAdmin } from '../../services/store/AdminPage/storeAdmin';
-import { useNavigate } from 'react-router-dom';
-import { Glasses } from '../../interfaces/consts/Glasses';
+import { FC, useContext, useEffect } from "react";
+import { observer } from "mobx-react-lite";
+import { StoreContextAdmin } from "../../services/store/AdminPage/storeAdmin";
+import { useNavigate } from "react-router-dom";
+import { Glasses } from "../../interfaces/consts/Glasses";
 
 export const GlassesList: FC = observer(() => {
   const store = useContext(StoreContextAdmin);
@@ -17,7 +17,7 @@ export const GlassesList: FC = observer(() => {
   const getPreviewPath = (item: Glasses) => {
     switch (item.local) {
       case true:
-        return document.location.origin + '/' + item.preview_file_path;
+        return document.location.origin + "/" + item.preview_file_path;
 
       default:
         return item.preview_file_path;
@@ -26,11 +26,8 @@ export const GlassesList: FC = observer(() => {
 
   return (
     <section className="glasses-list">
-      {store.glasses.list.map(element => (
-        <div
-          key={element.id}
-          className="glasses-list__item"
-        >
+      {store.glasses.list.map((element) => (
+        <div key={element.id} className="glasses-list__item">
           <div className="glasses-list__description-container">
             <div className="glasses-list__preview-container">
               <img
@@ -42,10 +39,7 @@ export const GlassesList: FC = observer(() => {
 
             <p className="glasses-list__title">{element.name}</p>
 
-            {
-              element.local &&
-              <span className="glasses-list__is-local"/>
-            }
+            {element.local && <span className="glasses-list__is-local" />}
           </div>
 
           <div className="glasses-list__option-container">
@@ -53,7 +47,7 @@ export const GlassesList: FC = observer(() => {
               className="glasses-list__option-button glasses-list__option-button_edit"
               type="button"
               onClick={() => {
-                navigate(`../edit/${element.id}`)
+                navigate(`../edit/${element.id}`);
               }}
             />
 

@@ -1,42 +1,33 @@
-import { glasses_list } from '../consts/glasses.ts';
-import { getGlassesList } from '../api/firebase/store/glasses';
-import store from '../services/store/app/store';
+import { glasses_list } from "../consts/glasses.ts";
+import { getGlassesList } from "../api/firebase/store/glasses";
+import store from "../services/store/app/store";
+import { Group } from "three";
 
 export class GlassesController {
   glasses_list = [];
+  glasses_files = {};
   glasses_loading_promise = undefined;
 
   _active_glass_id = undefined;
 
-  async loadGlassesList () {
-    this.glasses_list = glasses_list;
+  loadGlassesList(list) {
+    this.glasses_list = list;
+  }
 
-    const querySnapshot = await getGlassesList();
-
-    querySnapshot.forEach(doc => {
-      this.glasses_list.push({
-        id: doc.id,
-        ...doc.data(),
-      })
-    });
-
-    this.glasses_list.sort((item1, item2) => {
-      if (item1.local || item2.local) {
-        return 0;
-      }
-
-      return item1.name.localeCompare(item2.name);
-    })
+  loadGlassesFiles(files) {
+    this.glasses_files = files;
   }
 
   set active_glass(id) {
     if (this._active_glass_id !== id) {
       this._active_glass_id = id;
-      let glass = this.glasses_list.find((glass_state) => glass_state.id === id);
+      let glass = this.glasses_list.find(
+        (glass_state) => glass_state.id === id
+      );
 
       this.glasses_loading_promise = new Promise(async (resolve, reject) => {
         if (!glass.loaded) {
-          glass.model = store.glasses.files[id];
+          glass.model = this.glasses_files[id];
 
           glass.loaded = true;
         }

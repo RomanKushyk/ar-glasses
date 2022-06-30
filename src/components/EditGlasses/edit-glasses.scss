@@ -1,7 +1,6 @@
 @import "../../styles/main";
 
 .edit-glasses {
-
   &__views-container {
     position: relative;
   }
@@ -13,6 +12,7 @@
     align-items: center;
     width: 100%;
     padding: $primary-v-padding $primary-h-padding;
+    z-index: 203;
   }
 
   &__input {
@@ -36,11 +36,14 @@
   }
 
   &__scene {
+    position: relative;
     height: $admin-scene-height;
     margin-bottom: $scene-margin-bottom;
 
     @include box-element;
     @include selectedScene;
+
+    box-sizing: content-box;
   }
 
   &__preview-scene {
@@ -54,7 +57,6 @@
   }
 
   &__params-container {
-
   }
 }
 
@@ -89,7 +91,6 @@
     display: flex;
     width: 100%;
     flex-direction: column;
-
 
     @include gap-margins(10px, 0);
   }
@@ -133,7 +134,7 @@
     display: flex;
     padding: $primary-v-padding $primary-h-padding;
 
-    background: #D9D9D9;
+    background: #d9d9d9;
     border-radius: 13px;
   }
 

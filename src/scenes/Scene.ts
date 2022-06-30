@@ -1,13 +1,53 @@
 import * as THREE from "three";
-import {Vector3} from "three";
-import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
-import {GlassesController} from "../controllers/GlassesController.js";
+import { Vector3 } from "three";
+import { GlassesController } from "../controllers/GlassesController.js";
+import { observe } from "mobx";
+import store, { Store } from "../services/store/app/store";
+import { Glasses } from "../interfaces/consts/Glasses";
+import { Face, Keypoint } from "@tensorflow-models/face-detection";
+import { StoreAdmin } from "../services/store/AdminPage/storeAdmin";
+import { StoreWithActiveGlasses } from "../interfaces/services/store/StoreWithActiveGlasses";
+
+interface TargetPoints {
+  top: Keypoint;
+  left: Keypoint;
+  right: Keypoint;
+  bottom: Keypoint;
+  center_x: THREE.Vector3 | undefined;
+}
 
 export default class Scene {
+  private width: number | undefined;
+  private height: number | undefined;
+  private videoWidth: number | undefined;
+  private videoHeight: number | undefined;
+  private camera: THREE.PerspectiveCamera | undefined;
+  private scene: THREE.Scene | undefined;
+  private renderer: THREE.WebGLRenderer | undefined;
+  private head_wrapper:
+    | THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>
+    | undefined;
+  private glasses_wrapper: THREE.Object3D<THREE.Event> | undefined;
+  private glasses_state: Glasses | undefined;
+  private glasses: THREE.Object3D<THREE.Event> | undefined;
+  private video_material: THREE.ShaderMaterial | undefined;
+  private video_texture: THREE.VideoTexture | THREE.CanvasTexture | undefined;
+  private head:
+    | THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>
+    | undefined;
+  private store: StoreWithActiveGlasses | undefined;
+
+  video: HTMLVideoElement | HTMLCanvasElement | undefined;
+  canvas: HTMLCanvasElement | undefined;
   created = false;
   ready = false;
 
-  setUpSize(width, height, videoWidth, videoHeight) {
+  setUpSize(
+    width: number,
+    height: number,
+    videoWidth: number,
+    videoHeight: number
+  ) {
     this.width = width;
     this.height = height;
     this.videoWidth = videoWidth;
@@ -16,15 +56,13 @@ export default class Scene {
 
   glasses_controller = new GlassesController();
 
-  async loadGlass() {                              // unused
-    const fbxLoader = new FBXLoader();
+  setUpScene(
+    parent: HTMLElement,
+    video: HTMLVideoElement | HTMLCanvasElement,
+    store: StoreWithActiveGlasses
+  ) {
+    if (!this.width || !this.height) return;
 
-    return await fbxLoader.loadAsync(
-      "assets/Glasses/01/01 - Model.fbx"
-    );
-  }
-
-  setUpScene(parent, video) {
     this.video = video;
     this.camera = new THREE.PerspectiveCamera(
       1,
@@ -46,8 +84,9 @@ export default class Scene {
     this.canvas = this.renderer.domElement;
 
     parent.appendChild(this.canvas);
-
     this.created = true;
+
+    this.store = store;
 
     let initialInstallationOfModels = async () => {
       this.setUpVideoMaterial();
@@ -60,7 +99,7 @@ export default class Scene {
     initialInstallationOfModels();
   }
 
-  setUpHeadWrapper() {
+  private setUpHeadWrapper() {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshBasicMaterial({
       color: 0x0000ff,
@@ -69,13 +108,18 @@ export default class Scene {
     });
 
     this.head_wrapper = new THREE.Mesh(geometry, material);
+
+    if (!this.scene) return;
+
     this.scene.add(this.head_wrapper);
 
     this.glasses_wrapper = new THREE.Object3D();
     this.head_wrapper.add(this.glasses_wrapper);
   }
 
-  async updateGlasses(id) {
+  private async updateGlasses(id: number | string) {
+    if (!this.glasses_wrapper) return;
+
     this.glasses_controller.active_glass = id;
 
     if (!this.glasses_controller.active_glass.loaded)
@@ -86,7 +130,7 @@ export default class Scene {
     });
 
     this.glasses_wrapper.traverse((element) => {
-      if (element.material) {
+      if (element instanceof THREE.Mesh && element.material) {
         if (element.material.length) {
           for (let i = 0; i < element.material.length; ++i) {
             element.material[i].dispose();
@@ -95,14 +139,18 @@ export default class Scene {
           element.material.dispose();
         }
       }
-      if (element.geometry) element.geometry.dispose();
+      if (element instanceof THREE.Mesh && element.geometry)
+        element.geometry.dispose();
     });
 
+    if (!this.renderer) return;
     this.renderer.renderLists.dispose();
 
     this.glasses_state = this.glasses_controller.active_glass;
 
-    let compute_glasses_name = (id) => "glasses_" + id;
+    let compute_glasses_name = (id: string | number) => "glasses_" + id;
+
+    if (!this.glasses_state || !this.glasses_state.model) return;
     if (
       !this.glasses_wrapper.getObjectByName(
         compute_glasses_name(this.glasses_state.id)
@@ -111,8 +159,8 @@ export default class Scene {
       this.glasses = this.glasses_state.model;
       this.glasses
         .getObjectByName(this.glasses_state.glass_group.name)
-        .traverse((obj) => {
-          if (obj.material) {
+        ?.traverse((obj) => {
+          if (obj instanceof THREE.Mesh && obj.material) {
             obj.material.opacity = 0.5;
           }
         });
@@ -125,13 +173,18 @@ export default class Scene {
       this.glasses = this.glasses_wrapper.getObjectByName(
         compute_glasses_name(this.glasses_state.id)
       );
-      this.glasses_wrapper.getObjectByName(
+
+      const glasses = this.glasses_wrapper.getObjectByName(
         compute_glasses_name(this.glasses_state.id)
-      ).visible = true;
+      );
+
+      if (glasses) {
+        glasses.visible = true;
+      }
     }
   }
 
-  target_points = {
+  private target_points: TargetPoints = {
     top: {
       x: 0,
       y: 0,
@@ -152,13 +205,30 @@ export default class Scene {
       y: 0,
       z: 0,
     },
+    center_x: undefined,
   };
 
-  normalize = (num, in_min, in_max, out_min, out_max) => {
+  private normalize = (
+    num: number,
+    in_min: number,
+    in_max: number,
+    out_min: number,
+    out_max: number
+  ) => {
     return ((num - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
   };
 
-  normalize_vec(vec) {
+  private normalize_vec(vec: Keypoint) {
+    if (
+      !this.videoWidth ||
+      !this.videoHeight ||
+      !this.width ||
+      !this.height ||
+      !this.camera ||
+      !this.viewSize
+    )
+      return;
+
     let scale;
     let _vec = new THREE.Vector3(vec.x, vec.y, vec.z);
 
@@ -197,13 +267,23 @@ export default class Scene {
     return _vec;
   }
 
-  axis = {
+  private axis: {
+    x: THREE.Vector3;
+    y: THREE.Vector3;
+    z: THREE.Vector3;
+  } = {
     x: new Vector3(1, 0, 0),
     y: new Vector3(0, 1, 0),
     z: new Vector3(0, 0, 1),
   };
 
-  gide_lines = {
+  private gide_lines: {
+    x: THREE.Vector3;
+    y: THREE.Vector3;
+    z_x: THREE.Vector3;
+    y_z: THREE.Vector3;
+    x_y: THREE.Vector3;
+  } = {
     x: new THREE.Vector3(),
     y: new THREE.Vector3(),
     z_x: new THREE.Vector3(),
@@ -211,16 +291,23 @@ export default class Scene {
     x_y: new THREE.Vector3(),
   };
 
-  drawGlass() {
+  private drawGlass() {
+    if (
+      !this.head_wrapper ||
+      !this.target_points.top.z ||
+      !this.target_points.bottom.z
+    )
+      return;
+
     this.gide_lines.x
-      .copy(this.target_points.left)
-      .sub(this.target_points.right)
+      .copy(this.target_points.left as THREE.Vector3)
+      .sub(this.target_points.right as THREE.Vector3)
       .normalize()
       .multiplyScalar(10);
 
     this.gide_lines.y
-      .copy(this.target_points.top)
-      .sub(this.target_points.bottom)
+      .copy(this.target_points.top as THREE.Vector3)
+      .sub(this.target_points.bottom as THREE.Vector3)
       .normalize()
       .multiplyScalar(100000);
 
@@ -248,21 +335,34 @@ export default class Scene {
 
     let left_for_scale = this.normalize_vec(this.target_points.left);
     let right_for_scale = this.normalize_vec(this.target_points.right);
+
+    if (!left_for_scale || !right_for_scale) return;
+
     left_for_scale.z = 0;
     right_for_scale.z = 0;
+
     let scale =
       new THREE.Vector3().copy(left_for_scale).sub(right_for_scale).length() /
       15;
+
     this.head_wrapper.scale.set(scale, scale, scale);
+
+    if (!this.target_points.center_x) return;
 
     let center = this.target_points.center_x;
     this.head_wrapper.position.copy(center);
   }
 
-  setUpVideoMaterial() {
+  private setUpVideoMaterial() {
+    if (!this.video) return;
+
+    if(this.video instanceof HTMLVideoElement)
     this.video_texture = new THREE.VideoTexture(this.video);
+    if(this.video instanceof HTMLCanvasElement)
+    this.video_texture = new THREE.CanvasTexture(this.video);
     this.video_material = new THREE.ShaderMaterial({
       uniforms: {
+        // @ts-ignore
         txt: this.video_texture,
       },
       vertexShader: `
@@ -286,10 +386,9 @@ export default class Scene {
     });
   }
 
-  video_material = undefined;
-  video_texture = undefined;
+  private async setUpHead() {
+    if (!this.video_material || !this.head_wrapper) return;
 
-  async setUpHead() {
     const model_geometry = new THREE.PlaneGeometry(50, 50);
 
     this.head = new THREE.Mesh(model_geometry, this.video_material);
@@ -305,10 +404,22 @@ export default class Scene {
     this.head_wrapper.add(this.head);
   }
 
-  drawScene(predictions) {
-    if (!this.ready || !predictions.length) {
-      return;
+  drawScene(predictions: Face[]) {
+    if (!this.store || !this.store.glasses.active_glasses) return;
+
+    if (this.store.glasses.active_glasses !== this.glasses_state?.id) {
+      this.updateGlasses(this.store.glasses.active_glasses);
     }
+
+    if (
+      !this.ready ||
+      !predictions.length ||
+      !this.renderer ||
+      !this.scene ||
+      !this.camera
+    )
+      return;
+
     this.renderer.render(this.scene, this.camera);
 
     let keypoints = predictions[0].keypoints;
@@ -323,14 +434,45 @@ export default class Scene {
     this.drawGlass();
   }
 
-  get viewSize() {
+  updateModelPositionAndScale(glasses: Glasses) {
+    if (!this.glasses) return;
+
+    this.glasses.position.set(...glasses.options.position);
+    this.glasses.scale.set(...glasses.options.scale);
+  }
+
+  updateCanvasSize(
+    width: number,
+    height: number,
+    videoWidth: number,
+    videoHeight: number
+  ) {
+    if (!this.renderer) return;
+    this.renderer.domElement.width = width;
+    this.renderer.domElement.height = height;
+
+    this.renderer?.setSize(width, height);
+
+    if (this.camera) {
+      this.camera.aspect = width / height;
+    }
+  }
+
+  private get viewSize() {
+    if (!this.camera || !this.width || !this.height) return undefined;
+
     let distance = this.camera.position.z;
     let vFov = (this.camera.fov * Math.PI) / 180;
     let height;
     let width;
 
-    height = 2 * Math.tan(vFov / 2) * distance;
-    width = height * (this.width / this.height);
+    if (this.height > this.width) {
+      height = 2 * Math.tan(vFov / 2) * distance;
+      width = height * (this.width / this.height);
+    } else {
+      width = 2 * Math.tan(vFov / 2) * distance;
+      height = width * (this.height / this.width);
+    }
     return { width, height, vFov };
   }
 }

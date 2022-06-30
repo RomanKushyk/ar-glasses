@@ -1,18 +1,24 @@
 // @ts-ignore
-import { saveFromUrl } from './saveFromUrl.ts';
-import { WebGLRenderer } from 'three';
+import { saveFromUrl } from "./saveFromUrl.ts";
+import { WebGLRenderer } from "three";
 
-type SaveSnapshotFromCanvas = (canvas: WebGLRenderer["domElement"], video: HTMLVideoElement) => void;
+type SaveSnapshotFromCanvas = (
+  canvas: WebGLRenderer["domElement"],
+  video: HTMLVideoElement
+) => void;
 
-export const saveSnapshotFromCanvas: SaveSnapshotFromCanvas = (canvas, video) => {
+export const saveSnapshotFromCanvas: SaveSnapshotFromCanvas = (
+  canvas,
+  video
+) => {
   let scale: number;
-  const strMime = 'image/jpeg';
+  const strMime = "image/jpeg";
 
-  const resulCanvas = document.createElement('canvas');
+  const resulCanvas = document.createElement("canvas");
   resulCanvas.width = canvas.offsetWidth;
   resulCanvas.height = canvas.offsetHeight;
 
-  const resultCanvasContext = resulCanvas.getContext('2d');
+  const resultCanvasContext = resulCanvas.getContext("2d");
 
   if (video.width / video.height > canvas.offsetWidth / canvas.offsetHeight) {
     scale = canvas.offsetHeight / video.height;
@@ -23,10 +29,22 @@ export const saveSnapshotFromCanvas: SaveSnapshotFromCanvas = (canvas, video) =>
   const scaledVideoWidth = scale * video.width;
   const scaledVideoHeight = scale * video.height;
   const offsetX = (canvas.offsetWidth - scaledVideoWidth) / 2;
-  const correctedY = (canvas.offsetHeight - scaledVideoHeight) / 2;
+  const offsetY = (canvas.offsetHeight - scaledVideoHeight) / 2;
 
-  resultCanvasContext?.drawImage(video, offsetX, correctedY, scaledVideoWidth, scaledVideoHeight);
-  resultCanvasContext?.drawImage(canvas, 0, 0, video.offsetWidth, video.offsetHeight);
+  resultCanvasContext?.drawImage(
+    video,
+    offsetX,
+    offsetY,
+    scaledVideoWidth,
+    scaledVideoHeight
+  );
+  resultCanvasContext?.drawImage(
+    canvas,
+    0,
+    0,
+    video.offsetWidth,
+    video.offsetHeight
+  );
 
-  saveFromUrl(resulCanvas.toDataURL(strMime), 'snapshot.jpg');
+  saveFromUrl(resulCanvas.toDataURL(strMime), "snapshot.jpg");
 };

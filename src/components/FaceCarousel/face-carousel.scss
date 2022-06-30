@@ -1,0 +1,33 @@
+@import "react-responsive-carousel/lib/styles/carousel.min.css";
+@import "../../styles/main";
+
+.carousel {
+  border-radius: 14px;
+
+  .control-arrow {
+    width: 50px;
+    z-index: 202 !important;
+  }
+}
+
+.face-carousel {
+  &__scene-wrapper {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__image-container {
+    box-sizing: border-box;
+    height: 50vh;
+  }
+
+  &__image {
+    box-sizing: border-box;
+    object-fit: contain;
+    height: 100%;
+  }
+}

@@ -9,12 +9,14 @@
 }
 
 @mixin selectedScene {
+  border: transparent 2px solid;
+
   &_selected {
-    border: rgba(0, 0, 0, 0.40) 2px solid;
+    border: rgba(0, 0, 0, 0.4) 2px solid;
   }
 }
 
-@mixin completed ($size, $right, $bottom) {
+@mixin completed($size, $right, $bottom) {
   &::after {
     content: "";
     @include box-element;
@@ -37,7 +39,7 @@
   }
 }
 
-@mixin aborted ($size, $right, $bottom) {
+@mixin aborted($size, $right, $bottom) {
   &::before {
     content: "";
     @include box-element;
@@ -65,7 +67,7 @@
   outline: none;
 }
 
-@mixin square ($dim) {
+@mixin square($dim) {
   width: $dim;
   height: $dim;
 }
@@ -84,13 +86,13 @@
   padding: 4px 11px;
   border: none;
   outline: none;
-  background: #D9D9D9;
+  background: #d9d9d9;
   border-radius: 5px;
 
   font-size: 14px;
 }
 
-@mixin gap-margins ($v, $h) {
+@mixin gap-margins($v, $h) {
   margin-right: $h;
   margin-bottom: $v;
 

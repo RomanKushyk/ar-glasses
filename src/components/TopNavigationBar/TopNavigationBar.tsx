@@ -1,12 +1,12 @@
-import './top-navigation-bar.scss';
-import {FC, ReactNode} from 'react';
-import {useNavigate} from 'react-router-dom';
+import "./top-navigation-bar.scss";
+import { FC, ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
-  children: ReactNode,
+  children: ReactNode;
 }
 
-export const TopNavigationBar: FC<Props> = ({children}) => {
+export const TopNavigationBar: FC<Props> = ({ children }) => {
   const navigate = useNavigate();
 
   return (

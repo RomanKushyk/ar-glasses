@@ -65,7 +65,6 @@ export default (keypoints: any): IFacetype => {
     A5: 0,
   };
 
-
   facedata.L1 = getLengthFromIndexedPoints(151, 168);
   facedata.L2 = getLengthFromIndexedPoints(70, 300);
   facedata.L3 = getLengthFromIndexedPoints(151, 175);
@@ -99,7 +98,7 @@ export default (keypoints: any): IFacetype => {
     [facedata.A3],
     [facedata.A4],
     [facedata.A5],
-  ]
+  ];
 
   let result = nn.Activation(parsed_facedata).map((i: any) => i[0]);
 

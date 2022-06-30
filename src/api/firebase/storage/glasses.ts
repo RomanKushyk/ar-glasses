@@ -1,13 +1,16 @@
-import { ref, uploadBytes, getBlob, deleteObject } from 'firebase/storage';
-import { firebaseStorage } from '../../../utils/firebase';
+import { ref, uploadBytes, getBlob, deleteObject } from "firebase/storage";
+import { firebaseStorage } from "../../../utils/firebase";
 
-const BASE_PATH = 'assets/glasses/';
+const BASE_PATH = "assets/glasses/";
 
-export const downloadGlassesFromStorage = async (glassesPath: string, nameWithExt: string) => {
+export const downloadGlassesFromStorage = async (
+  glassesPath: string,
+  nameWithExt: string
+) => {
   const storageRef = ref(firebaseStorage, glassesPath);
   const blob = await getBlob(storageRef);
 
-  return new File([blob], nameWithExt, { type: "application/octet-stream" })
+  return new File([blob], nameWithExt, { type: "application/octet-stream" });
 };
 
 export const uploadGlassesToStorage = async (file: File, path: string) => {
