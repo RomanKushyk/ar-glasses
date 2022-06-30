@@ -577,8 +577,10 @@ export const EditGlasses: FC = observer(() => {
           })}
           title={View.main}
           onClick={() => {
-            setCurrentView(View.main);
-            setOptionsBlockName(Option.position);
+            if (currentView !== View.main) {
+              setOptionsBlockName(Option.position);
+              setCurrentView(View.main);
+            }
           }}
         >
           {/*<FaceCarousel store={store} />*/}
@@ -593,8 +595,10 @@ export const EditGlasses: FC = observer(() => {
           ref={previewSceneCanvas}
           title={View.preview}
           onClick={() => {
-            setCurrentView(View.preview);
-            setOptionsBlockName(Option.prevPosition);
+            if (currentView !== View.preview) {
+              setOptionsBlockName(Option.prevPosition);
+              setCurrentView(View.preview);
+            }
           }}
         ></canvas>
       </div>
