@@ -4,11 +4,13 @@ import { FC, useContext, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { StoreContextAdmin } from "../../services/store/AdminPage/storeAdmin";
 import { useNavigate } from "react-router-dom";
+import { createBrowserHistory } from "history";
 import { Glasses } from "../../interfaces/consts/Glasses";
 
 export const GlassesList: FC = observer(() => {
   const store = useContext(StoreContextAdmin);
   const navigate = useNavigate();
+  const history = createBrowserHistory();
 
   useEffect(() => {
     store.loadGlassesList();
@@ -48,6 +50,7 @@ export const GlassesList: FC = observer(() => {
               type="button"
               onClick={() => {
                 navigate(`../edit/${element.id}`);
+                history.go(0);
               }}
             />
 
