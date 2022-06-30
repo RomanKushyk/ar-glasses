@@ -25,7 +25,7 @@ const ControlPanel = observer(() => {
         }
       >
         <img
-          alt={element.id.toString()}
+          alt=""
           src={element.preview_file_path}
           className="control-panel__img-preview"
         />
