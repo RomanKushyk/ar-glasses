@@ -37,11 +37,10 @@ export default class Scene {
     | undefined;
   private store: StoreWithActiveGlasses | undefined;
 
-  video: HTMLVideoElement | undefined;
+  video: HTMLVideoElement | HTMLCanvasElement | undefined;
   canvas: HTMLCanvasElement | undefined;
   created = false;
   ready = false;
-  private store: StoreWithActiveGlasses | undefined;
 
   setUpSize(
     width: number,
