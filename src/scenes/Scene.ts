@@ -1,11 +1,8 @@
 import * as THREE from "three";
 import { Vector3 } from "three";
-import { GlassesController } from "../controllers/GlassesController.js";
-import { observe } from "mobx";
-import store, { Store } from "../services/store/app/store";
+import { GlassesController } from "../controllers/GlassesController";
 import { Glasses } from "../interfaces/consts/Glasses";
 import { Face, Keypoint } from "@tensorflow-models/face-detection";
-import { StoreAdmin } from "../services/store/AdminPage/storeAdmin";
 import { StoreWithActiveGlasses } from "../interfaces/services/store/StoreWithActiveGlasses";
 
 interface TargetPoints {
@@ -120,9 +117,12 @@ export default class Scene {
   private async updateGlasses(id: number | string) {
     if (!this.glasses_wrapper) return;
 
-    this.glasses_controller.active_glass = id;
+    this.glasses_controller.active_glass_id = id;
 
-    if (!this.glasses_controller.active_glass.loaded)
+    if (
+      this.glasses_controller.active_glass &&
+      !this.glasses_controller.active_glass.loaded
+    )
       await this.glasses_controller.glasses_loading_promise;
 
     this.glasses_wrapper.children.forEach((glasses) => {

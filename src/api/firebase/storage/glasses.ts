@@ -1,5 +1,5 @@
 import { ref, uploadBytes, getBlob, deleteObject } from "firebase/storage";
-import { firebaseStorage } from "../../../utils/firebase";
+import { firebaseStorage } from "../../../utils/firebase/firebase";
 
 const BASE_PATH = "assets/glasses/";
 

@@ -1,9 +1,8 @@
 // @ts-ignore
 import { saveFromUrl } from "./saveFromUrl.ts";
-import { WebGLRenderer } from "three";
 
 type SaveSnapshotFromCanvas = (
-  canvas: WebGLRenderer["domElement"],
+  canvas: HTMLCanvasElement,
   video: HTMLVideoElement
 ) => void;
 
@@ -20,7 +19,10 @@ export const saveSnapshotFromCanvas: SaveSnapshotFromCanvas = (
 
   const resultCanvasContext = resulCanvas.getContext("2d");
 
-  if (video.videoWidth / video.videoHeight > canvas.offsetWidth / canvas.offsetHeight) {
+  if (
+    video.videoWidth / video.videoHeight >
+    canvas.offsetWidth / canvas.offsetHeight
+  ) {
     scale = canvas.offsetHeight / video.videoHeight;
   } else {
     scale = canvas.offsetWidth / video.videoWidth;

@@ -2,13 +2,11 @@ import "./glasses-list.scss";
 
 import { FC, useContext, useEffect } from "react";
 import { observer } from "mobx-react-lite";
-import { StoreContextAdmin } from "../../services/store/AdminPage/storeAdmin";
-import { useNavigate } from "react-router-dom";
+import { StoreAdminContext } from "../../services/store/AdminPage/storeAdmin";
 import { Glasses } from "../../interfaces/consts/Glasses";
 
 export const GlassesList: FC = observer(() => {
-  const store = useContext(StoreContextAdmin);
-  const navigate = useNavigate();
+  const store = useContext(StoreAdminContext);
 
   useEffect(() => {
     store.loadGlassesList();
@@ -47,8 +45,8 @@ export const GlassesList: FC = observer(() => {
               className="glasses-list__option-button glasses-list__option-button_edit"
               type="button"
               onClick={() => {
-                navigate(`../edit/${element.id}`);
-                document.location.reload();
+                window.location.href =
+                  document.location.origin + `/admin/edit/${element.id}`;
               }}
             />
 

@@ -2,13 +2,14 @@ import "./control-panel.scss";
 import { observer } from "mobx-react-lite";
 import { useContext } from "react";
 
-import { StoreContext } from "../../services/store/app/store.ts";
-import { saveSnapshotFromCanvas } from "../../utils/saveSnapshotFromCanvas.ts";
+import { Store, StoreContext } from "../../services/store/app/store";
+import { saveSnapshotFromCanvas } from "../../utils/createSnapshot/saveSnapshotFromCanvas";
 import { EFacetypes } from "../../enums/EFacetypes";
 
 const ControlPanel = observer(() => {
-  const store = useContext(StoreContext);
-  let glasses = [];
+  const store: Store = useContext(StoreContext);
+  const glasses: JSX.Element[] = [];
+  let Inner: JSX.Element[] = [];
 
   store.glasses.list.forEach((element) => {
     glasses.push(
@@ -19,7 +20,7 @@ const ControlPanel = observer(() => {
         }}
         className={
           "control-panel__button" +
-          (element.id == store.glasses.active_glasses
+          (element.id === store.glasses.active_glasses
             ? " control-panel__button_active"
             : "")
         }
@@ -32,8 +33,6 @@ const ControlPanel = observer(() => {
       </div>
     );
   });
-
-  let Inner = [];
 
   if (Number.isNaN(store.facetype.type)) {
     Inner = [
@@ -57,7 +56,21 @@ const ControlPanel = observer(() => {
         key={1}
         className="control-panel__button control-panel__screenshot"
         onClick={() => {
-          saveSnapshotFromCanvas(store.scene.canvas, store.scene.video);
+          if (
+            store.scene.canvas &&
+            store.scene.video instanceof HTMLVideoElement
+          ) {
+            saveSnapshotFromCanvas(store.scene.canvas, store.scene.video);
+          } else {
+            console.error(
+              "canvas type is",
+              store.scene.canvas instanceof HTMLCanvasElement
+            );
+            console.error(
+              "video type is",
+              store.scene.video instanceof HTMLVideoElement
+            );
+          }
         }}
       >
         <i className="fa-solid fa-camera-retro"></i>

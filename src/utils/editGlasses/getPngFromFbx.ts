@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import { Glasses } from "../interfaces/consts/Glasses";
+import { Glasses } from "../../interfaces/consts/Glasses";
 import { getDownloadURL, ref } from "firebase/storage";
-import { firebaseStorage } from "./firebase";
+import { firebaseStorage } from "../firebase/firebase";
 
 export const getPngFromFbx = (glasses: Glasses, URL?: string) => {
   return new Promise(async (resolve: any, reject: any) => {

@@ -3,17 +3,17 @@ import "./edit-glasses.scss";
 import cn from "classnames";
 import React, { ChangeEvent, FC, useContext, useEffect, useState } from "react";
 import StoreAdmin, {
-  StoreContextAdmin,
+  StoreAdminContext,
 } from "../../services/store/AdminPage/storeAdmin";
 import { useParams } from "react-router-dom";
-import { EditGlassesOptions } from "../../utils/EditGlassesOptions";
+import { EditGlassesOptions } from "../../utils/editGlasses/EditGlassesOptions";
 import { observer } from "mobx-react-lite";
 import {
   PreviewScene,
   previewSceneCanvas,
 } from "../../scenes/AdminPage/PreviewScene/PreviewScene";
-import { createInputsBlock } from "../../utils/createInputsBlock";
-import { FaceCarousel2 } from "../FaceCarousel";
+import { createInputsBlock } from "../../utils/createInputBlock/createInputsBlock";
+import { FaceBackground } from "../FaceBackground";
 
 enum Input {
   name = "Glasses name",
@@ -68,7 +68,7 @@ const setupScenes = async (store: typeof StoreAdmin) => {
 };
 
 export const EditGlasses: FC = observer(() => {
-  const store = useContext(StoreContextAdmin);
+  const store = useContext(StoreAdminContext);
   const params = useParams();
 
   const [optionsBlockName, setOptionsBlockName] = useState<Option>(
@@ -583,8 +583,8 @@ export const EditGlasses: FC = observer(() => {
             }
           }}
         >
-          {/*<FaceCarousel store={store} />*/}
-          <FaceCarousel2 store={store} />
+          {/*<FaceBackground store={store} />*/}
+          <FaceBackground store={store} />
         </div>
 
         <canvas

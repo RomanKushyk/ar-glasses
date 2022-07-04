@@ -1,19 +1,28 @@
 import "./sign-out.scss";
 
-import { firebaseAuth } from "../../utils/firebase";
 import { FC } from "react";
+import { useUserAuth } from "../../services/context/UserAuthContext";
+import { useNavigate } from "react-router-dom";
 
 export const SignOut: FC = () => {
-  return (
-    firebaseAuth.currentUser && (
-      <button
-        className="sign-out-button top-navigation-bar__sign-out-button"
-        onClick={() => {
-          firebaseAuth.signOut();
-        }}
-      >
-        Sign out
-      </button>
-    )
-  );
+  const { logOut } = useUserAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    try {
+      await logOut();
+      navigate("/login");
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
+  return localStorage.getItem("isAuthorized") ? (
+    <button
+      className="sign-out-button top-navigation-bar__sign-out-button"
+      onClick={handleSignOut}
+    >
+      Sign out
+    </button>
+  ) : null;
 };

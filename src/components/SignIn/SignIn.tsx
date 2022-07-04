@@ -1,31 +1,29 @@
 import "./sign-in.scss";
 
-import { signInWithPopup } from "firebase/auth";
-import { GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
-import { firebaseAuth } from "../../utils/firebase";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import cn from "classnames";
-import { Navigate } from "react-router-dom";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { useNavigate } from "react-router-dom";
+import { useUserAuth } from "../../services/context/UserAuthContext";
 
 export const SignIn = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [hasEmailError, setHasEmailError] = useState<boolean>(false);
   const [hasPasswordError, setHasPasswordError] = useState<boolean>(false);
-  const [user] = useAuthState(firebaseAuth);
+  const { logIn, googleSignIn } = useUserAuth();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    signInWithEmailAndPassword(
-      firebaseAuth,
-      "rkushyk@qualium-systems.com",
-      "1q2w3e4r"
-    );
-  }, []); //! For develop!!!!
-
-  if (user) {
-    return <Navigate to="/admin" replace />;
-  }
+  // useEffect(() => {
+  //   signInWithEmailAndPassword(
+  //     firebaseAuth,
+  //     "rkushyk@qualium-systems.com",
+  //     "1q2w3e4r"
+  //   );
+  // }, []); //! For develop!!!!
+  //
+  // if (user) {
+  //   return <Navigate to="/admin" replace />;
+  // }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -53,11 +51,16 @@ export const SignIn = () => {
     setHasPasswordError(false);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (email && password) {
-      signInWithEmailAndPassword(firebaseAuth, email, password);
+      try {
+        await logIn(email, password);
+        navigate("/admin");
+      } catch (error: any) {
+        console.error(error.message);
+      }
 
       resetForm();
     }
@@ -71,9 +74,13 @@ export const SignIn = () => {
     }
   };
 
-  const signInWithGoogle = () => {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(firebaseAuth, provider);
+  const signInWithGoogle = async () => {
+    try {
+      await googleSignIn();
+      navigate("/home");
+    } catch (error: any) {
+      console.log(error.message);
+    }
   };
 
   return (

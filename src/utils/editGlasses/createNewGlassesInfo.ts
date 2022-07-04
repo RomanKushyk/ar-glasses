@@ -1,4 +1,4 @@
-import { Glasses } from "../interfaces/consts/Glasses";
+import { Glasses } from "../../interfaces/consts/Glasses";
 
 type CreateNewGlassesInfo = (file: File) => Omit<Glasses, "id">;
 

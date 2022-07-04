@@ -7,15 +7,15 @@ import {
   editGlassesFromList,
   getGlassesList,
 } from "../../../api/firebase/store/glasses";
-import { createNewGlassesInfo } from "../../../utils/createNewGlassesInfo";
+import { createNewGlassesInfo } from "../../../utils/editGlasses/createNewGlassesInfo";
 import {
   deleteGlassesFromStorage,
   uploadGlassesToStorage,
 } from "../../../api/firebase/storage/glasses";
 import { PreviewScene } from "../../../scenes/AdminPage/PreviewScene/PreviewScene";
-import { getPngFromFbx } from "../../../utils/getPngFromFbx";
+import { getPngFromFbx } from "../../../utils/editGlasses/getPngFromFbx";
 import { getDownloadURL, ref } from "firebase/storage";
-import { firebaseStorage } from "../../../utils/firebase";
+import { firebaseStorage } from "../../../utils/firebase/firebase";
 import { Group } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { glasses_list } from "../../../consts/glasses";
@@ -68,9 +68,8 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
   acceptedFile: File | null = null;
   scene: null | Scene = null;
   previewScene: null | PreviewScene = null;
-  activeItem: { current: undefined | HTMLImageElement } = {
-    current: undefined,
-  };
+
+  user: boolean = false;
 
   constructor() {
     makeObservable(this, {
@@ -93,10 +92,11 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
       previewScene: observable,
       makePreviewPngAndUpload: action,
 
-      activeItem: observable,
-
       uploadAllTemporaryDataToFirebase: action,
       deleteGlassesFromFirebase: action,
+
+      user: observable,
+      setUser: action,
     });
   }
 
@@ -270,10 +270,14 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
     await this.loadGlassesList();
     await this.loadAllGlassesFiles();
   }
+
+  setUser(user: boolean) {
+    this.user = user;
+  }
 }
 
 const storeAdmin = new StoreAdmin();
-export const StoreContextAdmin = createContext(storeAdmin);
+export const StoreAdminContext = createContext(storeAdmin);
 export { StoreAdmin };
 
 export default storeAdmin;

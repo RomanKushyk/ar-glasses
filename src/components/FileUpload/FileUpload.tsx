@@ -3,8 +3,8 @@ import "./file-upload.scss";
 import { FC, useContext, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { observer } from "mobx-react-lite";
-import { StoreContextAdmin } from "../../services/store/AdminPage/storeAdmin";
-import { createNewGlassesInfo } from "../../utils/createNewGlassesInfo";
+import { StoreAdminContext } from "../../services/store/AdminPage/storeAdmin";
+import { createNewGlassesInfo } from "../../utils/editGlasses/createNewGlassesInfo";
 
 export const FileUpload: FC = observer(() => {
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
@@ -13,7 +13,7 @@ export const FileUpload: FC = observer(() => {
       "application/octet-stream": [".fbx"],
     },
   });
-  const store = useContext(StoreContextAdmin);
+  const store = useContext(StoreAdminContext);
 
   useEffect(() => {
     store.getFileFromUser(acceptedFiles[0]);

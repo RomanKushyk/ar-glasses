@@ -8,30 +8,36 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AdminPage } from "./pages/AdminPage";
 import { NotFound } from "./components/NotFound";
 import { EditGlasses } from "./components/EditGlasses/EditGlasses";
-import { Protected } from "./routes/Protected";
 import { AddNewGlasses } from "./components/AddNewGlasses/AddNewGlasses";
+import { SignIn } from "./components/SignIn";
+import { UserAuthContextProvider } from "./services/context/UserAuthContext";
+import { ProtectedRoute } from "./routes/ProtectedRoute";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
+  <UserAuthContextProvider>
+    <React.StrictMode>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
 
-        <Route element={<Protected />}>
-          <Route path="admin" element={<AdminPage />}>
-            <Route path="new" element={<AddNewGlasses />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/admin" element={<AdminPage />}>
+              <Route path="new" element={<AddNewGlasses />} />
 
-            <Route path="edit/:glassesId" element={<EditGlasses />} />
+              <Route path="edit/:glassesId" element={<EditGlasses />} />
+            </Route>
           </Route>
-        </Route>
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
-  </React.StrictMode>
+          <Route path="/login" element={<SignIn />} />
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </React.StrictMode>
+  </UserAuthContextProvider>
 );
 
 reportWebVitals();

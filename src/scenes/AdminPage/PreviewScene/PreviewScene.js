@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import React from "react";
 import { ref } from "firebase/storage";
-import { firebaseStorage } from "../../../utils/firebase";
+import { firebaseStorage } from "../../../utils/firebase/firebase";
 import { getDownloadURL } from "firebase/storage";
 
 export const previewSceneCanvas /*: LegacyRef<HTMLCanvasElement>*/ =

@@ -6,7 +6,7 @@ import { Glasses } from "../../../interfaces/consts/Glasses";
 import { Group } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { getDownloadURL, ref } from "firebase/storage";
-import { firebaseStorage } from "../../../utils/firebase";
+import { firebaseStorage } from "../../../utils/firebase/firebase";
 import { IStoreForTF } from "../../../interfaces/services/store/StoreForTF";
 import { StoreWithActiveGlasses } from "../../../interfaces/services/store/StoreWithActiveGlasses";
 import { getGlassesList } from "../../../api/firebase/store/glasses";

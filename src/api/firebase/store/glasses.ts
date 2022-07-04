@@ -6,7 +6,7 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { firebaseStore } from "../../../utils/firebase";
+import { firebaseStore } from "../../../utils/firebase/firebase";
 import { Glasses } from "../../../interfaces/consts/Glasses";
 
 const PATH = "glasses";

@@ -1,7 +1,7 @@
 import "./admin-page.scss";
 import { FC, useEffect } from "react";
 import storeAdmin, {
-  StoreContextAdmin,
+  StoreAdminContext,
 } from "../../services/store/AdminPage/storeAdmin";
 import { SignOut } from "../../components/SignOut";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -21,7 +21,7 @@ export const AdminPage: FC = () => {
   }, [location.pathname]);
 
   return (
-    <StoreContextAdmin.Provider value={storeAdmin}>
+    <StoreAdminContext.Provider value={storeAdmin}>
       <div className="admin-page">
         <TopNavigationBar>
           <SignOut />
@@ -29,6 +29,6 @@ export const AdminPage: FC = () => {
 
         <Outlet />
       </div>
-    </StoreContextAdmin.Provider>
+    </StoreAdminContext.Provider>
   );
 };

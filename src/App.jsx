@@ -1,14 +1,11 @@
 import "./App.scss";
 import Webcam from "react-webcam";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 
-import runFacemesh from "./utils/tensorflow_setup/tf_setup";
 import store, { StoreContext } from "./services/store/app/store";
 
 import ControlPanel from "./components/ControlPanel/ControlPanel";
 import Preloader from "./components/Preloader/Preloader";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { firebaseAuth } from "./utils/firebase";
 import tensorflowSetUp from "./utils/tensorflow_setup/tensorflowSetUp";
 import FacetypeGetter from "./utils/FacetypeGetter/FacetypeGetter";
 
@@ -27,13 +24,13 @@ function App() {
   const webcamRef = useRef(null);
   const appDivRef = useRef(null);
 
-  useEffect(() => {
-    signInWithEmailAndPassword(
-      firebaseAuth,
-      "rkushyk@qualium-systems.com",
-      "1q2w3e4r"
-    );
-  }, []); //! For develop!!!!
+  // useEffect(() => {
+  //   signInWithEmailAndPassword(
+  //     firebaseAuth,
+  //     "rkushyk@qualium-systems.com",
+  //     "1q2w3e4r"
+  //   );
+  // }, []); //! For develop!!!!
 
   // useEffect(() => {
   //   TFSetupOptions.appDivRef = appDivRef;

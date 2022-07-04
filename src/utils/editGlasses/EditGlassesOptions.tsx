@@ -1,4 +1,4 @@
-import { Glasses } from "../interfaces/consts/Glasses";
+import { Glasses } from "../../interfaces/consts/Glasses";
 
 export class EditGlassesOptions {
   changeName(glasses: Glasses, name: string) {

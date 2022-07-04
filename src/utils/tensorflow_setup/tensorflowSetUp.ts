@@ -3,9 +3,7 @@ import * as faceMesh from "@mediapipe/face_mesh";
 import "@tensorflow-models/face-detection";
 import "@tensorflow/tfjs-backend-webgl";
 import * as FaceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
-import FacetypeGetter from "../FacetypeGetter/FacetypeGetter";
 import Webcam from "react-webcam";
-import { Store } from "../../services/store/app/store";
 import { IStoreForTF } from "../../interfaces/services/store/StoreForTF";
 
 const detect = async (options: {
