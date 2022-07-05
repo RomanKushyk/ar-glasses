@@ -1,0 +1,172 @@
+@import "../../styles/main";
+
+.preloader {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: -100vw;
+  visibility: hidden;
+  z-index: 2000;
+  background-color: rgba(255, 255, 255, 0);
+
+  transition: 3s;
+
+  &_active {
+    left: 0;
+    visibility: visible;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+  }
+}
+
+.splash {
+  color: black;
+  background-color: #fdfdfd;
+
+  @include preloader-block;
+
+  &__spinner {
+    position: absolute;
+    margin: -25px 0 0 -25px;
+    width: 50px;
+    height: 50px;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    animation: rotate 2s linear infinite;
+
+    &-path {
+      stroke: hsl(210, 70, 75);
+      stroke-linecap: round;
+      animation: dash 1.5s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+.your-sex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  @include preloader-block;
+
+  &__container {
+    @include noBorder;
+    @include box-element;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  }
+
+  &__title {
+    margin-bottom: 10px;
+  }
+
+  &__list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__item {
+    @extend %noBorder;
+    @include box-element;
+    @include gap-margins(0, 10px);
+    @include normalize-background;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__item-image {
+    @include square(100px);
+    object-fit: cover;
+    object-position: center;
+  }
+
+  &__item-title {
+  }
+}
+
+.glasses-types {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  @include preloader-block;
+
+  &__container {
+    @include noBorder;
+    @include box-element;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    max-width: 320px;
+  }
+
+  &__title {
+    margin-bottom: 10px;
+  }
+
+  &__list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__item {
+    @extend %noBorder;
+    @include box-element;
+    @include gap-margins(0, 10px);
+    @include normalize-background;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__item-image {
+    @include square(85px);
+    object-fit: cover;
+    object-position: center;
+  }
+
+  &__item-title {
+  }
+}

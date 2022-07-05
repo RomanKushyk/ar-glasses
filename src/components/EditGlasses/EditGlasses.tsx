@@ -583,7 +583,6 @@ export const EditGlasses: FC = observer(() => {
             }
           }}
         >
-          {/*<FaceBackground store={store} />*/}
           <FaceBackground store={store} />
         </div>
 

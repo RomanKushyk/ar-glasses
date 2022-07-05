@@ -11,6 +11,8 @@ import { IStoreForTF } from "../../../interfaces/services/store/StoreForTF";
 import { StoreWithActiveGlasses } from "../../../interfaces/services/store/StoreWithActiveGlasses";
 import { getGlassesList } from "../../../api/firebase/store/glasses";
 import { glasses_list } from "../../../consts/glasses";
+import { ESex } from "../../../enums/ESex";
+import { EGlassesType } from "../../../enums/EGlassesType";
 
 class Store implements IStoreForTF, StoreWithActiveGlasses {
   ready: boolean = false;
@@ -39,6 +41,14 @@ class Store implements IStoreForTF, StoreWithActiveGlasses {
     files: {},
   };
 
+  userData: {
+    sex: ESex | undefined;
+    glassesType: EGlassesType | undefined;
+  } = {
+    sex: undefined,
+    glassesType: undefined,
+  };
+
   constructor() {
     makeObservable(this, {
       ready: observable,
@@ -51,6 +61,10 @@ class Store implements IStoreForTF, StoreWithActiveGlasses {
       updateGlassesList: action,
       loadGlassesFiles: action,
       newActiveGlasses: action,
+
+      userData: observable,
+      setUserDataGlassesType: action,
+      setUserDataSex: action,
     });
   }
 
@@ -114,6 +128,14 @@ class Store implements IStoreForTF, StoreWithActiveGlasses {
 
   newActiveGlasses(id: number | string) {
     this.glasses.active_glasses = id;
+  }
+
+  setUserDataGlassesType(glassesType: EGlassesType) {
+    this.userData.glassesType = glassesType;
+  }
+
+  setUserDataSex(sex: ESex) {
+    this.userData.sex = sex;
   }
 }
 

@@ -9,17 +9,6 @@ import Preloader from "./components/Preloader/Preloader";
 import tensorflowSetUp from "./utils/tensorflow_setup/tensorflowSetUp";
 import FacetypeGetter from "./utils/FacetypeGetter/FacetypeGetter";
 
-// let TFSetupOptions = {
-//   store: store,
-//   webcamRef: null,
-//   appDivRef: null,
-//   cb: null,
-// };
-
-// runFacemesh(TFSetupOptions, () => {
-//   store.updateReadyState(true);
-// });
-
 function App() {
   const webcamRef = useRef(null);
   const appDivRef = useRef(null);
@@ -31,11 +20,6 @@ function App() {
   //     "1q2w3e4r"
   //   );
   // }, []); //! For develop!!!!
-
-  // useEffect(() => {
-  //   TFSetupOptions.appDivRef = appDivRef;
-  //   TFSetupOptions.webcamRef = webcamRef;
-  // });
 
   useEffect(() => {
     const initialize = async () => {
@@ -98,13 +82,6 @@ function App() {
 
     initialize();
   });
-
-  // TFSetupOptions.cb = async () => {
-  //   await store.updateGlassesList();
-  //   await store.loadGlassesFiles();
-  //   await store.newActiveGlasses(store.glasses.list[0].id);
-  //   store.updateReadyState(true);
-  // };
 
   return (
     <div className="App" ref={appDivRef}>
