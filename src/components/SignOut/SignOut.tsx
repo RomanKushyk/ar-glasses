@@ -5,7 +5,7 @@ import { useUserAuth } from "../../services/context/UserAuthContext";
 import { useNavigate } from "react-router-dom";
 
 export const SignOut: FC = () => {
-  const { logOut } = useUserAuth();
+  const { logOut, user } = useUserAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -17,12 +17,14 @@ export const SignOut: FC = () => {
     }
   };
 
-  return localStorage.getItem("isAuthorized") ? (
-    <button
-      className="sign-out-button top-navigation-bar__sign-out-button"
-      onClick={handleSignOut}
-    >
-      Sign out
-    </button>
-  ) : null;
+  return (
+    user && (
+      <button
+        className="sign-out-button top-navigation-bar__sign-out-button"
+        onClick={handleSignOut}
+      >
+        Sign out
+      </button>
+    )
+  );
 };
