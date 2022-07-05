@@ -1,4 +1,5 @@
 import { Glasses } from "../../interfaces/consts/Glasses";
+import { EFaceTypes } from "../../enums/EFaceTypes";
 
 export class EditGlassesOptions {
   changeName(glasses: Glasses, name: string) {
@@ -39,6 +40,12 @@ export class EditGlassesOptions {
 
   changeScaleZ(glasses: Glasses, z: number) {
     glasses.options.scale[2] = z;
+  }
+
+  changeFaceTypes(glasses: Glasses, part: EFaceTypes) {
+    if (!glasses.faceTypes) return;
+
+    glasses.faceTypes[part] = !glasses.faceTypes[part];
   }
 
   changePreviewPositionX(glasses: Glasses, x: number) {

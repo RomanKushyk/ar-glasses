@@ -13,7 +13,7 @@
   z-index: 2000;
   background-color: rgba(255, 255, 255, 0);
 
-  transition: 3s;
+  transition: 1s;
 
   &_active {
     left: 0;
@@ -113,6 +113,7 @@
     @include square(100px);
     object-fit: cover;
     object-position: center;
+    filter: invert(100%);
   }
 
   &__item-title {
@@ -136,7 +137,8 @@
     justify-content: center;
     align-items: center;
     padding: 10px;
-    max-width: 320px;
+    max-width: 355px;
+    overflow: hidden auto;
   }
 
   &__title {
@@ -144,27 +146,31 @@
   }
 
   &__list {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
     justify-content: center;
     align-items: center;
+    max-height: 70vh;
   }
 
   &__item {
     @extend %noBorder;
     @include box-element;
-    @include gap-margins(0, 10px);
     @include normalize-background;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 10px;
   }
 
   &__item-image {
     @include square(85px);
     object-fit: cover;
     object-position: center;
+    filter: invert(100%);
   }
 
   &__item-title {

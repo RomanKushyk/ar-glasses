@@ -6,10 +6,10 @@ export const sexList: {
 }[] = [
   {
     name: ESex.male,
-    imgPath: "assets/user/sex/man.png",
+    imgPath: "assets/user/sex/ic-man.png",
   },
   {
     name: ESex.female,
-    imgPath: "assets/user/sex/woman.png",
+    imgPath: "assets/user/sex/ic-woman.png",
   },
 ];

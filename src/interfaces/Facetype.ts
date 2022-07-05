@@ -1,7 +1,7 @@
-import { EFacetypes } from "../enums/EFacetypes";
+import { EFaceTypes } from "../enums/EFaceTypes";
 
 export default interface IFacetype {
-  type: EFacetypes;
+  type: EFaceTypes;
   current_detections: number;
   detections: number;
 }

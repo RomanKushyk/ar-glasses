@@ -1,4 +1,4 @@
-import { EFacetypes } from "../../enums/EFacetypes.js";
+import { EFaceTypes } from "../../enums/EFaceTypes.js";
 import NN from "./nn/NN.js";
 import { Vector3 } from "three";
 import IFacetype from "../../interfaces/Facetype.js";

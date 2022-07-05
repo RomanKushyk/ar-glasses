@@ -4,7 +4,7 @@ import { useContext } from "react";
 
 import { Store, StoreContext } from "../../services/store/app/store";
 import { saveSnapshotFromCanvas } from "../../utils/createSnapshot/saveSnapshotFromCanvas";
-import { EFacetypes } from "../../enums/EFacetypes";
+import { EFaceTypes } from "../../enums/EFaceTypes";
 
 const ControlPanel = observer(() => {
   const store: Store = useContext(StoreContext);
@@ -47,7 +47,7 @@ const ControlPanel = observer(() => {
   } else {
     Inner = [
       <div key={2} className="control-panel__tip">
-        {EFacetypes[store.facetype.type]}
+        {EFaceTypes[store.facetype.type]}
       </div>,
       <div key={0} className="control-panel__glasses">
         {glasses}

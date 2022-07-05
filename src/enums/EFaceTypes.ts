@@ -1,4 +1,4 @@
-export enum EFacetypes {
+export enum EFaceTypes {
   Square = 0,
   Round = 1,
   Oval = 2,

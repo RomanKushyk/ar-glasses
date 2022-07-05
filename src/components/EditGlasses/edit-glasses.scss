@@ -175,5 +175,10 @@
     &_save-preview {
       background-image: url("../../images/admin/edit/save-preview.png");
     }
+
+    &_face-type {
+      background-image: url("../../images/admin/edit/user.png");
+      //filter: invert(100%);
+    }
   }
 }

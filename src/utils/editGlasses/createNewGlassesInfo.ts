@@ -14,6 +14,7 @@ export const createNewGlassesInfo: CreateNewGlassesInfo = (file) => {
     loaded: false,
     error: false,
     model: null,
+    faceTypes: null,
     options: {
       position: [0, 0, 0],
       rotation: [4.8, 0, 0],

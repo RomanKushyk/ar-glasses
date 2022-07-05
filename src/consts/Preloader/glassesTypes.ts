@@ -10,10 +10,10 @@ export const glassesTypesList: {
   },
   {
     name: EGlassesType.sunglasses,
-    imgPath: "assets/user/glasses-types/sunglasses.png",
+    imgPath: "assets/user/glasses-types/sun-glasses.png",
   },
   {
     name: EGlassesType.eye,
-    imgPath: "assets/user/glasses-types/eyeglasses.png",
+    imgPath: "assets/user/glasses-types/eye-glasses.png",
   },
 ];

@@ -10,6 +10,7 @@ export const glasses_list: Glasses[] = [
     loaded: false,
     error: false,
     model: null,
+    faceTypes: null,
     options: {
       position: [-0.7, 12, -4.5],
       rotation: [0, 0, 0],
@@ -34,6 +35,7 @@ export const glasses_list: Glasses[] = [
     loaded: false,
     error: false,
     model: null,
+    faceTypes: null,
     options: {
       position: [-0.5, 7.5, -1],
       rotation: [0, 0, 0],

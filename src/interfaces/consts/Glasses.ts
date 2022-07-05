@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { EFaceTypes } from "../../enums/EFaceTypes";
 
 export interface Glasses {
   id: string;
@@ -9,6 +10,7 @@ export interface Glasses {
   loaded: boolean;
   error: boolean;
   model: null | THREE.Object3D;
+  faceTypes: Record<EFaceTypes, boolean> | null;
   options: {
     position: [x: number, y: number, z: number];
     rotation: [x: number, y: number, z: number];
@@ -18,7 +20,7 @@ export interface Glasses {
     name: string;
   };
   snapshot_options: {
-    partsVisibility: { [name: string]: boolean } | null;
+    partsVisibility: Record<string, boolean> | null;
     position: [x: number, y: number, z: number];
     rotation: [x: number, y: number, z: number];
     scale: [x: number, y: number, z: number];

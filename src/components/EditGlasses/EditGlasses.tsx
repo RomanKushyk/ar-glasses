@@ -14,6 +14,7 @@ import {
 } from "../../scenes/AdminPage/PreviewScene/PreviewScene";
 import { createInputsBlock } from "../../utils/createInputBlock/createInputsBlock";
 import { FaceBackground } from "../FaceBackground";
+import { EFaceTypes } from "../../enums/EFaceTypes";
 
 enum Input {
   name = "Glasses name",
@@ -26,6 +27,7 @@ enum Input {
   scaleX = "scaleX",
   scaleY = "scaleY",
   scaleZ = "scaleZ",
+  faceType = "faceType",
   prevPositionX = "previewPositionX",
   prevPositionY = "previewPositionY",
   prevPositionZ = "previewPositionZ",
@@ -42,6 +44,7 @@ enum Option {
   position = "Position",
   rotation = "Rotation",
   scale = "Scale",
+  faceType = "Face types",
   three = "three",
   prevPosition = "Preview position",
   prevRotate = "Preview rotate",
@@ -65,6 +68,33 @@ const setupScenes = async (store: typeof StoreAdmin) => {
 
   store.glasses.selected.snapshot_options.partsVisibility =
     store.previewScene.getChildrenList() as { [name: string]: boolean };
+
+  const tempFaceTypeValues = (
+    Object.keys(EFaceTypes).filter((item) =>
+      isNaN(Number(item))
+    ) as (keyof typeof EFaceTypes)[]
+  ).map((key, index) => {
+    return EFaceTypes[key];
+  });
+
+  const tempFaceTypes: Record<EFaceTypes, boolean> | {} = {};
+  tempFaceTypeValues.forEach((e) => {
+    Object.defineProperty(tempFaceTypes, e, { value: false });
+  });
+
+  if (!store.glasses.selected.faceTypes) {
+    store.glasses.selected.faceTypes = tempFaceTypes as Record<
+      EFaceTypes,
+      boolean
+    >;
+  } else {
+    const temp3 = store.glasses.selected.faceTypes;
+    store.glasses.selected.faceTypes = tempFaceTypes as Record<
+      EFaceTypes,
+      boolean
+    >;
+    Object.assign(store.glasses.selected.faceTypes, temp3);
+  }
 };
 
 export const EditGlasses: FC = observer(() => {
@@ -136,6 +166,13 @@ export const EditGlasses: FC = observer(() => {
 
       case Input.scaleZ:
         editor.changeScaleZ(store.glasses.selected, value);
+        break;
+
+      case Input.faceType:
+        editor.changeFaceTypes(
+          store.glasses.selected,
+          id as unknown as EFaceTypes
+        );
         break;
 
       case Input.prevPositionX:
@@ -265,6 +302,22 @@ export const EditGlasses: FC = observer(() => {
               hidden={true} // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
               onClick={() => {
                 setOptionsBlockName(Option.three);
+              }}
+            />
+
+            <button
+              className={cn(
+                "params-container__button",
+                "params-container__button_face-type",
+                {
+                  "params-container__button_selected":
+                    optionsBlockName === Option.faceType,
+                }
+              )}
+              type="button"
+              title={Option.faceType}
+              onClick={() => {
+                setOptionsBlockName(Option.faceType);
               }}
             />
           </>
@@ -440,6 +493,32 @@ export const EditGlasses: FC = observer(() => {
           ),
         ];
 
+      case Option.faceType:
+        if (!store.glasses.selected.faceTypes) return;
+
+        const faceTypeList = Object.entries(store.glasses.selected.faceTypes);
+
+        return (
+          <div className="params-container__param-item">
+            <div className="params-container__checkbox-container">
+              {faceTypeList.map(([name, value]) => (
+                <label key={name} className="params-container__checkbox-label">
+                  <input
+                    className="params-container__checkbox-input"
+                    type="checkbox"
+                    name={Input.faceType}
+                    id={name}
+                    checked={value}
+                    onChange={handleChange}
+                  />
+
+                  {EFaceTypes[name as unknown as number]}
+                </label>
+              ))}
+            </div>
+          </div>
+        );
+
       case Option.prevPosition:
         return [
           createInputsBlock(
@@ -509,14 +588,14 @@ export const EditGlasses: FC = observer(() => {
       case Option.prevThree:
         if (!store.glasses.selected.snapshot_options.partsVisibility) return;
 
-        const list = Object.entries(
+        const partsList = Object.entries(
           store.glasses.selected.snapshot_options.partsVisibility
         );
 
         return (
           <div className="params-container__param-item">
             <div className="params-container__checkbox-container">
-              {list.map(([name, value]) => (
+              {partsList.map(([name, value]) => (
                 <label key={name} className="params-container__checkbox-label">
                   <input
                     className="params-container__checkbox-input"
