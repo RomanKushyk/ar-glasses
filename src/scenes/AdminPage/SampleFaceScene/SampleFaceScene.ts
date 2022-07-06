@@ -81,7 +81,10 @@ let loader = new OBJLoader();
 // }
 
 const SampleFaceScene = (ref: React.RefObject<HTMLDivElement>) => {
-  const renderer = new THREE.WebGLRenderer();
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true,
+  });
   renderer.setSize(300, 300);
   ref.current?.appendChild(renderer.domElement);
 

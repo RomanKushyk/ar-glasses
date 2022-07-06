@@ -69,8 +69,6 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
   scene: null | Scene = null;
   previewScene: null | PreviewScene = null;
 
-  user: boolean = false;
-
   constructor() {
     makeObservable(this, {
       facetype: observable,
@@ -94,9 +92,6 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
 
       uploadAllTemporaryDataToFirebase: action,
       deleteGlassesFromFirebase: action,
-
-      user: observable,
-      setUser: action,
     });
   }
 
@@ -159,7 +154,7 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
 
     const { id, ...data } = this.glasses.selected;
 
-    await editGlassesFromList(id, { ...data, model: null });
+    await editGlassesFromList(id, { ...data, loaded: false, model: null });
 
     this.glasses.saved = true;
   }
@@ -269,10 +264,6 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
 
     await this.loadGlassesList();
     await this.loadAllGlassesFiles();
-  }
-
-  setUser(user: boolean) {
-    this.user = user;
   }
 }
 
