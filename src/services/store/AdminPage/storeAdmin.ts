@@ -14,7 +14,7 @@ import {
 } from "../../../api/firebase/storage/glasses";
 import { PreviewScene } from "../../../scenes/AdminPage/PreviewScene/PreviewScene";
 import { getPngFromFbx } from "../../../utils/editGlasses/getPngFromFbx";
-import { getDownloadURL, ref } from "firebase/storage";
+import { deleteObject, getDownloadURL, listAll, ref } from "firebase/storage";
 import { firebaseStorage } from "../../../utils/firebase/firebase";
 import { Group } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
@@ -27,7 +27,6 @@ import { StoreWithActiveGlasses } from "../../../interfaces/services/store/Store
 interface StoreGlasses {
   active_glasses: undefined | number | string;
   selected: undefined | Glasses;
-  temporary: Omit<Glasses, "id"> | null;
   list: Glasses[];
   files: Record<string, Group>;
   filesReady: boolean;
@@ -55,7 +54,6 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
   glasses: StoreGlasses = {
     active_glasses: undefined,
     selected: undefined,
-    temporary: null,
     list: [],
     files: {},
     filesReady: false,
@@ -65,7 +63,8 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
     pngSaved: false,
   };
 
-  acceptedFile: File | null = null;
+  acceptedFiles: File[] = [];
+  acceptedFilesErrors: string[] = [];
   scene: null | Scene = null;
   previewScene: null | PreviewScene = null;
 
@@ -80,17 +79,17 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
       setSelected: action,
       saveAllChangesInTheSelectedToFirebase: action,
       loadAllGlassesFiles: action,
-      clearTemporary: action,
 
-      acceptedFile: observable,
-      getFileFromUser: action,
+      acceptedFiles: observable,
+      getFilesFromUser: action,
+      acceptedFilesErrors: observable,
 
       scene: observable,
 
       previewScene: observable,
       makePreviewPngAndUpload: action,
 
-      uploadAllTemporaryDataToFirebase: action,
+      processUserFilesAndUploadToFirebase: action,
       deleteGlassesFromFirebase: action,
     });
   }
@@ -187,12 +186,8 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
     this.glasses.filesReady = true;
   }
 
-  clearTemporary() {
-    this.glasses.temporary = null;
-  }
-
-  getFileFromUser(file: File) {
-    this.acceptedFile = file;
+  getFilesFromUser(files: File[]) {
+    this.acceptedFiles = files;
   }
 
   async makePreviewPngAndUpload() {
@@ -230,35 +225,60 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
     this.glasses.pngSaved = true;
   }
 
-  async uploadAllTemporaryDataToFirebase() {
-    if (!this.acceptedFile) return;
+  async processUserFilesAndUploadToFirebase() {
+    this.acceptedFilesErrors = [];
+
+    if (!this.acceptedFiles.length) return;
 
     let glassesId: string | undefined;
 
-    this.glasses.temporary = createNewGlassesInfo(this.acceptedFile);
-    await addGlassesToList(this.glasses.temporary).then(
-      (id) => (glassesId = id)
+    const fbxFile = this.acceptedFiles.find((file) =>
+      file.name.endsWith(".fbx")
+    );
+    const additionalFiles = this.acceptedFiles.filter(
+      (file) => !file.name.endsWith(".fbx")
     );
 
+    if (!fbxFile) {
+      this.acceptedFilesErrors.push("No fbx file founded");
+      return;
+    }
+
+    const fileInfo = createNewGlassesInfo(fbxFile);
+    await addGlassesToList(fileInfo).then((id) => (glassesId = id));
+
+    if (!glassesId) {
+      this.acceptedFilesErrors.push("Not received Id from Firebase");
+      return;
+    }
+
     const url = await uploadGlassesToStorage(
-      this.acceptedFile,
+      fbxFile,
       `${glassesId}/${glassesId}_model.fbx`
     );
 
-    if (glassesId) {
-      await editGlassesFromList(glassesId, { file_path: url });
+    await editGlassesFromList(glassesId, { file_path: url });
+
+    for (const file of additionalFiles) {
+      await uploadGlassesToStorage(file, `${glassesId}/${file.name}`);
     }
 
-    this.clearTemporary();
     await this.loadGlassesList();
   }
 
   async deleteGlassesFromFirebase(item: Glasses) {
-    await deleteGlassesFromStorage(item.file_path);
+    const directoryPath = item.file_path.slice(
+      0,
+      item.file_path.lastIndexOf("/")
+    );
 
-    if (item.preview_file_path.length) {
-      await deleteGlassesFromStorage(item.preview_file_path);
-    }
+    const directoryRef = ref(firebaseStorage, directoryPath);
+
+    await listAll(directoryRef).then(async (res) => {
+      for (const item1 of res.items) {
+        await deleteObject(item1);
+      }
+    });
 
     await deleteGlassesFromList(item.id);
 

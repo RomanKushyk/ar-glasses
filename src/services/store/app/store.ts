@@ -1,7 +1,6 @@
 import { action, makeObservable, observable } from "mobx";
 import Scene from "../../../scenes/Scene";
 import { createContext } from "react";
-import IFacetype from "../../../interfaces/Facetype";
 import { Glasses } from "../../../interfaces/consts/Glasses";
 import { Group } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
@@ -13,6 +12,7 @@ import { getGlassesList } from "../../../api/firebase/store/glasses";
 import { glasses_list } from "../../../consts/glasses";
 import { ESex } from "../../../enums/ESex";
 import { EGlassesType } from "../../../enums/EGlassesType";
+import IFacetype from "../../../interfaces/Facetype";
 
 class Store implements IStoreForTF, StoreWithActiveGlasses {
   ready: boolean = false;

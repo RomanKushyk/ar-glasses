@@ -1,0 +1,39 @@
+@import "../../styles/main";
+
+.errors-dropdown {
+  @include box-element;
+
+  padding: $primary-v-padding $primary-h-padding;
+  border-radius: 14px;
+  background-color: rgba(200, 20, 20, 0.8);
+  z-index: -2;
+  opacity: 0;
+  transform: translateY(-100%);
+
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out, z-index 0.4s;
+
+  &_active {
+    z-index: 0;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+
+  &__title {
+    //margin-bottom: 10px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  &__list {
+    list-style: inside;
+    margin: 0;
+    padding: 0 $primary-h-padding;
+  }
+
+  &__item {
+    font-family: inherit;
+    font-size: 14px;
+  }
+}
