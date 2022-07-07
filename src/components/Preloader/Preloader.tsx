@@ -2,7 +2,7 @@ import "./preloader.scss";
 
 import { observer } from "mobx-react-lite";
 import cn from "classnames";
-import { FC, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { ESex } from "../../enums/ESex";
 import { EGlassesType } from "../../enums/EGlassesType";
 import { Store } from "../../services/store/app/store";
@@ -14,6 +14,12 @@ interface Props {
 }
 
 const Preloader: FC<Props> = observer(({ store }) => {
+  const [screenCompleted, setScreenCompleted] = useState(0);
+
+  useEffect(() => {
+    if (screenCompleted === 2) store.userData.setupScreenCompleted = true;
+  }, [screenCompleted]);
+
   const yourSexBlock = (
     <div
       className={cn(
@@ -33,6 +39,7 @@ const Preloader: FC<Props> = observer(({ store }) => {
               className="your-sex__item"
               onClick={() => {
                 store.setUserDataSex(item.name);
+                setScreenCompleted(1);
               }}
             >
               <img
@@ -71,6 +78,7 @@ const Preloader: FC<Props> = observer(({ store }) => {
               className="glasses-types__item"
               onClick={() => {
                 store.setUserDataGlassesType(item.name);
+                setScreenCompleted(2);
               }}
             >
               <img

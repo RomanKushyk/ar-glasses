@@ -17,7 +17,7 @@ export const createNewGlassesInfo: CreateNewGlassesInfo = (file) => {
     faceTypes: null,
     options: {
       position: [0, 0, 0],
-      rotation: [4.8, 0, 0],
+      rotation: [0, 0, 0],
       scale: [0.8, 0.8, 0.8],
     },
     glass_group: {

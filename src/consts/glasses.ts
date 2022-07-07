@@ -48,7 +48,7 @@ export const glasses_list: Glasses[] = [
       partsVisibility: null,
       position: [-0.5, 14, -1],
       scale: [0.41, 0.41, 0.41],
-      rotation: [4.6, 0, 0],
+      rotation: [0, 0, 0],
     },
   },
 ];

@@ -42,9 +42,11 @@ class Store implements IStoreForTF, StoreWithActiveGlasses {
   };
 
   userData: {
+    setupScreenCompleted: boolean;
     sex: ESex | undefined;
     glassesType: EGlassesType | undefined;
   } = {
+    setupScreenCompleted: false,
     sex: undefined,
     glassesType: undefined,
   };

@@ -61,7 +61,14 @@ function App() {
             await store.newActiveGlasses(store.glasses.list[0].id);
           },
           onDraw: async () => {
-            if (!store.scene.created) {
+            const detectionProgress = Math.round(
+              (store.facetype.current_detections / store.facetype.detections) *
+                100
+            );
+            if (
+              !store.scene.created ||
+              (!store.userData.setupScreenCompleted && detectionProgress >= 50)
+            ) {
               return;
             }
 

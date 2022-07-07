@@ -167,6 +167,7 @@ export default class Scene {
 
       this.glasses.position.set(...this.glasses_state.options.position);
       this.glasses.scale.set(...this.glasses_state.options.scale);
+      this.glasses.rotation.set(...this.glasses_state.options.rotation);
       this.glasses.name = compute_glasses_name(this.glasses_state.id);
       this.glasses_wrapper.add(this.glasses);
     } else {
@@ -439,6 +440,7 @@ export default class Scene {
 
     this.glasses.position.set(...glasses.options.position);
     this.glasses.scale.set(...glasses.options.scale);
+    this.glasses.rotation.set(...glasses.options.rotation);
   }
 
   updateCanvasSize(
