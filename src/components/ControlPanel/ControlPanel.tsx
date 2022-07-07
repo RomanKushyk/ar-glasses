@@ -11,7 +11,11 @@ const ControlPanel = observer(() => {
   const glasses: JSX.Element[] = [];
   let Inner: JSX.Element[] = [];
 
-  store.glasses.list.forEach((element) => {
+  const visibleGlassesList = store.glasses.list.filter(
+    (element) => element.faceTypes && element.faceTypes[store.facetype.type]
+  );
+
+  visibleGlassesList.forEach((element) => {
     glasses.push(
       <div
         key={element.id}
