@@ -1,17 +1,10 @@
 import * as THREE from "three";
-import {
-  BufferGeometry,
-  Mesh,
-  MeshBasicMaterial,
-  PointsMaterial,
-  ShaderMaterial,
-  Vector3,
-} from "three";
+import { Mesh, Vector3 } from "three";
 import { GlassesController } from "../controllers/GlassesController";
 import { Glasses } from "../interfaces/consts/Glasses";
 import { Face, Keypoint } from "@tensorflow-models/face-detection";
 import { StoreWithActiveGlasses } from "../interfaces/services/store/StoreWithActiveGlasses";
-import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
+import store from "../services/store/app/store";
 
 interface TargetPoints {
   top: Keypoint;
@@ -37,13 +30,19 @@ export default class Scene {
   private glasses: THREE.Object3D<THREE.Event> | undefined;
   private video_material: THREE.ShaderMaterial | undefined;
   private video_texture: THREE.VideoTexture | THREE.CanvasTexture | undefined;
-  private head: THREE.Points<BufferGeometry, PointsMaterial> | undefined;
+  private head:
+    | THREE.Points<THREE.BufferGeometry, THREE.PointsMaterial>
+    | undefined;
   private store: StoreWithActiveGlasses | undefined;
+  private cutPlane:
+    | THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>
+    | undefined;
 
   video: HTMLVideoElement | HTMLCanvasElement | undefined;
   canvas: HTMLCanvasElement | undefined;
   created = false;
   ready = false;
+  private headGridInitialized: boolean = false;
 
   setUpSize(
     width: number,
@@ -395,17 +394,16 @@ export default class Scene {
 
   private async setUpHead() {
     if (!this.video_material || !this.head_wrapper) return;
-    let cutPlane = new Mesh(
+    this.cutPlane = new Mesh(
       new THREE.PlaneGeometry(50, 50),
       this.video_material
     );
-    const model_geometry = new THREE.PlaneGeometry(50, 50);
 
-    cutPlane.scale.set(2, 2, 2.2);
-    cutPlane.rotateX(-Math.PI / 2 - Math.PI / 24);
-    cutPlane.rotateY(Math.PI);
+    this.cutPlane.scale.set(2, 2, 2.2);
+    this.cutPlane.rotateX(-Math.PI / 2 - Math.PI / 24);
+    this.cutPlane.rotateY(Math.PI);
 
-    cutPlane.position.z = -10;
+    this.cutPlane.position.z = -100;
 
     const pointsMaterial = new THREE.PointsMaterial({
       color: 0xffffff,
@@ -417,16 +415,21 @@ export default class Scene {
 
     this.head = new THREE.Points(pointsGeometry, pointsMaterial);
 
+    this.head.name = "head grid";
+
     // this.head.material = this.video_material;
 
     this.scene?.add(this.head);
-    this.head_wrapper.add(cutPlane);
+    this.head_wrapper.add(this.cutPlane);
   }
 
   drawScene(predictions: Face[]) {
-    if (!this.store || !this.store.glasses.active_glasses) return;
+    if (!this.store) return;
 
-    if (this.store.glasses.active_glasses !== this.glasses_state?.id) {
+    if (
+      this.store.glasses.active_glasses &&
+      this.store.glasses.active_glasses !== this.glasses_state?.id
+    ) {
       this.updateGlasses(this.store.glasses.active_glasses);
     }
 
@@ -443,7 +446,24 @@ export default class Scene {
 
     let keypoints = predictions[0].keypoints;
 
-    this.updateHead(predictions);
+    if (!this.headGridInitialized) {
+      if (
+        Number.isNaN(store.facetype.type) &&
+        !document.location.pathname.includes("admin")
+      ) {
+        this.updateHead(predictions);
+      } else {
+        if (this.head?.name && this.cutPlane) {
+          const head = this.scene.getObjectByName(this.head?.name);
+
+          if (head) {
+            this.scene.remove(head);
+            this.cutPlane.position.z = -20;
+            this.headGridInitialized = true;
+          }
+        }
+      }
+    }
 
     this.target_points.top = keypoints[168];
     this.target_points.bottom = keypoints[164];
@@ -465,8 +485,6 @@ export default class Scene {
     });
 
     this.head.geometry.setFromPoints(points);
-
-    console.log(predictions[0].keypoints);
   }
 
   updateModelPositionAndScale(glasses: Glasses) {
