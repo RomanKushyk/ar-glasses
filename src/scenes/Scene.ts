@@ -1,9 +1,10 @@
 import * as THREE from "three";
-import { Vector3 } from "three";
+import { Mesh, Vector3 } from "three";
 import { GlassesController } from "../controllers/GlassesController";
 import { Glasses } from "../interfaces/consts/Glasses";
 import { Face, Keypoint } from "@tensorflow-models/face-detection";
 import { StoreWithActiveGlasses } from "../interfaces/services/store/StoreWithActiveGlasses";
+import store from "../services/store/app/store";
 
 interface TargetPoints {
   top: Keypoint;
@@ -30,14 +31,18 @@ export default class Scene {
   private video_material: THREE.ShaderMaterial | undefined;
   private video_texture: THREE.VideoTexture | THREE.CanvasTexture | undefined;
   private head:
-    | THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>
+    | THREE.Points<THREE.BufferGeometry, THREE.PointsMaterial>
     | undefined;
   private store: StoreWithActiveGlasses | undefined;
+  private cutPlane:
+    | THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>
+    | undefined;
 
   video: HTMLVideoElement | HTMLCanvasElement | undefined;
   canvas: HTMLCanvasElement | undefined;
   created = false;
   ready = false;
+  private headGridInitialized: boolean = false;
 
   setUpSize(
     width: number,
@@ -389,26 +394,42 @@ export default class Scene {
 
   private async setUpHead() {
     if (!this.video_material || !this.head_wrapper) return;
+    this.cutPlane = new Mesh(
+      new THREE.PlaneGeometry(50, 50),
+      this.video_material
+    );
 
-    const model_geometry = new THREE.PlaneGeometry(50, 50);
+    this.cutPlane.scale.set(2, 2, 2.2);
+    this.cutPlane.rotateX(-Math.PI / 2 - Math.PI / 24);
+    this.cutPlane.rotateY(Math.PI);
 
-    this.head = new THREE.Mesh(model_geometry, this.video_material);
+    this.cutPlane.position.z = -100;
 
-    this.head.material = this.video_material;
+    const pointsMaterial = new THREE.PointsMaterial({
+      color: 0xffffff,
+      size: 0.4,
+      alphaTest: 0.5,
+    });
 
-    this.head.scale.set(2, 2, 2.2);
-    this.head.rotateX(-Math.PI / 2 - Math.PI / 24);
-    this.head.rotateY(Math.PI);
+    const pointsGeometry = new THREE.BufferGeometry().setFromPoints([]);
 
-    this.head.translateZ(-5);
+    this.head = new THREE.Points(pointsGeometry, pointsMaterial);
 
-    this.head_wrapper.add(this.head);
+    this.head.name = "head grid";
+
+    // this.head.material = this.video_material;
+
+    this.scene?.add(this.head);
+    this.head_wrapper.add(this.cutPlane);
   }
 
   drawScene(predictions: Face[]) {
-    if (!this.store || !this.store.glasses.active_glasses) return;
+    if (!this.store) return;
 
-    if (this.store.glasses.active_glasses !== this.glasses_state?.id) {
+    if (
+      this.store.glasses.active_glasses &&
+      this.store.glasses.active_glasses !== this.glasses_state?.id
+    ) {
       this.updateGlasses(this.store.glasses.active_glasses);
     }
 
@@ -425,6 +446,25 @@ export default class Scene {
 
     let keypoints = predictions[0].keypoints;
 
+    if (!this.headGridInitialized) {
+      if (
+        Number.isNaN(store.facetype.type) &&
+        !document.location.pathname.includes("admin")
+      ) {
+        this.updateHead(predictions);
+      } else {
+        if (this.head?.name && this.cutPlane) {
+          const head = this.scene.getObjectByName(this.head?.name);
+
+          if (head) {
+            this.scene.remove(head);
+            this.cutPlane.position.z = -20;
+            this.headGridInitialized = true;
+          }
+        }
+      }
+    }
+
     this.target_points.top = keypoints[168];
     this.target_points.bottom = keypoints[164];
     this.target_points.left = keypoints[130];
@@ -433,6 +473,18 @@ export default class Scene {
     this.target_points.center_x = this.normalize_vec(keypoints[168]);
 
     this.drawGlass();
+  }
+
+  updateHead(predictions: Face[]) {
+    if (!this.head) return;
+
+    let points: Vector3[] = [];
+
+    predictions[0].keypoints.forEach((p: Keypoint) => {
+      points.push(this.normalize_vec(p) as Vector3);
+    });
+
+    this.head.geometry.setFromPoints(points);
   }
 
   updateModelPositionAndScale(glasses: Glasses) {

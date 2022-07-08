@@ -32,10 +32,12 @@ class Store implements IStoreForTF, StoreWithActiveGlasses {
   };
 
   glasses: {
+    initialized: boolean;
     active_glasses: undefined | number | string;
     list: Array<Glasses>;
     files: Record<string, Group>;
   } = {
+    initialized: false,
     active_glasses: undefined,
     list: [],
     files: {},

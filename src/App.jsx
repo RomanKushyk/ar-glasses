@@ -57,8 +57,6 @@ function App() {
               webcamRef.current.video,
               store
             );
-
-            await store.newActiveGlasses(store.glasses.list[0].id);
           },
           onDraw: async () => {
             const detectionProgress = Math.round(
