@@ -1,9 +1,17 @@
 import * as THREE from "three";
-import { Vector3 } from "three";
+import {
+  BufferGeometry,
+  Mesh,
+  MeshBasicMaterial,
+  PointsMaterial,
+  ShaderMaterial,
+  Vector3,
+} from "three";
 import { GlassesController } from "../controllers/GlassesController";
 import { Glasses } from "../interfaces/consts/Glasses";
 import { Face, Keypoint } from "@tensorflow-models/face-detection";
 import { StoreWithActiveGlasses } from "../interfaces/services/store/StoreWithActiveGlasses";
+import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
 
 interface TargetPoints {
   top: Keypoint;
@@ -29,9 +37,7 @@ export default class Scene {
   private glasses: THREE.Object3D<THREE.Event> | undefined;
   private video_material: THREE.ShaderMaterial | undefined;
   private video_texture: THREE.VideoTexture | THREE.CanvasTexture | undefined;
-  private head:
-    | THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>
-    | undefined;
+  private head: THREE.Points<BufferGeometry, PointsMaterial> | undefined;
   private store: StoreWithActiveGlasses | undefined;
 
   video: HTMLVideoElement | HTMLCanvasElement | undefined;
@@ -389,20 +395,32 @@ export default class Scene {
 
   private async setUpHead() {
     if (!this.video_material || !this.head_wrapper) return;
-
+    let cutPlane = new Mesh(
+      new THREE.PlaneGeometry(50, 50),
+      this.video_material
+    );
     const model_geometry = new THREE.PlaneGeometry(50, 50);
 
-    this.head = new THREE.Mesh(model_geometry, this.video_material);
+    cutPlane.scale.set(2, 2, 2.2);
+    cutPlane.rotateX(-Math.PI / 2 - Math.PI / 24);
+    cutPlane.rotateY(Math.PI);
 
-    this.head.material = this.video_material;
+    cutPlane.position.z = -10;
 
-    this.head.scale.set(2, 2, 2.2);
-    this.head.rotateX(-Math.PI / 2 - Math.PI / 24);
-    this.head.rotateY(Math.PI);
+    const pointsMaterial = new THREE.PointsMaterial({
+      color: 0xffffff,
+      size: 0.4,
+      alphaTest: 0.5,
+    });
 
-    this.head.translateZ(-5);
+    const pointsGeometry = new THREE.BufferGeometry().setFromPoints([]);
 
-    this.head_wrapper.add(this.head);
+    this.head = new THREE.Points(pointsGeometry, pointsMaterial);
+
+    // this.head.material = this.video_material;
+
+    this.scene?.add(this.head);
+    this.head_wrapper.add(cutPlane);
   }
 
   drawScene(predictions: Face[]) {
@@ -425,6 +443,8 @@ export default class Scene {
 
     let keypoints = predictions[0].keypoints;
 
+    this.updateHead(predictions);
+
     this.target_points.top = keypoints[168];
     this.target_points.bottom = keypoints[164];
     this.target_points.left = keypoints[130];
@@ -433,6 +453,20 @@ export default class Scene {
     this.target_points.center_x = this.normalize_vec(keypoints[168]);
 
     this.drawGlass();
+  }
+
+  updateHead(predictions: Face[]) {
+    if (!this.head) return;
+
+    let points: Vector3[] = [];
+
+    predictions[0].keypoints.forEach((p: Keypoint) => {
+      points.push(this.normalize_vec(p) as Vector3);
+    });
+
+    this.head.geometry.setFromPoints(points);
+
+    console.log(predictions[0].keypoints);
   }
 
   updateModelPositionAndScale(glasses: Glasses) {
