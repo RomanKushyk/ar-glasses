@@ -8,10 +8,7 @@ import {
   getGlassesList,
 } from "../../../api/firebase/store/glasses";
 import { createNewGlassesInfo } from "../../../utils/editGlasses/createNewGlassesInfo";
-import {
-  deleteGlassesFromStorage,
-  uploadGlassesToStorage,
-} from "../../../api/firebase/storage/glasses";
+import { uploadGlassesToStorage } from "../../../api/firebase/storage/glasses";
 import { PreviewScene } from "../../../scenes/AdminPage/PreviewScene/PreviewScene";
 import { getPngFromFbx } from "../../../utils/editGlasses/getPngFromFbx";
 import { deleteObject, getDownloadURL, listAll, ref } from "firebase/storage";

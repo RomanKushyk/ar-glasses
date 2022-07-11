@@ -76,8 +76,6 @@ export const FaceBackground: FC<FaceBackgroundProps> = ({ store }) => {
             onDraw: async () => {
               if (!store.scene || !store.scene.created) return;
 
-              // console.log(store.tf.facedata.length);
-
               if (store.tf.facedata.length > 0) {
                 await store.scene.drawScene(store.tf.facedata);
 
