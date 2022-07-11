@@ -92,7 +92,7 @@ function App() {
     <div className="App" ref={appDivRef}>
       <Preloader store={store} />
 
-      <Webcam ref={webcamRef} className="webcam" />
+      <Webcam mirrored={true} ref={webcamRef} className="webcam" />
 
       <StoreContext.Provider value={store}>
         <ControlPanel />

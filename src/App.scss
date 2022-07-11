@@ -9,6 +9,7 @@
 canvas {
   z-index: 100 !important;
   position: absolute;
+  transform: scaleX(-1);
 }
 
 .webcam {
