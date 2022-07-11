@@ -13,7 +13,7 @@ export const SignOut: FC = () => {
       await logOut();
       navigate("/login");
     } catch (error: any) {
-      console.log(error.message);
+      console.error(error.message);
     }
   };
 

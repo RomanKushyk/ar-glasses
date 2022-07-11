@@ -37,12 +37,14 @@ export default class Scene {
   private cutPlane:
     | THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>
     | undefined;
+  private headGridInitialized: boolean = false;
+  private pointsMaterial: THREE.PointsMaterial | undefined;
+  private clock: THREE.Clock | undefined;
 
   video: HTMLVideoElement | HTMLCanvasElement | undefined;
   canvas: HTMLCanvasElement | undefined;
   created = false;
   ready = false;
-  private headGridInitialized: boolean = false;
 
   setUpSize(
     width: number,
@@ -405,19 +407,18 @@ export default class Scene {
 
     this.cutPlane.position.z = -100;
 
-    const pointsMaterial = new THREE.PointsMaterial({
-      color: 0xffffff,
+    this.clock = new THREE.Clock();
+    this.pointsMaterial = new THREE.PointsMaterial({
+      vertexColors: true,
       size: 0.4,
       alphaTest: 0.5,
     });
 
     const pointsGeometry = new THREE.BufferGeometry().setFromPoints([]);
 
-    this.head = new THREE.Points(pointsGeometry, pointsMaterial);
+    this.head = new THREE.Points(pointsGeometry, this.pointsMaterial);
 
     this.head.name = "head grid";
-
-    // this.head.material = this.video_material;
 
     this.scene?.add(this.head);
     this.head_wrapper.add(this.cutPlane);
@@ -452,6 +453,7 @@ export default class Scene {
         !document.location.pathname.includes("admin")
       ) {
         this.updateHead(predictions);
+        this.updateHeadGridColor(predictions);
       } else {
         if (this.head?.name && this.cutPlane) {
           const head = this.scene.getObjectByName(this.head?.name);
@@ -485,6 +487,42 @@ export default class Scene {
     });
 
     this.head.geometry.setFromPoints(points);
+  }
+
+  updateHeadGridColor(predictions: Face[]) {
+    if (!this.head) return;
+
+    const particles = predictions[0].keypoints.length;
+    const waveSize = 0.04;
+    const waveSpeed = 8;
+    const colors = [];
+
+    const color = new THREE.Color();
+
+    if (!this.clock) return;
+    const elapsedTime = this.clock?.getElapsedTime();
+
+    for (let i = 0; i < particles; i++) {
+      const y = predictions[0].keypoints[i].y;
+
+      let vx = 0;
+      let vy = Math.sin(-y * waveSize + elapsedTime * waveSpeed);
+      let vz = 0;
+
+      if (vy < 0.5) {
+        vx = 1;
+        vy = 1;
+        vz = 1;
+      }
+
+      color.setRGB(vx, vy, vz);
+      colors.push(color.r, color.g, color.b);
+    }
+
+    this.head.geometry.setAttribute(
+      "color",
+      new THREE.Float32BufferAttribute(colors, 3)
+    );
   }
 
   updateModelPositionAndScale(glasses: Glasses) {

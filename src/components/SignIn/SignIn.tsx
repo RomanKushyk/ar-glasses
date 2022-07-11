@@ -79,7 +79,7 @@ export const SignIn = () => {
       await googleSignIn();
       navigate("/home");
     } catch (error: any) {
-      console.log(error.message);
+      console.error(error.message);
     }
   };
 

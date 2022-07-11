@@ -20,7 +20,6 @@ export const addGlassesToList = async (data: Omit<Glasses, "id">) => {
   try {
     const docRef = await addDoc(collection(firebaseStore, PATH), data);
     id = docRef.id;
-    console.log("Document written with ID: ", docRef.id);
   } catch (e) {
     console.error("Error adding document: ", e);
   }
