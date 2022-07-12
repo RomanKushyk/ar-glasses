@@ -2,12 +2,11 @@ import "./preloader.scss";
 
 import { observer } from "mobx-react-lite";
 import cn from "classnames";
-import { FC, useEffect, useMemo, useState } from "react";
-import { ESex } from "../../enums/ESex";
-import { EGlassesType } from "../../enums/EGlassesType";
+import { FC, useEffect, useState } from "react";
 import { Store } from "../../services/store/app/store";
 import { sexList } from "../../consts/Preloader/sex";
 import { glassesTypesList } from "../../consts/Preloader/glassesTypes";
+import { getRouterDependingStaticUrl } from "../../utils/router/getRouterDependingStaticUrl";
 
 interface Props {
   store: Store;
@@ -45,7 +44,7 @@ const Preloader: FC<Props> = observer(({ store }) => {
               <img
                 className="your-sex__item-image"
                 alt={item.name}
-                src={document.location.origin + "/" + item.imgPath}
+                src={getRouterDependingStaticUrl(item.imgPath)}
               />
 
               <p className="your-sex__item-title">{item.name}</p>
@@ -84,7 +83,7 @@ const Preloader: FC<Props> = observer(({ store }) => {
               <img
                 className="glasses-types__item-image"
                 alt={item.name}
-                src={document.location.origin + "/" + item.imgPath}
+                src={getRouterDependingStaticUrl(item.imgPath)}
               />
 
               <p className="glasses-types__item-title">{item.name}</p>

@@ -4,6 +4,7 @@ import { FC, useContext, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { StoreAdminContext } from "../../services/store/AdminPage/storeAdmin";
 import { Glasses } from "../../interfaces/consts/Glasses";
+import { getRouterDependingStaticUrl } from "../../utils/router/getRouterDependingStaticUrl";
 
 export const GlassesList: FC = observer(() => {
   const store = useContext(StoreAdminContext);
@@ -15,7 +16,7 @@ export const GlassesList: FC = observer(() => {
   const getPreviewPath = (item: Glasses) => {
     switch (item.local) {
       case true:
-        return document.location.origin + "/" + item.preview_file_path;
+        return getRouterDependingStaticUrl(item.preview_file_path);
 
       default:
         return item.preview_file_path;
@@ -45,8 +46,11 @@ export const GlassesList: FC = observer(() => {
               className="glasses-list__option-button glasses-list__option-button_edit"
               type="button"
               onClick={() => {
-                window.location.href =
-                  document.location.origin + `/admin/edit/${element.id}`;
+                window.location.href = getRouterDependingStaticUrl(
+                  `admin/edit/${element.id}`,
+                  false
+                );
+                if (document.location.hash) window.location.reload();
               }}
             />
 

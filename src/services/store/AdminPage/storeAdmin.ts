@@ -20,6 +20,7 @@ import { IStoreForTF } from "../../../interfaces/services/store/StoreForTF";
 import Scene from "../../../scenes/Scene";
 import IFacetype from "../../../interfaces/Facetype";
 import { StoreWithActiveGlasses } from "../../../interfaces/services/store/StoreWithActiveGlasses";
+import { getRouterDependingStaticUrl } from "../../../utils/router/getRouterDependingStaticUrl";
 
 interface StoreGlasses {
   active_glasses: undefined | number | string;
@@ -164,7 +165,7 @@ class StoreAdmin implements IStoreForTF, StoreWithActiveGlasses {
       switch (item.local) {
         case true:
           this.glasses.files[item.id] = await fbxLoader.loadAsync(
-            document.location.origin + "/" + item.file_path
+            getRouterDependingStaticUrl(item.file_path)
           );
           break;
 

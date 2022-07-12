@@ -13,6 +13,7 @@ import { glasses_list } from "../../../consts/glasses";
 import { ESex } from "../../../enums/ESex";
 import { EGlassesType } from "../../../enums/EGlassesType";
 import IFacetype from "../../../interfaces/Facetype";
+import { getRouterDependingStaticUrl } from "../../../utils/router/getRouterDependingStaticUrl";
 
 class Store implements IStoreForTF, StoreWithActiveGlasses {
   ready: boolean = false;
@@ -115,7 +116,7 @@ class Store implements IStoreForTF, StoreWithActiveGlasses {
       switch (item.local) {
         case true:
           this.glasses.files[item.id] = await fbxLoader.loadAsync(
-            document.location.origin + "/" + item.file_path
+            getRouterDependingStaticUrl(item.file_path)
           );
           break;
 

@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client";
 import "./index.scss";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
 import { AdminPage } from "./pages/AdminPage";
 import { NotFound } from "./components/NotFound";
 import { EditGlasses } from "./components/EditGlasses/EditGlasses";
@@ -19,7 +19,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <UserAuthContextProvider>
     <React.StrictMode>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<App />} />
 
@@ -35,7 +35,7 @@ root.render(
 
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </React.StrictMode>
   </UserAuthContextProvider>
 );

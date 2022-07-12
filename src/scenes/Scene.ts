@@ -450,7 +450,7 @@ export default class Scene {
     if (!this.headGridInitialized) {
       if (
         Number.isNaN(store.facetype.type) &&
-        !document.location.pathname.includes("admin")
+        !document.location.href.includes("admin")
       ) {
         this.updateHead(predictions);
         this.updateHeadGridColor(predictions);

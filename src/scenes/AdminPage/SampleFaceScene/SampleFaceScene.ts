@@ -2,6 +2,7 @@ import React from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import { getRouterDependingStaticUrl } from "../../../utils/router/getRouterDependingStaticUrl";
 
 let loader = new OBJLoader();
 
@@ -104,7 +105,7 @@ const SampleFaceScene = (ref: React.RefObject<HTMLDivElement>) => {
   camera.position.set(0, 20, 100);
   controls.update();
 
-  loader.load("/assets/admin/face.obj", (model) => {
+  loader.load(getRouterDependingStaticUrl("assets/admin/face.obj"), (model) => {
     model.scale.set(120, 120, 120);
     scene.add(model);
   });

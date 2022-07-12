@@ -57,7 +57,7 @@ const ControlPanel = observer(() => {
         </div>
       ))
     );
-  }, [visibleGlassesList]);
+  }, [visibleGlassesList, store.glasses.active_glasses]);
 
   useEffect(() => {
     if (Number.isNaN(store.facetype.type)) {

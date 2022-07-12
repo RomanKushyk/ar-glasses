@@ -4,6 +4,7 @@ import React from "react";
 import { ref } from "firebase/storage";
 import { firebaseStorage } from "../../../utils/firebase/firebase";
 import { getDownloadURL } from "firebase/storage";
+import { getRouterDependingStaticUrl } from "../../../utils/router/getRouterDependingStaticUrl";
 
 export const previewSceneCanvas /*: LegacyRef<HTMLCanvasElement>*/ =
   React.createRef(); // ref
@@ -39,7 +40,7 @@ export class PreviewScene {
     switch (glasses.local) {
       case true:
         this.object = await this.fbxLoader.loadAsync(
-          document.location.origin + "/" + glasses.file_path
+          getRouterDependingStaticUrl(glasses.file_path)
         );
         break;
 
