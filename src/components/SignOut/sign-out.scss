@@ -1,8 +1,0 @@
-@import "../../styles/main";
-
-.sign-out-button {
-  height: 35px;
-
-  @extend %noBorder;
-  @include box-element;
-}
