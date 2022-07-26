@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/ar-glasses/static/css/main.11f5767d.css",
-    "main.js": "/ar-glasses/static/js/main.7e0415f2.js",
+    "main.css": "/ar-glasses/static/css/main.a0b61c4e.css",
+    "main.js": "/ar-glasses/static/js/main.b56c5c30.js",
     "static/js/787.f412bc8f.chunk.js": "/ar-glasses/static/js/787.f412bc8f.chunk.js",
     "static/media/snapshot.png": "/ar-glasses/static/media/snapshot.d2a7fdc516ffd70b23ea.png",
     "static/media/star-unfilled.png": "/ar-glasses/static/media/star-unfilled.ca6f85d63326e0f8f28c.png",
@@ -9,16 +9,17 @@
     "static/media/eye-glasses.png": "/ar-glasses/static/media/eye-glasses.53595fcf0e2a74c53625.png",
     "static/media/star-filled.png": "/ar-glasses/static/media/star-filled.8f687ed889553482ad2f.png",
     "static/media/three.png": "/ar-glasses/static/media/three.f11cd41299816aad9ee8.png",
+    "static/media/close.png": "/ar-glasses/static/media/close.87f301cee00ce8dc9e8c.png",
     "static/media/glasses-types.png": "/ar-glasses/static/media/glasses-types.c2466da3493c6d8190f6.png",
     "static/media/next.png": "/ar-glasses/static/media/next.d720e8f1fccb14c06686.png",
     "static/media/back.png": "/ar-glasses/static/media/back.b0b24fefa2224d1ade24.png",
     "index.html": "/ar-glasses/index.html",
-    "main.11f5767d.css.map": "/ar-glasses/static/css/main.11f5767d.css.map",
-    "main.7e0415f2.js.map": "/ar-glasses/static/js/main.7e0415f2.js.map",
+    "main.a0b61c4e.css.map": "/ar-glasses/static/css/main.a0b61c4e.css.map",
+    "main.b56c5c30.js.map": "/ar-glasses/static/js/main.b56c5c30.js.map",
     "787.f412bc8f.chunk.js.map": "/ar-glasses/static/js/787.f412bc8f.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.11f5767d.css",
-    "static/js/main.7e0415f2.js"
+    "static/css/main.a0b61c4e.css",
+    "static/js/main.b56c5c30.js"
   ]
 }
